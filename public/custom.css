@@ -1,0 +1,134 @@
+/* darkmode */
+@import url('https://gitcdn.link/cdn/Amoenus/SwaggerDark/master/SwaggerDark.css');
+@import url('https://gitcdn.link/cdn/Amoenus/SwaggerDark/master/SwaggerDark.user.css');
+
+html,
+body {
+  height: 100%;
+  overflow: auto;
+}
+
+* {
+  outline: none !important;
+}
+
+#swagger-ui {
+  padding-bottom: 0;
+}
+
+.swagger-ui table tbody tr td:first-of-type {
+  min-width: 12em !important;
+}
+
+/* hide hideous swagger topbar menu */
+.swagger-ui .topbar,
+.swagger-ui .topbar * {
+  padding: 0px !important;
+  height: 0px;
+  visibility: hidden;
+  background-color: transparent !important;
+}
+
+.swagger-ui .info {
+  margin: 0 !important;
+  padding: 30px 0 !important;
+}
+
+.swagger-ui .info>.main {
+  margin: 0 !important;
+}
+
+.swagger-ui .auth-wrapper .dialog-ux {
+  height: 100vh;
+}
+
+.scheme-container {
+  box-shadow: none !important;
+  margin: 0 !important;
+  padding: 75px 0 20px !important;
+}
+
+.swagger-ui {
+  padding: 0;
+}
+
+.arrow {
+  fill: #fff;
+}
+
+.opblock-summary-control>.arrow {
+  margin: 0 10px;
+}
+
+body {
+  background: none !important;
+}
+
+body>#swagger-ui>.swagger-ui.swagger-container {
+  padding-bottom: 20px;
+}
+
+@media screen and (max-width: 1460px) {
+  body>#swagger-ui>.swagger-ui.swagger-container {
+    padding-bottom: 0;
+  }
+}
+
+.wrapper {
+  border-radius: 10px;
+  padding: 10px !important;
+  margin: 0 auto 0 !important;
+}
+
+.wrapper+.wrapper {
+  margin-top: 20px !important;
+}
+
+.wrapper:last-child {
+  margin-bottom: 0 !important;
+}
+
+html>body>div#swagger-ui>section.swagger-ui.swagger-container>div.swagger-ui>div>div.wrapper:last-child {
+  display: none;
+}
+
+.swagger-ui .opblock .opblock-section-header {
+  background-color: transparent;
+}
+
+.authorization__btn>svg {
+  fill: #fff;
+}
+
+.swagger-ui>div>.information-container {
+  padding: 0 60px !important;
+  min-width: 100% !important;
+}
+
+.modal-ux-content>div>form>div>div:nth-child(2) {
+  height: 0;
+}
+
+.swagger-ui section.models {
+  border: 1px solid #fff;
+}
+
+.swagger-ui section.models.is-open h4 {
+  border-bottom: 1px solid #fff;
+}
+
+.swagger-ui section.models {
+  margin: 0 !important;
+}
+
+.swagger-ui.swagger-container>*:last-child {
+  display: none;
+}
+
+.swagger-ui .opblock .opblock-summary-path {
+  max-width: calc(100% - 110px) !important;
+}
+
+.swagger-ui .info .title small.version-stamp {
+  background-color: #76C945;
+}

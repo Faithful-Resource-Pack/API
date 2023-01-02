@@ -1,38 +1,22 @@
 {
   "compilerOptions": {
-    "lib": [
-      "ES2020.Promise",
-      "ESNext"
-    ],
-    "module": "CommonJS",
-    "moduleResolution": "node",
-    "target": "ESNext",
-    "outDir": "dist",
-    "sourceMap": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "allowSyntheticDefaultImports": true,
-    "skipLibCheck": true,
+    "module": "commonjs",
     "declaration": true,
-    "allowJs": true,
-    "resolveJsonModule": true,
-    "baseUrl": "src",
-    "paths": {
-      "@/*": [
-        "../*"
-      ],
-      "~/*": [
-        "*"
-      ]
-    }
-  },
-  "exclude": [
-    "node_modules"
-  ],
-  "include": [
-    "src"
-  ]
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "es2017",
+    "sourceMap": true,
+    "outDir": "dist",
+    "baseUrl": "",
+    "incremental": true,
+    "skipLibCheck": true,
+    "strictNullChecks": false,
+    "noImplicitAny": false,
+    "strictBindCallApply": false,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": false,
+    "strict": true
+  }
 }

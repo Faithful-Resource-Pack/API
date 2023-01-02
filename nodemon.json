@@ -1,9 +1,0 @@
-{
-    "exec": "npm run exec",
-    "watch": [
-        "src",
-        "public/custom.js",
-        ".env"
-    ],
-    "ext": "ts, css, json"
-}
