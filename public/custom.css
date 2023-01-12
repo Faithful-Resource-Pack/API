@@ -1,7 +1,3 @@
-/* darkmode */
-@import url('https://gitcdn.link/cdn/Amoenus/SwaggerDark/master/SwaggerDark.css');
-@import url('https://gitcdn.link/cdn/Amoenus/SwaggerDark/master/SwaggerDark.user.css');
-
 html,
 body {
   height: 100%;
@@ -24,14 +20,14 @@ body {
 .swagger-ui .topbar,
 .swagger-ui .topbar * {
   padding: 0px !important;
-  height: 0px;
-  visibility: hidden;
-  background-color: transparent !important;
+    height: 0px;
+      visibility: hidden;
+      background-color: transparent !important;
 }
 
 .swagger-ui .info {
   margin: 0 !important;
-  padding: 30px 0 !important;
+    padding: 30px 0 !important;
 }
 
 .swagger-ui .info>.main {
@@ -44,8 +40,8 @@ body {
 
 .scheme-container {
   box-shadow: none !important;
-  margin: 0 !important;
-  padding: 75px 0 20px !important;
+    margin: 0 !important;
+      padding: 75px 0 20px !important;
 }
 
 .swagger-ui {
@@ -53,7 +49,7 @@ body {
 }
 
 .arrow {
-  fill: #fff;
+  fill: rgb(200, 200, 200);
 }
 
 .opblock-summary-control>.arrow {
@@ -67,19 +63,17 @@ body {
 body>#swagger-ui>.swagger-ui.swagger-container {
   padding-bottom: 20px;
 }
-
 @media screen and (max-width: 1460px) {
   body>#swagger-ui>.swagger-ui.swagger-container {
-    padding-bottom: 0;
-  }
+      padding-bottom: 0;
+      }
 }
 
 .wrapper {
   border-radius: 10px;
-  padding: 10px !important;
-  margin: 0 auto 0 !important;
+    padding: 10px !important;
+      margin: 0 auto 0 !important;
 }
-
 .wrapper+.wrapper {
   margin-top: 20px !important;
 }
@@ -87,7 +81,6 @@ body>#swagger-ui>.swagger-ui.swagger-container {
 .wrapper:last-child {
   margin-bottom: 0 !important;
 }
-
 html>body>div#swagger-ui>section.swagger-ui.swagger-container>div.swagger-ui>div>div.wrapper:last-child {
   display: none;
 }
@@ -97,7 +90,7 @@ html>body>div#swagger-ui>section.swagger-ui.swagger-container>div.swagger-ui>div
 }
 
 .authorization__btn>svg {
-  fill: #fff;
+  fill: rgb(200, 200, 200);
 }
 
 .swagger-ui>div>.information-container {
@@ -110,11 +103,11 @@ html>body>div#swagger-ui>section.swagger-ui.swagger-container>div.swagger-ui>div
 }
 
 .swagger-ui section.models {
-  border: 1px solid #fff;
+  border: 1px solid rgb(200, 200, 200);
 }
 
 .swagger-ui section.models.is-open h4 {
-  border-bottom: 1px solid #fff;
+  border-bottom: 1px solid rgb(200, 200, 200);
 }
 
 .swagger-ui section.models {
@@ -131,4 +124,52 @@ html>body>div#swagger-ui>section.swagger-ui.swagger-container>div.swagger-ui>div
 
 .swagger-ui .info .title small.version-stamp {
   background-color: #76C945;
+}
+.body-param__text {
+  max-width: 100%;
+  min-width: 100% !important;
+}
+
+@media (prefers-color-scheme: dark) {
+
+  body,
+  input[type=text],
+  .model-box,
+  .swagger-ui textarea,
+  .microlight,
+  .scheme-container,
+  select.content-type,
+  .modal-ux {
+    background-color: #0c0c0c !important;
+    border: 1px solid #000 !important;
+  }
+
+  .parameter__name,
+  .parameter__type,
+  .nostyle>span,
+  .swagger-ui textarea,
+  .model-title__text,
+  select.content-type,
+  input[type=text],
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  td,
+  th,
+  button,
+  label {
+    color: rgb(200, 200, 200) !important;
+  }
+
+  svg {
+    fill: rgb(200, 200, 200);
+  }
+
+  .validation-errors.errors-wrapper {
+    color: #f93e3e;
+  }
 }
