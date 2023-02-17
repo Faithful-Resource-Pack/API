@@ -1,9 +1,9 @@
 import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put } from '@nestjs/common';
 import { PacksService } from './packs.service';
-import { Pack } from 'src/schemas/packs.schema';
+import { Pack } from 'src/core/schemas/packs.schema';
 import { ApiTags } from '@nestjs/swagger';
-import { CreatePackDto, UpdatePackDto } from 'src/dto/packs.dto';
-import { HTTPException, NonEmptyArray } from 'src/types';
+import { CreatePackDto, UpdatePackDto } from 'src/core/dto/packs.dto';
+import { HTTPException } from '../../../types';
 
 @ApiTags('Resource Packs')
 @Controller({ path: 'packs' })

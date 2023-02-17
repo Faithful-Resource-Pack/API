@@ -10,6 +10,7 @@ async function bootstrap() {
     .setTitle('Faithful API')
     .setDescription('An API for Faithful Resource Pack textures, add-ons and more')
     .setVersion('3.0.0')
+    .addBearerAuth()
     .build();
 
   const options: SwaggerCustomOptions = {

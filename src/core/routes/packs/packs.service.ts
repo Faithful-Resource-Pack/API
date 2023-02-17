@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CreatePackDto } from 'src/dto/packs.dto';
-import { Pack, PackDocument } from 'src/schemas/packs.schema';
+import { CreatePackDto } from 'src/core/dto/packs.dto';
+import { Pack, PackDocument } from 'src/core/schemas/packs.schema';
 
 @Injectable()
 export class PacksService {

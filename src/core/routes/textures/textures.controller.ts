@@ -1,9 +1,11 @@
 import { Body, Controller, Delete, Get, HttpStatus, Param, Post } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { TexturesService } from './textures.service';
-import { Texture } from 'src/schemas/texture.schema';
-import { HTTPException } from 'src/types';
-import { CreateAtlasTextureDto, CreateSpriteTextureDto, CreateTiledTextureDto } from 'src/dto/textures.dto';
+import { Texture } from 'src/core/schemas/texture.schema';
+import { CreateAtlasTextureDto, CreateSpriteTextureDto, CreateTiledTextureDto } from 'src/core/dto/textures.dto';
+import { Roles, ROLES } from 'src/core/decorators/roles.decorator';
+
+import type { HTTPException } from 'src/types';
 
 @ApiTags('Textures')
 @Controller({ path: 'textures' })
@@ -21,6 +23,8 @@ export class TexturesController {
   }
 
   @Post('atlas')
+  @ApiBearerAuth()
+  @Roles(ROLES.ADMIN)
   async createAtlas(@Body() createAtlasDto: CreateAtlasTextureDto): Promise<Texture | HTTPException> {
     return this.texturesService
       .createAtlas(createAtlasDto)
@@ -28,6 +32,8 @@ export class TexturesController {
   }
 
   @Post('sprite')
+  @ApiBearerAuth()
+  @Roles(ROLES.ADMIN)
   async createSprite(@Body() createSpriteDto: CreateSpriteTextureDto): Promise<Texture | HTTPException> {
     return this.texturesService
       .createSprite(createSpriteDto)
@@ -35,6 +41,8 @@ export class TexturesController {
   }
 
   @Post('tile')
+  @ApiBearerAuth()
+  @Roles(ROLES.ADMIN)
   async createTile(@Body() createTileDto: CreateTiledTextureDto): Promise<Texture | HTTPException> {
     return this.texturesService
       .createTiled(createTileDto)
@@ -42,6 +50,8 @@ export class TexturesController {
   }
 
   @Delete(':id')
+  @ApiBearerAuth()
+  @Roles(ROLES.ADMIN)
   async delete(@Param('id') id: string): Promise<Texture | HTTPException> {
     return this.texturesService.delete(id).catch((err) => ({ message: err.message, status: HttpStatus.BAD_REQUEST }));
   }

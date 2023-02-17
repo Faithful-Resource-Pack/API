@@ -40,8 +40,8 @@ body {
 
 .scheme-container {
   box-shadow: none !important;
-    margin: 0 !important;
-      padding: 75px 0 20px !important;
+  margin: 0 !important;
+  padding: 0px !important;
 }
 
 .swagger-ui {
@@ -131,19 +131,21 @@ html>body>div#swagger-ui>section.swagger-ui.swagger-container>div.swagger-ui>div
 }
 
 @media (prefers-color-scheme: dark) {
-
   body,
   input[type=text],
   .model-box,
   .swagger-ui textarea,
   .microlight,
-  .scheme-container,
   select.content-type,
   .modal-ux {
     background-color: #0c0c0c !important;
     border: 1px solid #000 !important;
   }
 
+  .scheme-container {
+    background-color: #0c0c0c !important;
+  }
+  
   .parameter__name,
   .parameter__type,
   .nostyle>span,

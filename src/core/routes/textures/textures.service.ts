@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CreateAtlasTextureDto, CreateSpriteTextureDto, CreateTiledTextureDto } from 'src/dto/textures.dto';
-import { Texture, TextureDocument } from 'src/schemas/texture.schema';
+import { CreateAtlasTextureDto, CreateSpriteTextureDto, CreateTiledTextureDto } from 'src/core/dto/textures.dto';
+import { Texture, TextureDocument } from 'src/core/schemas/texture.schema';
 
 @Injectable()
 export class TexturesService {
