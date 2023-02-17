@@ -1,53 +1,68 @@
-import mongoose, { HydratedDocument } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Tag } from './tag.schema';
 import {
   ITexture,
-  ITextureConfiguration,
-  TTextureType,
-} from 'src/textures/interfaces/texture.interface';
+  NonEmptyArray,
+  TMinecraftVersion,
+  ITextureAtlas,
+  ITextureSprite,
+  ITextureTiled,
+  ITextureAtlasMap,
+  ITextureAtlasSize,
+  TTextureUse,
+} from 'src/types';
 
-export type TextureDocument = HydratedDocument<Texture>;
+export type TextureDocument = Texture & Document;
 
-@Schema({ collection: 'textures' })
-export class Texture implements ITexture {
-  /** Texture name */
+@Schema()
+export class Texture implements ITexture, ITextureAtlas, ITextureSprite, ITextureTiled {
+  @Prop({ required: true, type: String, enum: ['atlas', 'sprite', 'tiled'] })
+  type!: any;
+
+  @Prop({ required: true, type: Array })
+  uses: NonEmptyArray<TTextureUse>;
+
   @Prop({ required: true })
   id: string;
 
-  /** Aliases for that texture */
-  @Prop({ default: () => null })
-  alias: string[] | null;
-
-  /** What kind of texture it is */
-  @Prop({ required: true, default: () => 'sprite' })
-  type: TTextureType;
-
-  /** Short description */
-  @Prop({ default: () => null })
-  description?: string;
-
-  /** Texture tags */
-  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Tag' }] })
-  tags: Tag[];
-
-  /** In which pack this texture is used */
   @Prop({ required: true })
-  packs: string[];
+  name: string;
 
-  /** Texture configuration, depends on the texture type */
-  @Prop({ type: Object, required: true })
-  configuration: ITexture['type'] extends 'atlas'
-    ? Required<Pick<ITextureConfiguration, 'size' | 'map' | 'uses'>>
-    : ITexture['type'] extends 'sprite'
-    ? Required<Pick<ITextureConfiguration, 'tint' | 'mcmeta' | 'uses'>>
-    : never;
+  @Prop({ required: false })
+  aliases?: string[];
 
-  @Prop({ default: () => null })
-  modifiedAt?: Date;
+  @Prop({ required: true, type: Array })
+  versions: NonEmptyArray<TMinecraftVersion>;
 
-  @Prop({ default: () => null })
-  createdAt: Date;
+  @Prop({
+    required: function (this: Texture) {
+      return this.type === 'atlas';
+    },
+    type: Object,
+  })
+  size: ITextureAtlasSize;
+
+  @Prop({
+    required: function (this: Texture) {
+      return this.type === 'atlas';
+    },
+    type: Object,
+  })
+  map: ITextureAtlasMap;
+
+  @Prop({
+    required: function (this: Texture) {
+      return this.type === 'sprite' || this.type === 'tiled';
+    },
+  })
+  tinted: boolean;
+
+  @Prop({
+    required: function (this: Texture) {
+      return this.type === 'tiled';
+    },
+    type: Object,
+  })
+  mcmeta: object;
 }
 
 export const TextureSchema = SchemaFactory.createForClass(Texture);

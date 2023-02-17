@@ -1,19 +1,23 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
-import { TexturesModule } from './textures/textures.module';
+import { Pack, PackSchema } from './schemas/packs.schema';
+import { PacksController } from './routes/packs/packs.controller';
+import { PacksService } from './routes/packs/packs.service';
+import { TexturesController } from './routes/textures/textures.controller';
+import { TexturesService } from './routes/textures/textures.service';
+import { Texture, TextureSchema } from './schemas/texture.schema';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    MongooseModule.forRoot(process.env.DATABASE_URL, {
-      dbName: process.env.DEV === 'false' ? 'faithful' : 'faithful-dev',
-    }),
-    TexturesModule,
+    MongooseModule.forRoot(process.env.DATABASE_URL, { dbName: process.env.DEV === 'false' ? 'faithful' : 'faithful-dev' }),
+    MongooseModule.forFeature([
+      { name: Pack.name, schema: PackSchema },
+      { name: Texture.name, schema: TextureSchema },
+    ]),
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [PacksController, TexturesController],
+  providers: [PacksService, TexturesService],
 })
 export class AppModule {}
