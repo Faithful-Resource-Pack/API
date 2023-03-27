@@ -151,6 +151,7 @@ html>body>div#swagger-ui>section.swagger-ui.swagger-container>div.swagger-ui>div
   .nostyle>span,
   .swagger-ui textarea,
   .model-title__text,
+  .opblock-summary-description,
   select.content-type,
   input[type=text],
   h1,

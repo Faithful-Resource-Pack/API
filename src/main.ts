@@ -2,8 +2,10 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder, SwaggerCustomOptions } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { Logger } from '@nestjs/common';
 
 async function bootstrap() {
+  const logger = new Logger('Main');
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   const config = new DocumentBuilder()
@@ -26,7 +28,7 @@ async function bootstrap() {
   app.useStaticAssets('public');
 
   await app.listen(3000);
-  console.log(`Application is running on: http://localhost:3000/docs`);
+  logger.verbose(`Application is running on: http://localhost:3000/docs`);
 }
 
 bootstrap();

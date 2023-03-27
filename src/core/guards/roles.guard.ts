@@ -2,10 +2,9 @@ import { Injectable, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { ROLES, ROLES_KEY } from '../decorators/roles.decorator';
 import { AuthGuard } from '@nestjs/passport';
-import { jwtConstants } from '../auth/constants';
-import * as jwt from 'jsonwebtoken';
 import { UsersService } from '../routes/users/users.service';
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
+import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class RolesGuard extends AuthGuard('jwt') {
@@ -35,8 +34,7 @@ export class RolesGuard extends AuthGuard('jwt') {
 
     // Roles check
     try {
-      const { username } = jwt.verify(token, jwtConstants.secret);
-      console.log((await this.usersService.findOne({ username })).roles);
+      const { username } = jwt.verify(token, process.env.TOKEN_JWT);
       return (await this.usersService.findOne({ username })).roles.some((role) => requiredRoles.includes(role));
     } catch (err) {
       return false;

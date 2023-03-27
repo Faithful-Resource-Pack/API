@@ -6,13 +6,22 @@ export type UserDocument = User & Document;
 
 @Schema()
 export class User implements IUser {
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true })
   username: string;
 
   @Prop({ required: true, select: false })
   password: string;
 
-  @Prop({ required: true, type: Array, enum: ROLES, default: [ROLES.USER] })
+  @Prop({ required: true, unique: true, select: false })
+  email: string;
+
+  @Prop({ required: false, type: Boolean, default: false })
+  isVerified: boolean;
+
+  @Prop({ required: false, type: String })
+  verificationToken?: string;
+
+  @Prop({ required: true, type: Array, enum: ROLES, default: [ROLES.USER, ROLES.ANONYMOUS] })
   roles: ROLES[];
 
   @Prop({ required: true, type: Date, default: Date.now })

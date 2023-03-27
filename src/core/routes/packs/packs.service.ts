@@ -11,6 +11,10 @@ export class PacksService {
     private packModel: Model<PackDocument>,
   ) {}
 
+  async exist(id: string): Promise<boolean> {
+    return this.findOne(id).then((res) => res !== null);
+  }
+
   async create(createPackDto: CreatePackDto): Promise<Pack> {
     return new this.packModel(createPackDto).save();
   }

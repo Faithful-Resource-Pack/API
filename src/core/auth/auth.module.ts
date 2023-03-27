@@ -4,9 +4,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from '../schemas/users.schema';
 import { UsersService } from '../routes/users/users.service';
-import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
-import { jwtConstants } from './constants';
+import { AuthService } from '../routes/auth/auth.service';
+import { AuthController } from '../routes/auth/auth.controller';
 import { JwtStrategy } from './jwt.auth';
 import { LocalStrategy } from './local.auth';
 
@@ -14,7 +13,7 @@ import { LocalStrategy } from './local.auth';
   imports: [
     PassportModule,
     JwtModule.register({
-      secret: jwtConstants.secret,
+      secret: process.env.TOKEN_JWT,
       signOptions: { expiresIn: '7d' },
     }),
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),

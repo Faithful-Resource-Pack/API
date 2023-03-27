@@ -6,6 +6,7 @@ import { CreateAtlasTextureDto, CreateSpriteTextureDto, CreateTiledTextureDto } 
 import { Roles, ROLES } from 'src/core/decorators/roles.decorator';
 
 import type { HTTPException } from 'src/types';
+import { Public } from 'src/core/decorators/public.decorator';
 
 @ApiTags('Textures')
 @Controller({ path: 'textures' })
@@ -13,11 +14,13 @@ export class TexturesController {
   constructor(private readonly texturesService: TexturesService) {}
 
   @Get()
+  @Public()
   async findAll(): Promise<Texture[]> {
     return this.texturesService.findAll();
   }
 
   @Get(':id')
+  @Public()
   async findOne(@Param('id') id: string): Promise<Texture | HTTPException> {
     return this.texturesService.findOne(id).catch((err) => ({ message: err.message, status: HttpStatus.BAD_REQUEST }));
   }
