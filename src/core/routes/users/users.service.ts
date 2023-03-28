@@ -4,8 +4,9 @@ import { Model } from 'mongoose';
 import { CreateUserDto } from 'src/core/dto/users.dto';
 import { User, UserDocument } from 'src/core/schemas/users.schema';
 import { ROLES } from 'src/core/decorators/roles.decorator';
-import * as nodemailer from 'nodemailer';
 import { HTTPException } from 'src/types';
+import SendDiscordWebhook, { DiscordEmbedColors } from 'src/utils/SendDiscordWebhook';
+import * as nodemailer from 'nodemailer';
 
 @Injectable()
 export class UsersService {
@@ -23,9 +24,10 @@ export class UsersService {
   /**
    * Delete a user by id
    * @param {string} id User UUID
+   * @param {string} reason The reason why the user has been deleted
    * @returns {Promise<User>} The deleted user object
    */
-  async delete(id: string): Promise<User> {
+  async delete(id: string, reason: string): Promise<User> {
     const user = await this.userModel.findByIdAndDelete(id, { email: true }).exec();
 
     // email body
@@ -42,6 +44,60 @@ export class UsersService {
 
     // send the account deletion email
     await this.transporter.sendMail(mailOptions);
+
+    SendDiscordWebhook({
+      embeds: [
+        {
+          type: 'rich',
+          title: user.isVerified ? 'A user has been deleted' : 'An unverified user has been deleted',
+          description: reason === ',' ? 'No reason provided' : reason,
+          fields: [
+            {
+              name: 'Username',
+              value: user.username,
+              inline: true,
+            },
+            {
+              name: 'UUID',
+              value: `\`${user._id.toString()}\``,
+              inline: true,
+            },
+            {
+              name: 'Email',
+              value: user.email,
+              inline: true,
+            },
+            {
+              name: 'Verified',
+              value: user.isVerified ? 'Yes' : 'No',
+              inline: true,
+            },
+            {
+              name: 'Roles',
+              value: user.roles.join(', '),
+              inline: true,
+            },
+            {
+              name: 'Created At',
+              value: `<t:${Math.floor(user.createdAt.getTime() / 1000)}:f>`,
+              inline: true,
+            },
+            {
+              name: 'Last Updated At',
+              value: `<t:${Math.floor(user.createdAt.getTime() / 1000)}:f>`,
+              inline: true,
+            },
+            {
+              name: 'Deleted At',
+              value: `<t:${Math.floor(Date.now() / 1000)}:f>`,
+              inline: true,
+            },
+          ],
+          color: DiscordEmbedColors.RED,
+        },
+      ],
+    });
+
     return user;
   }
 
@@ -62,6 +118,30 @@ export class UsersService {
       throw new Error(`Invalid role, must be one of: ${Object.values(ROLES).join(', ')}`);
 
     if (user.roles.includes(role)) user.roles = user.roles.filter((r) => r !== role);
+
+    SendDiscordWebhook({
+      embeds: [
+        {
+          type: 'rich',
+          title: 'A user has been revoked a role',
+          description: `The user ${user.username} has been revoked the role ${role}.`,
+          fields: [
+            {
+              name: 'UUID',
+              value: `\`${user._id.toString()}\``,
+              inline: true,
+            },
+            {
+              name: 'Roles',
+              value: user.roles.join(', '),
+              inline: true,
+            },
+          ],
+          color: DiscordEmbedColors.RED,
+        },
+      ],
+    });
+
     return user.save();
   }
 
@@ -84,6 +164,29 @@ export class UsersService {
     // avoid duplicate roles
     if (user.roles.includes(role)) user.roles = user.roles.filter((r) => r !== role);
     user.roles = [...user.roles, role];
+
+    SendDiscordWebhook({
+      embeds: [
+        {
+          type: 'rich',
+          title: 'A user has been granted a new role',
+          description: `The user ${user.username} has been granted the role ${role}.`,
+          fields: [
+            {
+              name: 'UUID',
+              value: `\`${user._id.toString()}\``,
+              inline: true,
+            },
+            {
+              name: 'Roles',
+              value: user.roles.join(', '),
+              inline: true,
+            },
+          ],
+          color: DiscordEmbedColors.GREEN,
+        },
+      ],
+    });
 
     return user.save();
   }

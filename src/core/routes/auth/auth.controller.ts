@@ -62,8 +62,15 @@ export class AuthController {
     status: HttpStatus.UNAUTHORIZED,
     description: 'Operation failed, either one or multiple credentials values are invalid',
   })
-  async login(@Body() createUserDto: CreateUserDto): Promise<{ access_token: string }> {
+  async login(@Body() createUserDto: CreateUserDto): Promise<{ access_token: string } | HTTPException> {
     const res = await this.usersService.findOne({ username: createUserDto.username });
+
+    if (res.isVerified === false)
+      return {
+        message: 'User is not yet verified, please verify your account with the url sent by email first',
+        status: HttpStatus.UNAUTHORIZED,
+      };
+
     return this.authService.login({ ...res, ...createUserDto });
   }
   //#endregion

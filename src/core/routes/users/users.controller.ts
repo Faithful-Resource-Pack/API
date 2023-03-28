@@ -119,8 +119,8 @@ export class UsersController {
   }
   //#endregion
 
-  //#region DELETE /:id
-  @Delete(':id')
+  //#region DELETE /:id/:reason
+  @Delete(':id/:reason')
   @Roles(ROLES.ADMIN)
   @ApiBearerAuth()
   @ApiOperation({
@@ -135,12 +135,19 @@ export class UsersController {
     type: String,
     allowEmptyValue: false,
   })
+  @ApiParam({
+    name: 'reason',
+    description: 'Reason for the deletion',
+    required: true,
+    type: String,
+    allowEmptyValue: false,
+  })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'The user has been deleted',
   })
-  async delete(@Param('id') id: string): Promise<User | HTTPException> {
-    return this.userService.delete(id).catch((err) => ({ message: err.message, status: HttpStatus.BAD_REQUEST }));
+  async delete(@Param('id') id: string, @Param('reason') reason: string): Promise<User | HTTPException> {
+    return this.userService.delete(id, reason).catch((err) => ({ message: err.message, status: HttpStatus.BAD_REQUEST }));
   }
   //#endregion
 }
