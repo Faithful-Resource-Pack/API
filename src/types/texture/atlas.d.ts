@@ -16,8 +16,11 @@ export interface ITextureAtlas extends ITexture {
  * Texture atlas map of contained textures
  */
 export interface ITextureAtlasMap {
-  [id: string]: {
+  /** Texture unique readable id */
+  [textureId: string]: {
+    /** Position within the Atlas */
     pos: ITextureAtlasTexturePosition;
+    /** Version for which the texture is in the atlas */
     versions: NonEmptyArray<TMinecraftVersion> | 'all';
   };
 }

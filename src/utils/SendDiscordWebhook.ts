@@ -12,7 +12,7 @@ export enum DiscordEmbedColors {
   GREEN = 0x57f287,
   YELLOW = 0xfee75c,
   RED = 0xed4245,
-  FUCHIA = 0xee459e,
+  FUCHSIA = 0xee459e,
   WHITE = 0xffffff,
   BLACK = 0x23272a,
 }

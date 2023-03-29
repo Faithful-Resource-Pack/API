@@ -6,8 +6,8 @@ import { CreateUserDto } from '../../dto/users.dto';
 import { UsersService } from '../users/users.service';
 import { Public } from '../../decorators/public.decorator';
 import { User } from 'src/core/schemas/users.schema';
-import * as bcrypt from 'bcrypt';
 import { HTTPException } from 'src/types';
+import * as bcrypt from 'bcrypt';
 
 @ApiTags('Authentication')
 @Controller({ path: 'auth' })
