@@ -2,8 +2,6 @@ import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import type { IUser } from 'src/types';
 import { ROLES } from '../decorators/roles.decorator';
 
-export type UserDocument = User & Document;
-
 @Schema()
 export class User implements IUser {
   @Prop({ required: true, unique: true })
@@ -37,4 +35,5 @@ export class User implements IUser {
   lastLogin?: Date;
 }
 
+export type UserDocument = User & Document;
 export const UserSchema = SchemaFactory.createForClass(User);

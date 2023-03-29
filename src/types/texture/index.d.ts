@@ -6,14 +6,14 @@ export * from './atlas';
 export * from './sprite';
 export * from './tiled';
 
-export type TTextureType = 'atlas' | 'sprite' | 'tiled';
+export type TTextureType = 'atlas' | 'sprite' | 'tile';
 
 /**
  * Minecraft Texture
  */
 export interface ITexture {
   /** Texture unique id */
-  id: string;
+  textureId: string;
   /** Texture name */
   name: string;
   /** Texture aliases */
@@ -27,11 +27,12 @@ export interface ITexture {
 /**
  * Texture usage definition
  */
-export type TTextureUse = (
-  | { edition: 'java'; type: 'resource_pack'; assets: string }
-  | { edition: 'java'; type: 'texture_pack' }
-  | { edition: Exclude<TMinecraftEdition, 'java'>; type?: never }
-) & { paths: NonEmptyArray<ITexturePath> };
+export interface ITextureUse<T extends TMinecraftEdition> {
+  edition: T;
+  type: T extends 'java' ? 'resource_pack' | 'texture_pack' : never;
+  assets: ITextureUse<T>['type'] extends 'resource_pack' ? string : never;
+  paths: NonEmptyArray<ITexturePath>;
+}
 
 /**
  * Texture path definition

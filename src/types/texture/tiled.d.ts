@@ -1,6 +1,6 @@
 import { ITexture } from '.';
 
-export interface ITextureTiled extends ITexture {
+export interface ITextureTile extends ITexture {
   type: 'tiled';
   tinted: boolean;
   mcmeta: object;
