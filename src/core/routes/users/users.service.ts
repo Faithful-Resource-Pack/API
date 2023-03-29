@@ -198,8 +198,10 @@ export class UsersService {
    * @returns {Promise<boolean>} True if the user was verified, false otherwise
    */
   async verify(id: string, token: string): Promise<boolean> {
-    const user = await this.userModel.findOne({ _id: id, verificationToken: token });
+    const user = await this.userModel.findOne({ _id: id });
     if (!user) return false;
+    if (user.isVerified) return true;
+    if (user.verificationToken !== token) return false;
 
     user.isVerified = true;
     user.verificationToken = undefined;
@@ -210,9 +212,10 @@ export class UsersService {
   /**
    * Create a new user and send a verification email
    * @param {CreateUserDto} createUserDto User creation parameters
+   * @param {string} redirectUrl URL to redirect the user to after verification
    * @returns {Promise<User>} The newly created user object
    */
-  async createUser(createUserDto: CreateUserDto): Promise<User | HTTPException> {
+  async createUser(createUserDto: CreateUserDto, redirectUrl: string): Promise<User | HTTPException> {
     // generate a random token for email verification
     const verificationToken = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 
@@ -226,13 +229,15 @@ export class UsersService {
     });
 
     // check if the user already exists
-    let res;
+    let res: User;
     try {
       res = await user.save();
     } catch (err: any) {
       if (err.code === 11000) return { message: 'Username or email already exists', status: HttpStatus.BAD_REQUEST };
       return { message: err.message, status: HttpStatus.BAD_REQUEST };
     }
+
+    console.log(redirectUrl, encodeURIComponent(redirectUrl));
 
     // email body
     const verifyURL = process.env.DEV === 'false' ? 'https://api.faithfulpack.net' : 'http://localhost:3000' + '/auth/verify';
@@ -241,7 +246,8 @@ export class UsersService {
       to: createUserDto.email,
       subject: 'Faithful - Account Email Verification',
       text:
-        `Please verify your email address by clicking the link below: ${verifyURL}/${user._id}/${verificationToken}\n` +
+        `Please verify your email address by clicking the link below:\n` +
+        `${verifyURL}/${user._id}/${verificationToken}/${encodeURIComponent(redirectUrl)}\n` +
         `If you do not verify your email address within 24 hours, your account will be deleted.\n\n` +
         `If you did not request this, please ignore this email.\n\n` +
         `Thanks,\n` +

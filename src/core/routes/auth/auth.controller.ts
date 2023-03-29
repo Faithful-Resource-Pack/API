@@ -1,4 +1,4 @@
-import { Controller, Post, UseGuards, Body, Param, Get, HttpStatus } from '@nestjs/common';
+import { Controller, Post, UseGuards, Body, Param, Get, HttpStatus, Redirect, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -14,8 +14,8 @@ import { HTTPException } from 'src/types';
 export class AuthController {
   constructor(private authService: AuthService, private usersService: UsersService) {}
 
-  //#region POST /auth/register
-  @Post('register')
+  //#region POST /auth/register/:redirect
+  @Post('register/:redirect')
   @Public()
   @ApiOperation({
     summary: 'Register a new user',
@@ -25,6 +25,10 @@ export class AuthController {
     type: CreateUserDto,
     description: 'The user to create',
   })
+  @ApiParam({
+    name: 'redirect',
+    description: 'The redirect url to send to the user back after the verification',
+  })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Operation successful, the user has been created',
@@ -33,10 +37,10 @@ export class AuthController {
     status: HttpStatus.BAD_REQUEST,
     description: 'Operation failed, either one or multiple credentials values are invalid or are already used',
   })
-  async createUser(@Body() createUserDto: CreateUserDto): Promise<User | HTTPException> {
+  async createUser(@Body() createUserDto: CreateUserDto, @Param('redirect') redirect: string): Promise<User | HTTPException> {
     const saltOrRounds = 10;
     const hashedPassword = await bcrypt.hash(createUserDto.password, saltOrRounds);
-    const result = await this.usersService.createUser({ ...createUserDto, password: hashedPassword });
+    const result = await this.usersService.createUser({ ...createUserDto, password: hashedPassword }, redirect);
 
     return result;
   }
@@ -76,7 +80,7 @@ export class AuthController {
   //#endregion
 
   //#region GET /auth/verify/:id/:token
-  @Get('verify/:id/:token')
+  @Get('verify/:id/:token/:redirect')
   @Public()
   @ApiOperation({
     summary: 'Verify a user',
@@ -92,6 +96,11 @@ export class AuthController {
     description: 'The token associated to the user, sent by email',
     type: String,
   })
+  @ApiParam({
+    name: 'redirect',
+    description: 'The redirect url to send to the user back after the verification',
+    type: String,
+  })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Operation successful',
@@ -100,15 +109,27 @@ export class AuthController {
     status: HttpStatus.BAD_REQUEST,
     description: 'Operation failed, either the user does not exist or the token is invalid',
   })
-  async verify(@Param('id') id: string, @Param('token') token: string): Promise<HTTPException> {
-    if (await this.authService.verify(id, token)) {
-      return { message: 'User verified, you can now close this window', status: HttpStatus.OK };
-    }
+  @ApiResponse({
+    status: HttpStatus.FOUND,
+    description: 'Operation successful, the user has been verified and the redirect url has been sent back',
+  })
+  async verify(
+    @Res() res: any,
+    @Param('id') id: string,
+    @Param('token') token: string,
+    @Param('redirect') redirect?: string,
+  ): Promise<HTTPException | void> {
+    this.authService.verify(id, token).then((result) => {
+      if (result) {
+        if (redirect) return res.redirect(decodeURI(redirect));
+        return { message: 'User verified, you can now close this window', status: HttpStatus.OK };
+      }
 
-    return {
-      message: 'User cannot be verified, check if the user exist and if the token is valid',
-      status: HttpStatus.BAD_REQUEST,
-    };
+      return {
+        message: 'User cannot be verified, check if the user exist and if the token is valid',
+        status: HttpStatus.BAD_REQUEST,
+      };
+    });
   }
   //#endregion
 }
