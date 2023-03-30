@@ -14,6 +14,11 @@ export type TMinecraftEdition = 'java' | 'bedrock' | 'education' | 'dungeons' | 
 export type TMinecraftPackResolution = 8 | 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048 | 4096;
 
 /**
+ * Type for Minecraft texture extensions between editions
+ */
+export type TMinecraftTextureExtension = 'png' | 'tga';
+
+/**
  * Type for Minecraft versions
  * @example '1.7.3' | '1.7.3-rc1' | '1.7.3-pre1' | 'b1.7.3' | 'b1.7.3_01' | 'b1.3b' // (wtf Mojang)
  */

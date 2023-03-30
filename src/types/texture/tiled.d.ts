@@ -1,7 +1,7 @@
 import { ITextureSprite } from '.';
 
 export interface ITextureTile extends ITextureSprite {
-  type: 'tiled';
+  type: 'tile';
 
   /** MCMETA object */
   mcmeta: MCMETA;

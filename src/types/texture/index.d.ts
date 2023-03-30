@@ -1,5 +1,4 @@
-import { TMinecraftVersion } from '../minecraft';
-import { TMinecraftEdition } from '../minecraft';
+import { TMinecraftVersion, TMinecraftEdition, TMinecraftTextureExtension } from '../minecraft';
 import { NonEmptyArray } from '..';
 
 export * from './atlas';
@@ -24,15 +23,29 @@ export interface ITexture {
   uses: NonEmptyArray<TTextureUse>;
 }
 
+export interface ITextureUseJavaResourcePack {
+  edition: 'java';
+  type: 'resource_pack';
+  assets: string;
+}
+
+export interface ITextureUseJavaTexturePack {
+  edition: 'java';
+  type: 'texture_pack';
+}
+
+export interface ITextureUseOtherEditions {
+  edition: Exclude<TMinecraftEdition, 'java'>;
+}
+
+export interface ITextureUse {
+  paths: NonEmptyArray<ITexturePath>;
+}
+
 /**
  * Texture usage definition
  */
-export interface ITextureUse<T extends TMinecraftEdition> {
-  edition: T;
-  type: T extends 'java' ? 'resource_pack' | 'texture_pack' : never;
-  assets: ITextureUse<T>['type'] extends 'resource_pack' ? string : never;
-  paths: NonEmptyArray<ITexturePath>;
-}
+export type TTextureUse = (ITextureUseJavaResourcePack | ITextureUseJavaTexturePack | ITextureUseOtherEditions) & ITextureUse;
 
 /**
  * Texture path definition
@@ -43,5 +56,5 @@ export interface ITexturePath {
   /** Minecraft versions where this path exist */
   versions: NonEmptyArray<TMinecraftVersion>;
   /** File extension */
-  extension: 'png' | 'tga';
+  extension: TMinecraftTextureExtension;
 }
