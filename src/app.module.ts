@@ -18,6 +18,8 @@ import { TextureSprite, TextureSpriteSchema } from './core/schemas/textures/text
 import { TexturesAtlasController } from './core/routes/textures/atlas/atlas.controller';
 import { TexturesAtlasService } from './core/routes/textures/atlas/atlas.service';
 import { TextureAtlas, TextureAtlasSchema } from './core/schemas/textures/texture/atlas.schema';
+import { TexturesController } from './core/routes/textures/textures.controller';
+import { TexturesService } from './core/routes/textures/textures.service';
 
 @Module({
   imports: [
@@ -32,7 +34,13 @@ import { TextureAtlas, TextureAtlasSchema } from './core/schemas/textures/textur
     ]),
     ScheduleModule.forRoot(),
   ],
-  controllers: [UsersController, TexturesSpritesController, TexturesTilesController, TexturesAtlasController],
+  controllers: [
+    UsersController,
+    TexturesController,
+    TexturesSpritesController,
+    TexturesTilesController,
+    TexturesAtlasController,
+  ],
   providers: [
     {
       provide: APP_GUARD,
@@ -40,6 +48,7 @@ import { TextureAtlas, TextureAtlasSchema } from './core/schemas/textures/textur
     },
     UsersService,
     UsersRoutine,
+    TexturesService,
     TexturesSpritesService,
     TexturesTilesService,
     TexturesAtlasService,
