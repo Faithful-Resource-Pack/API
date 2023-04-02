@@ -1,18 +1,22 @@
 import { TMinecraftVersion, TMinecraftEdition, TMinecraftTextureExtension } from '../minecraft';
 import { NonEmptyArray } from '..';
+import Mongoose from 'mongoose';
 
 export * from './atlas';
 export * from './sprite';
 export * from './tiled';
 
 export type TTextureType = 'atlas' | 'sprite' | 'tile';
+export type TTextureId = `${TTextureType}:${string}`;
 
 /**
  * Minecraft Texture
  */
 export interface ITexture {
   /** Texture unique id */
-  textureId: string;
+  textureId: TTextureId;
+  /** Texture pack parent */
+  texturePack: Mongoose.Types.ObjectId;
   /** Texture name */
   name: string;
   /** Texture aliases */

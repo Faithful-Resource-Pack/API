@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateTextureSpriteDto } from 'src/core/dto/textures/sprite.dto';
-import { TextureSprite, TextureSpriteDocument } from 'src/core/schemas/textures/textures.schema';
+import { TextureSprite, TextureSpriteDocument } from 'src/core/schemas/textures/texture/sprite.schema';
 
 @Injectable()
-export class TexturesSpriteService {
+export class TexturesSpritesService {
   constructor(@InjectModel(TextureSprite.name) private readonly textureSpriteModel: Model<TextureSpriteDocument>) {}
 
   async create(createSpriteDto: CreateTextureSpriteDto): Promise<TextureSprite> {

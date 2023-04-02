@@ -7,21 +7,37 @@ export interface ITextureTile extends ITextureSprite {
   mcmeta: MCMETA;
 }
 
-export type MCMETA =
-  | {
-      animation: {
-        interpolate?: boolean;
-        width: number;
-        height: number;
-        frametime?: number;
-        frames: Array<{ index: number; time: number } | number>;
-      };
-    }
-  | { villager: { hat: 'full' | 'partial' } }
-  | {
-      texture: {
-        blur?: boolean;
-        clamp?: boolean;
-        mipmaps: Array<number>;
-      };
-    };
+/**
+ * MCMETA object for animated textures
+ */
+export interface IAnimationMCMETA {
+  animation: {
+    interpolate?: boolean;
+    width: number;
+    height: number;
+    frametime?: number;
+    frames: Array<{ index: number; time: number } | number>;
+  };
+}
+
+/**
+ * MCMETA object for villagers textures
+ */
+export interface IVillagersMCMETA {
+  villager: {
+    hat: 'full' | 'partial';
+  };
+}
+
+/**
+ * MCMETA object for textures properties
+ */
+export interface IPropertiesMCMETA {
+  texture: {
+    blur?: boolean;
+    clamp?: boolean;
+    mipmaps: Array<number>;
+  };
+}
+
+export type MCMETA = IAnimationMCMETA | IVillagersMCMETA | IPropertiesMCMETA;

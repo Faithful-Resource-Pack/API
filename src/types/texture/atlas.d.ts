@@ -9,20 +9,17 @@ export interface ITextureAtlas extends ITexture {
   size: ITextureAtlasSize;
 
   /** Textures mapping within the atlas */
-  map: ITextureAtlasMap;
+  map: Map<TTextureId, ITextureAtlasTexture>;
 }
 
 /**
- * Texture atlas map of contained textures
+ * Texture information within the atlas
  */
-export interface ITextureAtlasMap {
-  /** Texture unique readable id */
-  [textureId: string]: {
-    /** Position within the Atlas */
-    pos: ITextureAtlasTexturePosition;
-    /** Version for which the texture is in the atlas */
-    versions: NonEmptyArray<TMinecraftVersion> | 'all';
-  };
+export interface ITextureAtlasTexture {
+  /** Position within the Atlas */
+  pos: ITextureAtlasTexturePosition;
+  /** Version for which the texture is in the atlas */
+  versions: NonEmptyArray<TMinecraftVersion> | 'all';
 }
 
 /**

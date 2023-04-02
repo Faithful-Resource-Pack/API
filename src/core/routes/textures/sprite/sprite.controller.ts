@@ -2,14 +2,14 @@ import { Body, Controller, HttpStatus, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Roles, ROLES } from 'src/core/decorators/roles.decorator';
 import { CreateTextureSpriteDto } from 'src/core/dto/textures/sprite.dto';
-import { TextureSprite } from 'src/core/schemas/textures/textures.schema';
+import { TextureSprite } from 'src/core/schemas/textures/texture/sprite.schema';
 import { HTTPException } from 'src/types';
-import { TexturesSpriteService } from './sprite.service';
+import { TexturesSpritesService } from './sprite.service';
 
 @ApiTags('Textures', 'Sprites')
 @Controller({ path: 'textures/sprites' })
 export class TexturesSpritesController {
-  constructor(private readonly textureService: TexturesSpriteService) {}
+  constructor(private readonly textureService: TexturesSpritesService) {}
 
   @Post()
   @ApiBearerAuth()

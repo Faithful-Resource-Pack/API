@@ -1,17 +1,22 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { ITexture, ITextureSprite, ITextureTile, MCMETA, NonEmptyArray, TTextureType, TTextureUse } from 'src/types';
+import { ITexture, NonEmptyArray, TTextureId, TTextureType, TTextureUse } from 'src/types';
 import {
   TextureUseJavaResourcePackSchema,
   TextureUseJavaTexturePackSchema,
   TextureUseOtherEditionsSchema,
-} from './uses.schema';
-import { ApiProperty } from '@nestjs/swagger';
+} from '../uses.schema';
+
+import mongoose from 'mongoose';
 
 @Schema()
 export class Texture implements ITexture {
   @Prop({ required: true, type: String, unique: true })
-  @ApiProperty({ example: 'sprite:stone', required: true, type: String })
-  textureId: string;
+  textureId: TTextureId;
+
+  @Prop({ required: true, type: mongoose.Types.ObjectId, unique: true })
+  @ApiProperty({ example: '5f9f1c9c0b9b8c0b8c0b8c0b', required: true, type: String })
+  texturePack: mongoose.Types.ObjectId;
 
   @Prop({ required: true, type: String })
   @ApiProperty({ example: 'stone', required: true, type: String })
@@ -56,36 +61,5 @@ export class Texture implements ITexture {
   uses: NonEmptyArray<TTextureUse>;
 }
 
-@Schema()
-export class TextureSprite extends Texture implements ITextureSprite {
-  @Prop({ required: false, type: Boolean, default: false })
-  @ApiProperty({ example: false, required: false, type: Boolean })
-  tinted: boolean;
-
-  @Prop({ required: true, enum: ['sprite'] })
-  @ApiProperty({ example: 'sprite', required: true, enum: ['sprite'] })
-  type: 'sprite';
-}
-
-@Schema()
-export class TextureTile extends Texture implements ITextureTile {
-  // TODO: Add mcmeta validation
-  @Prop({ required: true, type: Object })
-  mcmeta: MCMETA;
-
-  @Prop({ required: true, type: Boolean })
-  @ApiProperty({ example: false, required: true, type: Boolean })
-  tinted: boolean;
-
-  @Prop({ required: true, enum: ['tile'] })
-  @ApiProperty({ example: 'tile', required: true, enum: ['tile'] })
-  type: 'tile';
-}
-
 export const TextureSchema = SchemaFactory.createForClass(Texture);
-export const TextureSpriteSchema = SchemaFactory.createForClass(TextureSprite);
-export const TextureTileSchema = SchemaFactory.createForClass(TextureTile);
-
 export type TextureDocument = Texture & Document;
-export type TextureSpriteDocument = TextureSprite & Document;
-export type TextureTileDocument = TextureTile & Document;

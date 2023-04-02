@@ -18,4 +18,3 @@ export class TexturePath implements ITexturePath {
 }
 
 export const TexturePathSchema = SchemaFactory.createForClass(TexturePath);
-export type TexturePathDocument = TexturePath & Document;

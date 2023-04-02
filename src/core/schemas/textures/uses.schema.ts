@@ -15,7 +15,7 @@ export class TextureUse implements ITextureUse {
   @Prop({
     required: true,
     type: [TexturePathSchema],
-    validate: [(v: NonEmptyArray<TexturePath>) => v.length > 0, '{PATH} must have at least one use'],
+    validate: [(v: NonEmptyArray<TexturePath>) => v.length > 0, '{PATH} must have at least one path'],
   })
   @ApiProperty({
     example: [
@@ -65,7 +65,3 @@ export class TextureUseOtherEditions extends TextureUse implements ITextureUseOt
 export const TextureUseJavaResourcePackSchema = SchemaFactory.createForClass(TextureUseJavaResourcePack);
 export const TextureUseJavaTexturePackSchema = SchemaFactory.createForClass(TextureUseJavaTexturePack);
 export const TextureUseOtherEditionsSchema = SchemaFactory.createForClass(TextureUseOtherEditions);
-
-export type TextureUseJavaResourcePackDocument = TextureUseJavaResourcePack & Document;
-export type TextureUseJavaTexturePackDocument = TextureUseJavaTexturePack & Document;
-export type TextureUseOtherEditionsDocument = TextureUseOtherEditions & Document;
