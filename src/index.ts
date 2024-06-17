@@ -11,6 +11,9 @@ import apiErrorHandler from "api-error-handler";
 import { RegisterRoutes } from "../build/routes";
 import { ApiError } from "./v2/tools/ApiError";
 import formatSwaggerDoc from "./v2/tools/swagger";
+import { readFile, writeFile } from "fs/promises";
+import { join } from "path";
+import { existsSync, writeFileSync } from "fs";
 
 const NO_CACHE = process.env.NO_CACHE === "true";
 const PORT = process.env.PORT || 8000;
@@ -50,6 +53,24 @@ app.all("/v1/*", (_req, res) => {
 	res.status(410).json({
 		message: "API v1 has been discontinued. Please switch to API v2 for all new endpoints.",
 	});
+});
+
+// API stat log middleware
+const LOG_PATH = join(process.cwd(), "log.json");
+if (!existsSync(LOG_PATH)) {
+	console.log(`Creating log file at ${LOG_PATH}`);
+	writeFileSync(LOG_PATH, "{}");
+}
+app.use((req, _res, next) => {
+	next();
+	if (!req.url.startsWith("/v2")) return;
+	readFile(LOG_PATH, { encoding: "utf8" })
+		.then((str) => JSON.parse(str))
+		.then((data) => ({
+			...data,
+			[req.url]: (data[req.url] || 0) + 1,
+		}))
+		.then((data) => writeFile(LOG_PATH, JSON.stringify(data)));
 });
 
 // start v2 api
