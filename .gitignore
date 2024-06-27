@@ -5,3 +5,4 @@ build
 public/swagger.json
 .vscode/settings.json
 .DS_Store
+log.json
