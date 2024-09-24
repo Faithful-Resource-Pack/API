@@ -1,6 +1,7 @@
 import { URL } from "url";
 import { APIEmbedField } from "discord-api-types/v10";
 import { WriteConfirmation } from "firestorm-db";
+import { fileTypeFromBuffer, MimeType } from "file-type";
 import { User, UserProfile } from "../interfaces/users";
 import { Addons, Addon, AddonStatus, AddonAll, Files, File, FileParent } from "../interfaces";
 import { BadRequestError, NotFoundError } from "../tools/errors";
@@ -17,6 +18,10 @@ import {
 import AddonFirestormRepository from "../repository/addon.repository";
 import { discordEmbed } from "../tools/discordEmbed";
 
+const HEADER_MIME_TYPES: MimeType[] = ["image/jpeg"];
+
+const SCREENSHOT_MIME_TYPES: MimeType[] = ["image/jpeg"];
+
 // filter & keep only values that are in a-Z & 0-9 & _ or -
 const toSlug = (value: string) =>
 	value
@@ -30,6 +35,20 @@ export default class AddonService {
 	private readonly fileService = new FileService();
 
 	private readonly addonRepo = new AddonFirestormRepository();
+
+	/**
+	 * Passes MIME type verification
+	 * @param buffer Input file buffer
+	 * @param mime_types_accepted List of accepted mime types
+	 */
+	private async verifyFileType(buffer: Buffer, mime_types_accepted: Array<MimeType>) {
+		const { mime } = await fileTypeFromBuffer(buffer);
+		if (!mime_types_accepted.includes(mime)) {
+			throw new BadRequestError(
+				`Incorrect file header, expected one in ${mime_types_accepted.toString()}, got ${mime}`,
+			);
+		}
+	}
 
 	public async getIdFromPath(idOrSlug: string): Promise<[number, Addon | undefined]> {
 		const intID = Number(idOrSlug);
@@ -328,6 +347,8 @@ export default class AddonService {
 		filename: string,
 		buffer: Buffer,
 	): Promise<void | File> {
+		this.verifyFileType(buffer, HEADER_MIME_TYPES);
+
 		const [addonID, addon] = await this.getAddonFromSlugOrId(idOrSlug);
 		const { slug } = addon;
 
@@ -373,6 +394,8 @@ export default class AddonService {
 		filename: string,
 		buffer: Buffer,
 	): Promise<void | File> {
+		this.verifyFileType(buffer, SCREENSHOT_MIME_TYPES);
+
 		const [addonID, addon] = await this.getAddonFromSlugOrId(idOrSlug);
 		const { slug } = addon;
 

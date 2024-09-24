@@ -48,6 +48,8 @@
 		"discord-api-types": "^0.37.100",
 		"dotenv": "^16.4.5",
 		"express": "^4.21.0",
+		"faithful-api": "file:",
+		"file-type": "^19.5.0",
 		"firestorm-db": "^1.13.0",
 		"form-data": "^4.0.0",
 		"isomorphic-dompurify": "^2.15.0",
