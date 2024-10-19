@@ -47,7 +47,7 @@
 		"cors": "^2.8.5",
 		"discord-api-types": "^0.37.101",
 		"dotenv": "^16.4.5",
-		"express": "^4.21.0",
+		"express": "^4.21.1",
 		"firestorm-db": "^1.13.0",
 		"form-data": "^4.0.0",
 		"isomorphic-dompurify": "^2.16.0",
