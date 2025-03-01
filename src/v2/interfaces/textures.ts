@@ -73,6 +73,7 @@ export interface TextureRepository {
 	getVersions(): Promise<string[]>;
 	getEditions(): Promise<string[]>;
 	getResolutions(): Promise<number[]>;
+	getAnimated(): Promise<number[]>;
 	getTags(): Promise<string[]>;
 	getVersionByEdition(edition: Edition): Promise<string[]>;
 	searchTexturePropertyByNameOrId(

@@ -73,6 +73,15 @@ export class TextureController extends Controller {
 	}
 
 	/**
+	 * Get all animated textures in the database
+	 * @returns array of texture IDs
+	 */
+	@Get("animated")
+	public getAnimated(): Promise<number[]> {
+		return this.service.getAnimated();
+	}
+
+	/**
 	 * Get all existing Minecraft versions supported in the database
 	 */
 	@Get("versions")

@@ -140,6 +140,19 @@ export default class TextureFirestormRepository implements TextureRepository {
 		return packs.values({ field: "resolution" }).then((res) => res.sort());
 	}
 
+	public async getAnimated(): Promise<number[]> {
+		return paths
+			.select({ fields: ["mcmeta", "use"] })
+			.then((res) => Object.values(res))
+			// keep only paths with mcmeta
+			.then((res) => res.filter((p) => !!p.mcmeta))
+			// get the texture from the use id
+			.then((res) => res.map((p) => uses.get(p.use)))
+			.then((res) => Promise.all(res))
+			// keep only animated textures ids
+			.then((res) => res.map((u) => u.texture))
+	}
+
 	public async getTags(): Promise<string[]> {
 		const res = await textures.values({ field: "tags", flatten: true });
 		return res.sort();
