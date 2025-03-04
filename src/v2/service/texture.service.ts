@@ -71,6 +71,10 @@ export default class TextureService {
 		return this.textureRepo.getResolutions();
 	}
 
+	getAnimated(): Promise<number[]> {
+		return this.textureRepo.getAnimated();
+	}
+
 	getPropertyByNameOrId<Property extends TextureProperty>(
 		nameOrID: string | number,
 		property: Property,

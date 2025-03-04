@@ -140,6 +140,12 @@ export default class TextureFirestormRepository implements TextureRepository {
 		return packs.values({ field: "resolution" }).then((res) => res.sort());
 	}
 
+	public async getAnimated(): Promise<number[]> {
+		const filteredPaths = await paths.search([{ field: "mcmeta", criteria: "==", value: true }]);
+		const filteredUses = await uses.searchKeys(filteredPaths.map((p) => p.use));
+		return filteredUses.map((u) => u.texture);
+	}
+
 	public async getTags(): Promise<string[]> {
 		const res = await textures.values({ field: "tags", flatten: true });
 		return res.sort();
