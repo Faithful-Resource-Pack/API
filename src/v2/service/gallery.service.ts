@@ -1,5 +1,14 @@
 import { settings, textures } from "../firestorm";
-import { GalleryResult, PackID, Path, MCMETA, Textures, Use, GalleryEdition } from "../interfaces";
+import {
+	GalleryResult,
+	PackID,
+	Path,
+	MCMETA,
+	Textures,
+	Use,
+	GalleryEdition,
+	Edition,
+} from "../interfaces";
 import PackService from "./pack.service";
 import PathService from "./path.service";
 import TextureService from "./texture.service";
@@ -17,26 +26,29 @@ export default class GalleryService {
 	async urlsFromTextures(
 		pack: PackID,
 		version: string,
-		textureIDs: string[],
+		textureIDs: number[],
 		textureToUse: Record<string, Use>,
 		useToPath: Record<string, Path>,
 	): Promise<string[]> {
 		const baseURL = "https://raw.githubusercontent.com";
-		const github = await this.packService.getById(pack).then((res) => res.github);
-		const s = await settings.readRaw();
+		const { github } = await this.packService.getById(pack);
+		const { versions } = (await settings.readRaw()) as { versions: Record<Edition, string[]> };
 
 		return (
 			textureIDs
 				.map((textureID) => textureToUse[textureID])
 				// saves an object lookup to filter after map
 				.filter((use) => use)
-				.map((use) => [useToPath[use.id].name, use.edition])
-				.map(
-					([path, edition]) =>
-						`${baseURL}/${github[edition].org}/${github[edition].repo}/${
-							version === "latest" ? s.versions[edition][0] : version
-						}/${path}`,
-				)
+				.map((use) => {
+					const path = useToPath[use.id].name;
+					// invalid urls get handled by the gallery itself
+					if (!github[use.edition]) return "";
+					const { org, repo } = github[use.edition];
+
+					// convert "latest" to actual latest version
+					const githubVersion = version === "latest" ? versions[use.edition][0] : version;
+					return `${baseURL}/${org}/${repo}/${githubVersion}/${path}`;
+				})
 		);
 	}
 
@@ -126,13 +138,7 @@ export default class GalleryService {
 				),
 		);
 
-		const urls = await this.urlsFromTextures(
-			pack,
-			version,
-			ids.map((id) => String(id)),
-			textureToUse,
-			useToPath,
-		);
+		const urls = await this.urlsFromTextures(pack, version, ids, textureToUse, useToPath);
 
 		return texturesFiltered
 			.map((t, i) => {

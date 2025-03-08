@@ -39,21 +39,28 @@ export const textures = firestorm.collection<FirestormTexture>("textures", (el) 
 		const baseURL = "https://raw.githubusercontent.com";
 
 		const { github } = await packs.get(pack);
+		const availableEditions = Object.keys(github);
+
+		// get use for edition that exists
+		const textureUses = await el.uses();
+		const foundUse = textureUses.find((u) => availableEditions.includes(u.edition));
+		if (!foundUse) throw new NotFoundError(`Pack ${pack} doesn't support this edition yet!`);
+
 		const texturePaths = await el.paths();
 
-		// get matching path for version
+		const candidatePaths = texturePaths.filter((p) => p.use === foundUse.id);
+
 		let path: Path;
 		if (version === "latest") {
-			path = texturePaths[0];
+			path = candidatePaths[0];
 			version = path.versions.sort(MinecraftSorter).at(-1);
-		} else path = texturePaths.find((p) => p.versions.includes(version));
+		} else path = candidatePaths.find((p) => p.versions.includes(version));
 
 		if (!path) throw new NotFoundError(`No path found for version ${version}`);
 
-		const textureUses = await el.uses();
-		const { edition } = textureUses.find((u) => u.id === path.use);
-		if (!github[edition]) throw new NotFoundError(`Pack ${pack} doesn't support this edition yet!`);
-		return `${baseURL}/${github[edition].org}/${github[edition].repo}/${version}/${path.name}`;
+		// confirmed that edition exists already so we can safely destructure
+		const { org, repo } = github[foundUse.edition];
+		return `${baseURL}/${org}/${repo}/${version}/${path.name}`;
 	};
 
 	el.contributions = (): Promise<Contributions> =>

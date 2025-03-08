@@ -63,28 +63,33 @@ export class GalleryController extends Controller {
 	 */
 	@Get("modal/{id}/{version}")
 	public async modal(@Path() id: number, @Path() version: string): Promise<GalleryModalResult> {
-		const packIDs = Object.keys(await this.packService.getRaw());
-		const urls: Record<PackID, string> = (
-			await Promise.allSettled(packIDs.map((p) => this.textureService.getURLById(id, p, version)))
-		)
-			.map((e, i) => [packIDs[i], e])
-			.filter((p: [PackID, PromiseFulfilledResult<string>]) => p[1].status === "fulfilled")
-			.reduce((acc, p: [PackID, PromiseFulfilledResult<string>]) => {
-				acc[p[0]] = p[1].value;
-				return acc;
-			}, {});
+		const packs = await this.packService.getRaw();
 
-		const all = await this.textureService.getPropertyByNameOrId(id, "all");
+		const groupedUrls = await Promise.all(
+			Object.keys(packs).map((pack) =>
+				this.textureService
+					.getURLById(id, pack, version)
+					.then((url) => ({ pack, url }))
+					// invalid urls get handled by the gallery itself
+					.catch(() => ({ pack, url: "" })),
+			),
+		);
+
+		const urls = groupedUrls.reduce<Record<PackID, string>>((acc, cur) => {
+			acc[cur.pack] = cur.url;
+			return acc;
+		}, {});
 
 		const texture = await this.textureService.getByNameOrId<true>(id);
+		const all = await this.textureService.getPropertyByNameOrId(id, "all");
 
 		return {
+			texture,
+			urls,
 			contributions: all.contributions,
 			uses: all.uses,
 			paths: all.paths,
 			mcmeta: all.mcmeta,
-			urls,
-			texture,
 		};
 	}
 
