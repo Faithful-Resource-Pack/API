@@ -160,7 +160,7 @@ export default class TextureFirestormRepository implements TextureRepository {
 	}
 
 	public async getVersionByEdition(edition: Edition): Promise<string[]> {
-		const versions = await settings.get("versions");
+		const versions: Record<Edition, string[]> = await settings.get("versions");
 		if (!versions[edition]) throw new NotFoundError("edition not found");
 		return versions[edition];
 	}
@@ -168,6 +168,11 @@ export default class TextureFirestormRepository implements TextureRepository {
 	public async createTexture(texture: TextureCreationParam): Promise<Texture> {
 		const id = await textures.add(texture);
 		return this.searchTextureByNameOrId<true>(id);
+	}
+
+	public async createTexturesBulk(textureArr: TextureCreationParam[]): Promise<Texture[]> {
+		const ids = await textures.addBulk(textureArr);
+		return textures.searchKeys(ids);
 	}
 
 	public async deleteTexture(id: string): Promise<WriteConfirmation[]> {

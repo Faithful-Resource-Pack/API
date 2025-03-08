@@ -91,7 +91,10 @@ export default class UseService {
 		if (pathsWithUse.length) await this.pathService.createMultiplePaths(pathsWithUse);
 	}
 
-	async appendMultipleUses(textureID: string, uses: EntireUseToCreate[]): Promise<void> {
+	async generateAppendableUses(
+		textureID: string,
+		uses: EntireUseToCreate[],
+	): Promise<{ pathsToCreate: InputPath[]; usesToCreate: Uses }> {
 		const lastCharCode = await this.repo.lastCharCode(textureID);
 		const pathsToCreate: InputPath[] = [];
 		const usesToCreate = uses.map((use, charOffset) => {
@@ -115,6 +118,11 @@ export default class UseService {
 			};
 		});
 
+		return { pathsToCreate, usesToCreate };
+	}
+
+	async appendMultipleUses(textureID: string, uses: EntireUseToCreate[]): Promise<void> {
+		const { pathsToCreate, usesToCreate } = await this.generateAppendableUses(textureID, uses);
 		await this.createMultipleUses(usesToCreate);
 		if (pathsToCreate.length) await this.pathService.createMultiplePaths(pathsToCreate);
 	}
