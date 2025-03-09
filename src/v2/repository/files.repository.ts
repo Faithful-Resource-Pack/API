@@ -35,24 +35,24 @@ export class FileFirestormRepository implements FileRepository {
 		]);
 	}
 
-	setFileById(id: string, file: File): Promise<File> {
-		return files.set(id, file).then(() => this.getFileById(id));
+	async setFileById(id: string, file: File): Promise<File> {
+		await files.set(id, file);
+		return this.getFileById(id);
 	}
 
 	removeFileById(id: string): Promise<WriteConfirmation> {
 		return files.remove(id);
 	}
 
-	removeFilesByParent(parent: FileParent): Promise<WriteConfirmation> {
-		return this.getFilesByParent(parent).then((_files) =>
-			files.removeBulk(_files.map((f) => f[ID_FIELD])),
-		);
+	async removeFilesByParent(parent: FileParent): Promise<WriteConfirmation> {
+		const foundFiles = await this.getFilesByParent(parent);
+		return files.removeBulk(foundFiles.map((f) => f[ID_FIELD]));
 	}
 
-	removeFilesByParentAndUse(parent: FileParent, use: FileUse): Promise<WriteConfirmation> {
-		return this.getFilesByParent(parent).then((_files) =>
-			files.removeBulk(_files.filter((f) => f.use === use).map((f) => f[ID_FIELD])),
-		);
+	async removeFilesByParentAndUse(parent: FileParent, use: FileUse): Promise<WriteConfirmation> {
+		const foundFiles = await this.getFilesByParent(parent);
+		const ids = foundFiles.filter((f) => f.use === use).map((f) => f[ID_FIELD]);
+		return files.removeBulk(ids);
 	}
 
 	removeFileByPath(path: string): Promise<WriteConfirmation> {

@@ -45,21 +45,22 @@ function returnHandler(
 	else response.status(statusCode || 204).end();
 }
 
-function promiseHandler(
+async function promiseHandler(
 	controllerObj: Controller,
 	promise: any,
 	response: ExResponse,
 	successStatus: number,
 	next: NextFunction,
 ) {
-	return Promise.resolve(promise)
-		.then((data) => {
-			const statusCode = controllerObj.getStatus() || successStatus;
-			const headers = controllerObj.getHeaders();
+	try {
+		const data = await Promise.resolve(promise);
+		const statusCode = controllerObj.getStatus() || successStatus;
+		const headers = controllerObj.getHeaders();
 
-			returnHandler(response, statusCode, data, headers);
-		})
-		.catch((error) => next(error));
+		returnHandler(response, statusCode, data, headers);
+	} catch (error) {
+		next(error);
+	}
 }
 
 interface SwaggerDocOptions {

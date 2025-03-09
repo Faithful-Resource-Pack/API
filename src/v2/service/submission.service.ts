@@ -21,18 +21,16 @@ export default class SubmissionService {
 		return this.repo.getById(id);
 	}
 
-	public create(id: PackID, pack: CreationSubmission): Promise<Submission> {
-		return this.packService
-			.getById(id) // verify parent pack exists already
-			.then(() => this.repo.create(id, pack));
+	public async create(id: PackID, pack: CreationSubmission): Promise<Submission> {
+		await this.packService.getById(id); // verify parent pack exists already
+		return this.repo.create(id, pack);
 	}
 
-	public update(id: PackID, pack: Submission): Promise<Submission> {
+	public async update(id: PackID, pack: Submission): Promise<Submission> {
 		if (id !== pack.id) throw new BadRequestError("Updated ID is different from ID");
 
-		return this.packService
-			.getById(id) // verify parent pack exists already
-			.then(() => this.repo.update(id, pack));
+		await this.packService.getById(id); // verify parent pack exists already
+		return this.repo.update(id, pack);
 	}
 
 	public delete(id: PackID): Promise<WriteConfirmation> {

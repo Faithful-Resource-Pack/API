@@ -142,8 +142,7 @@ export default class AddonService {
 
 	async getScreenshotsFiles(id: number): Promise<Files> {
 		const files = await this.getFiles(id);
-		// TODO: only keep screenshots
-		return files.filter((f) => ["screenshot", "carousel"].includes(f.use));
+		return files.filter((f) => f.use === "screenshot");
 	}
 
 	async getScreenshotsIds(id: number): Promise<string[]> {
@@ -162,7 +161,7 @@ export default class AddonService {
 		// if no files, not found
 		if (files === undefined) throw new NotFoundError("Files not found");
 
-		const screenshotFile = files.filter((f) => ["screenshot", "carousel"].includes(f.use))[index]; // TODO: only keep screenshots
+		const screenshotFile = files.filter((f) => f.use === "screenshot")[index];
 
 		// if no header file, not found
 		if (screenshotFile === undefined) throw new NotFoundError("File not found");

@@ -63,34 +63,7 @@ export class GalleryController extends Controller {
 	 */
 	@Get("modal/{id}/{version}")
 	public async modal(@Path() id: number, @Path() version: string): Promise<GalleryModalResult> {
-		const packs = await this.packService.getRaw();
-
-		const groupedUrls = await Promise.all(
-			Object.keys(packs).map((pack) =>
-				this.textureService
-					.getURLById(id, pack, version)
-					.then((url) => ({ pack, url }))
-					// invalid urls get handled by the gallery itself
-					.catch(() => ({ pack, url: "" })),
-			),
-		);
-
-		const urls = groupedUrls.reduce<Record<PackID, string>>((acc, cur) => {
-			acc[cur.pack] = cur.url;
-			return acc;
-		}, {});
-
-		const texture = await this.textureService.getByNameOrId<true>(id);
-		const all = await this.textureService.getPropertyByNameOrId(id, "all");
-
-		return {
-			texture,
-			urls,
-			contributions: all.contributions,
-			uses: all.uses,
-			paths: all.paths,
-			mcmeta: all.mcmeta,
-		};
+		return this.service.searchModal(id, version);
 	}
 
 	/**

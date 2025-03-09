@@ -8,6 +8,8 @@ import {
 	Use,
 	GalleryEdition,
 	Edition,
+	GalleryModalResult,
+	Texture,
 } from "../interfaces";
 import PackService from "./pack.service";
 import PathService from "./path.service";
@@ -52,7 +54,7 @@ export default class GalleryService {
 		);
 	}
 
-	async search(
+	public async search(
 		pack: PackID,
 		edition: GalleryEdition,
 		version: string,
@@ -127,15 +129,12 @@ export default class GalleryService {
 		await Promise.all(
 			Object.keys(useToPath)
 				.filter((useId) => useToPath[useId]?.mcmeta)
-				.map((useId) =>
+				.map(async (useId) => {
 					// use parseInt to strip the last character
-					textures
-						.get(Number.parseInt(useId, 10))
-						.then((t) => t.mcmeta())
-						.then((mcmeta) => {
-							animations[Number.parseInt(useId, 10)] = mcmeta;
-						}),
-				),
+					const tex = await textures.get(Number.parseInt(useId, 10));
+					const mcmeta = await tex.mcmeta();
+					animations[Number.parseInt(useId, 10)] = mcmeta;
+				}),
 		);
 
 		const urls = await this.urlsFromTextures(pack, version, ids, textureToUse, useToPath);
@@ -159,5 +158,37 @@ export default class GalleryService {
 				if (a.name > b.name) return 1;
 				return 0;
 			});
+	}
+
+	public async searchModal(id: number, version: string): Promise<GalleryModalResult> {
+		const packs = await this.packService.getRaw();
+
+		const groupedUrls = await Promise.all(
+			Object.keys(packs).map((pack) =>
+				this.textureService
+					.getURLById(id, pack, version)
+					.then((url) => ({ pack, url }))
+					// invalid urls get handled by the gallery itself
+					.catch(() => ({ pack, url: "" })),
+			),
+		);
+
+		const urls = groupedUrls.reduce<Record<PackID, string>>((acc, cur) => {
+			acc[cur.pack] = cur.url;
+			return acc;
+		}, {});
+
+		const texture = (await this.textureService.getById(id, null)) as Texture;
+
+		const all = await this.textureService.getPropertyByNameOrId(id, "all");
+
+		return {
+			texture,
+			urls,
+			contributions: all.contributions,
+			uses: all.uses,
+			paths: all.paths,
+			mcmeta: all.mcmeta,
+		};
 	}
 }

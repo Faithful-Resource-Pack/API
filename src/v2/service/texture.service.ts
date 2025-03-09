@@ -79,6 +79,7 @@ export default class TextureService {
 		nameOrID: string | number,
 		property: Property,
 	): Promise<PropertyToOutput<Property>> {
+		// todo: fix typing
 		return this.textureRepo
 			.searchTexturePropertyByNameOrId<Property>(nameOrID, property)
 			.catch(() => Promise.reject(new Error("Service failed to make request")));

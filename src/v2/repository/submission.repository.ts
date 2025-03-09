@@ -25,13 +25,11 @@ export default class SubmissionFirestormRepository implements SubmissionReposito
 			submission: p,
 		}));
 
-		return Promise.all(fullPackPromises).then((p) =>
-			// convert back to object from array
-			p.reduce((acc, cur) => {
-				acc[cur.id] = cur;
-				return acc;
-			}, {}),
-		);
+		const fullPack = await Promise.all(fullPackPromises);
+		return fullPack.reduce((acc, cur) => {
+			acc[cur.id] = cur;
+			return acc;
+		}, {});
 	}
 
 	async create(packId: string, packToCreate: CreationSubmission): Promise<Submission> {

@@ -39,11 +39,10 @@ export default class PathService {
 		}, {});
 	}
 
-	createPath(path: InputPath): Promise<Path> {
+	async createPath(path: InputPath): Promise<Path> {
 		// verify use existence
-		return this.useService
-			.getUseByIdOrName(path.use) // verify use existence
-			.then(() => this.repo.createPath(path));
+		await this.useService.getUseByIdOrName(path.use); // verify use existence
+		return this.repo.createPath(path);
 	}
 
 	createMultiplePaths(paths: InputPath[]): Promise<Paths> {
@@ -54,12 +53,11 @@ export default class PathService {
 		return this.repo.getPathById(id);
 	}
 
-	updatePathById(id: string, path: Path): Promise<Path> {
+	async updatePathById(id: string, path: Path): Promise<Path> {
 		if (id !== path.id) throw new BadRequestError("Updated ID is different from existing ID");
 
-		return this.useService
-			.getUseByIdOrName(path.use) // verify use existence
-			.then(() => this.repo.updatePath(id, path));
+		await this.useService.getUseByIdOrName(path.use); // verify use existence
+		return this.repo.updatePath(id, path);
 	}
 
 	async modifyVersion(oldVersion: string, newVersion: string): Promise<WriteConfirmation> {

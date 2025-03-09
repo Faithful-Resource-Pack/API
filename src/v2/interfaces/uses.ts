@@ -1,5 +1,5 @@
 import { WriteConfirmation } from "firestorm-db";
-import { CreationPath, Paths } from "./paths";
+import { CreationPath, FirestormPath } from "./paths";
 import { GalleryEdition } from "./gallery";
 import { Edition } from "./textures";
 
@@ -25,7 +25,7 @@ export interface Use extends CreationUse {
 export type Uses = Use[];
 
 export interface FirestormUse extends Use {
-	getPaths(): Promise<Paths>;
+	getPaths(): Promise<FirestormPath[]>;
 }
 
 export interface UseRepository {

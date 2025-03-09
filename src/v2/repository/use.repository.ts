@@ -24,20 +24,20 @@ export default class UseFirestormRepository implements UseRepository {
 		return uses.readRaw();
 	}
 
-	getUseByIdOrName(idOrName: string): Promise<Uses | Use> {
-		return uses.get(idOrName).catch(
-			() =>
-				uses
-					.search([
-						{
-							field: "name",
-							criteria: "includes",
-							value: idOrName,
-							ignoreCase: true,
-						},
-					])
-					.then((out: Uses) => out.filter((use: Use) => use.name !== null)), // remove null names
-		);
+	async getUseByIdOrName(idOrName: string): Promise<Uses | Use> {
+		try {
+			return uses.get(idOrName);
+		} catch {
+			const out = await uses.search([
+				{
+					field: "name",
+					criteria: "includes",
+					value: idOrName,
+					ignoreCase: true,
+				},
+			]);
+			return out.filter((use) => use.name !== null);
+		}
 	}
 
 	async lastCharCode(textureID: string): Promise<number> {
@@ -67,8 +67,9 @@ export default class UseFirestormRepository implements UseRepository {
 		return this.removeUseById(id);
 	}
 
-	set(use: Use): Promise<Use> {
-		return uses.set(use.id, use).then(() => uses.get(use.id));
+	async set(use: Use): Promise<Use> {
+		await uses.set(use.id, use);
+		return uses.get(use.id);
 	}
 
 	async setMultiple(useArray: Uses): Promise<Uses> {

@@ -1,10 +1,10 @@
 import firestorm from "firestorm-db";
-import { Paths, FirestormUse } from "../../interfaces";
+import { FirestormUse, FirestormPath } from "../../interfaces";
 import "../config";
 import { paths } from "./paths";
 
 export const uses = firestorm.collection<FirestormUse>("uses", (el) => {
-	el.getPaths = (): Promise<Paths> =>
+	el.getPaths = (): Promise<FirestormPath[]> =>
 		paths.search([
 			{
 				field: "use",

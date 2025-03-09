@@ -26,12 +26,13 @@ const mapUser = (user: Partial<User>): User => ({
 });
 
 export default class UserFirestormRepository implements UserRepository {
-	getNameById(id: string): Promise<Username> {
-		return users.get(id).then((res) => ({
+	async getNameById(id: string): Promise<Username> {
+		const res = await users.get(id);
+		return {
 			id: res.id,
 			username: res.anonymous ? undefined : res.username,
 			uuid: res.anonymous ? undefined : res.uuid,
-		}));
+		};
 	}
 
 	getRaw(): Promise<Record<string, User>> {
@@ -47,19 +48,18 @@ export default class UserFirestormRepository implements UserRepository {
 		}));
 	}
 
-	getUserById(id: string): Promise<User> {
-		return users
-			.get(id)
-			.then(mapUser)
-			.catch((err) => {
-				if (err.isAxiosError && err.response?.status === 404) {
-					// prettier error message
-					const formattedError = new NotFoundError("User not found");
-					return Promise.reject(formattedError);
-				}
-
-				return Promise.reject(err);
-			});
+	async getUserById(id: string): Promise<User> {
+		try {
+			const user = await users.get(id);
+			return mapUser(user);
+		} catch (err) {
+			if (err.isAxiosError && err.response?.status === 404) {
+				// prettier error message
+				const formattedError = new NotFoundError("User not found");
+				throw formattedError;
+			}
+			throw err;
+		}
 	}
 
 	async getProfileOrCreate(discordUser: APIUser): Promise<User> {
@@ -102,7 +102,7 @@ export default class UserFirestormRepository implements UserRepository {
 	}
 
 	async getUsersFromRole(role: string, username?: string): Promise<Users> {
-		if (role === "all" && !username) return users.readRaw().then(Object.values);
+		if (role === "all" && !username) return Object.values(await users.readRaw());
 		const options = [];
 
 		if (role !== "all")

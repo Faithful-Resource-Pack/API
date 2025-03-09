@@ -11,8 +11,9 @@ export default class AddonFirestormRepository implements AddonRepository {
 		return addons.get(id);
 	}
 
-	getFilesById(addonId: number): Promise<Files> {
-		return addons.get(addonId).then((addon) => addon.getFiles());
+	async getFilesById(addonId: number): Promise<Files> {
+		const addon = await addons.get(addonId);
+		return addon.getFiles();
 	}
 
 	getAddonByStatus(status: AddonStatus): Promise<Addons> {
@@ -25,38 +26,28 @@ export default class AddonFirestormRepository implements AddonRepository {
 		]);
 	}
 
-	getAddonBySlug(slug: string): Promise<Addon> {
-		return addons
-			.search([
-				{
-					criteria: "==",
-					field: "slug",
-					value: slug,
-				},
-			])
-			.then((results) => results[0]);
+	async getAddonBySlug(slug: string): Promise<Addon> {
+		const results = await addons.search([
+			{
+				criteria: "==",
+				field: "slug",
+				value: slug,
+			},
+		]);
+		return results[0];
 	}
 
-	create(addon: Addon): Promise<Addon> {
-		return addons
-			.add(addon)
-			.then(() =>
-				addons.search([
-					{
-						field: "slug",
-						criteria: "==",
-						value: addon.slug,
-					},
-				]),
-			)
-			.then((results) => results[0]);
+	async create(addon: Addon): Promise<Addon> {
+		await addons.add(addon);
+		return this.getAddonBySlug(addon.slug);
 	}
 
 	delete(id: number): Promise<WriteConfirmation> {
 		return addons.remove(String(id));
 	}
 
-	update(id: number, addon: Addon): Promise<Addon> {
-		return addons.set(id, addon).then(() => addons.get(id));
+	async update(id: number, addon: Addon): Promise<Addon> {
+		await addons.set(id, addon);
+		return addons.get(id);
 	}
 }

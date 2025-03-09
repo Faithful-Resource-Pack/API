@@ -1,7 +1,7 @@
 import { WriteConfirmation } from "firestorm-db";
-import { EntireUseToCreate, Uses } from "./uses";
-import { Paths } from "./paths";
-import { Contributions } from "./contributions";
+import { EntireUseToCreate, FirestormUse, Uses } from "./uses";
+import { FirestormPath, Paths } from "./paths";
+import { Contributions, FirestormContribution } from "./contributions";
 import { PackID } from "./packs";
 
 export interface TextureCreationParam {
@@ -53,10 +53,10 @@ export type PropertyToOutput<T extends TextureProperty> = T extends null
 						: never;
 
 export interface FirestormTexture extends Texture {
-	uses(): Promise<Uses>;
-	paths(): Promise<Paths>;
+	uses(): Promise<FirestormUse[]>;
+	paths(textureUses?: FirestormUse[]): Promise<FirestormPath[]>;
 	url(pack: PackID, version: string): Promise<string>;
-	contributions(): Promise<Contributions>;
+	contributions(): Promise<FirestormContribution[]>;
 	mcmeta(): Promise<MCMETA>;
 	all(): Promise<TextureAll>;
 }

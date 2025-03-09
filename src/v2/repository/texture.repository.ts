@@ -20,7 +20,7 @@ export default class TextureFirestormRepository implements TextureRepository {
 		forcePartial = false,
 	): Promise<Textures> {
 		// * none, read raw
-		if (tag === undefined && search === undefined) return this.getRaw().then(Object.values);
+		if (tag === undefined && search === undefined) return Object.values(await this.getRaw());
 
 		// * number id: get + includes tag?
 		const numberID = search !== undefined ? Number(search) : NaN;
@@ -70,8 +70,9 @@ export default class TextureFirestormRepository implements TextureRepository {
 		return textures.readRaw();
 	}
 
-	public getURLById(id: number, pack: PackID, version: string) {
-		return textures.get(id).then((texture) => texture.url(pack, version));
+	public async getURLById(id: number, pack: PackID, version: string) {
+		const tex = await textures.get(id);
+		return tex.url(pack, version);
 	}
 
 	// AlwaysID is a typescript hack to make sure the correct types are always returned
@@ -85,6 +86,7 @@ export default class TextureFirestormRepository implements TextureRepository {
 		nameOrID: string | number,
 		property: Property,
 	): Promise<PropertyToOutput<Property>> {
+		// todo: fix the horrible as any type shenanigans everywhere
 		const intID = Number(nameOrID);
 
 		if (!Number.isNaN(intID)) return this.getTextureById(intID, property);
@@ -104,44 +106,48 @@ export default class TextureFirestormRepository implements TextureRepository {
 			return Promise.all(partialMatches.map((t) => t[property as string]()));
 		}
 
-		return textures
-			.search([{ field: "name", criteria: "==", value: name, ignoreCase: true }])
-			.then((exactMatches) => {
-				// return whatever we have if short name
-				if (name.length < 3 || exactMatches.length) return exactMatches;
-				// partial search if no exact results found
-				return textures.search([
-					{ field: "name", criteria: "includes", value: name, ignoreCase: true },
-				]);
-			})
-			.then((includeMatches) => {
-				if (property === null) return includeMatches;
-				return Promise.all(includeMatches.map((t) => t[property as string]()));
-			});
+		const exactMatches = await textures.search([
+			{ field: "name", criteria: "==", value: name, ignoreCase: true },
+		]);
+		// return whatever we have if short name
+		if (name.length < 3 || exactMatches.length) return exactMatches as any;
+		// partial search if no exact results found
+		const includeMatches = await textures.search([
+			{ field: "name", criteria: "includes", value: name, ignoreCase: true },
+		]);
+		if (property === null) return includeMatches as any;
+		return Promise.all(includeMatches.map((t) => t[property as string]()));
 	}
 
-	public getTextureById<Property extends TextureProperty>(
+	public async getTextureById<Property extends TextureProperty>(
 		id: number,
 		property: Property,
 	): Promise<PropertyToOutput<Property>> {
 		if (Number.isNaN(id) || id < 0)
 			return Promise.reject(new Error("Texture IDs must be integers greater than 0."));
-		return textures.get(id).then((t: Texture) => {
-			if (property === null) return t;
-			return t[property as string]();
-		});
+		const t = await textures.get(id);
+		if (property === null) return t as any;
+		return t[property as string]();
 	}
 
-	public getEditions(): Promise<string[]> {
-		return uses.values({ field: "edition" }).then((res) => res.sort());
+	public async getEditions(): Promise<string[]> {
+		const res = await uses.values({ field: "edition" });
+		return res.sort();
 	}
 
-	public getResolutions(): Promise<number[]> {
-		return packs.values({ field: "resolution" }).then((res) => res.sort());
+	public async getResolutions(): Promise<number[]> {
+		const res = await packs.values({ field: "resolution" });
+		return res.sort();
 	}
 
 	public async getAnimated(): Promise<number[]> {
-		const filteredPaths = await paths.search([{ field: "mcmeta", criteria: "==", value: true }]);
+		const filteredPaths = await paths.search([
+			{
+				field: "mcmeta",
+				criteria: "==",
+				value: true,
+			},
+		]);
 		const filteredUses = await uses.searchKeys(filteredPaths.map((p) => p.use));
 		return filteredUses.map((u) => u.texture);
 	}
@@ -178,7 +184,7 @@ export default class TextureFirestormRepository implements TextureRepository {
 	public async deleteTexture(id: string): Promise<WriteConfirmation[]> {
 		const foundTexture = await textures.get(id);
 		const foundUses = await foundTexture.uses();
-		const foundPaths = await foundTexture.paths();
+		const foundPaths = await foundTexture.paths(foundUses);
 		const foundContributions = await foundTexture.contributions();
 
 		const promises: Promise<WriteConfirmation>[] = [];
@@ -190,8 +196,9 @@ export default class TextureFirestormRepository implements TextureRepository {
 		return Promise.all(promises);
 	}
 
-	public changeTexture(id: string, body: TextureCreationParam): Promise<Texture> {
+	public async changeTexture(id: string, body: TextureCreationParam): Promise<Texture> {
 		const unmapped = { id, ...body };
-		return textures.set(id, unmapped).then(() => this.searchTextureByNameOrId<true>(id));
+		await textures.set(id, unmapped);
+		return this.searchTextureByNameOrId<true>(id);
 	}
 }

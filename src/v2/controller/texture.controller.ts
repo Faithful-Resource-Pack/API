@@ -115,8 +115,8 @@ export class TextureController extends Controller {
 	@Get("{id_or_name}")
 	public getTexture(@Path() id_or_name: string | number): Promise<Texture | Textures> {
 		if (typeof id_or_name === "string" && id_or_name.includes(",")) {
-			const id_array = id_or_name.split(",");
-			return Promise.allSettled(id_array.map((id) => this.service.getByNameOrId(id))).then((res) =>
+			const idArray = id_or_name.split(",");
+			return Promise.allSettled(idArray.map((id) => this.service.getByNameOrId(id))).then((res) =>
 				res
 					.filter((p) => p.status === "fulfilled")
 					.map((p: any) => p.value)
@@ -146,9 +146,9 @@ export class TextureController extends Controller {
 		| (MCMETA | Textures | Texture | Paths | Uses | Contributions | TexturesAll)[]
 	> {
 		if (typeof id_or_name === "string" && id_or_name.includes(",")) {
-			const id_array = id_or_name.split(",");
+			const idArray = id_or_name.split(",");
 			return Promise.allSettled(
-				id_array.map((id) => this.service.getPropertyByNameOrId(id, property)),
+				idArray.map((id) => this.service.getPropertyByNameOrId(id, property)),
 			).then((res) =>
 				res
 					.filter((p) => p.status === "fulfilled")

@@ -67,13 +67,13 @@ export async function expressAuthentication(
 
 			let discordUser: APIUser;
 			try {
-				discordUser = await axios
-					.get("https://discord.com/api/users/@me", {
+				discordUser = (
+					await axios.get<APIUser>("https://discord.com/api/users/@me", {
 						headers: {
 							authorization: `Bearer ${token}`,
 						},
 					})
-					.then((response) => response.data);
+				).data;
 			} catch (err) {
 				// re-throw with better details (axios stack traces suck)
 				throw new APIError(
