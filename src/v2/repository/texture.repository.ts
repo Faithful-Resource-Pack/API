@@ -106,17 +106,20 @@ export default class TextureFirestormRepository implements TextureRepository {
 			return Promise.all(partialMatches.map((t) => t[property as string]()));
 		}
 
-		const exactMatches = await textures.search([
-			{ field: "name", criteria: "==", value: name, ignoreCase: true },
-		]);
-		// return whatever we have if short name
-		if (name.length < 3 || exactMatches.length) return exactMatches as any;
-		// partial search if no exact results found
-		const includeMatches = await textures.search([
-			{ field: "name", criteria: "includes", value: name, ignoreCase: true },
-		]);
-		if (property === null) return includeMatches as any;
-		return Promise.all(includeMatches.map((t) => t[property as string]()));
+		return textures
+			.search([{ field: "name", criteria: "==", value: name, ignoreCase: true }])
+			.then((exactMatches) => {
+				// return whatever we have if short name
+				if (name.length < 3 || exactMatches.length) return exactMatches;
+				// partial search if no exact results found
+				return textures.search([
+					{ field: "name", criteria: "includes", value: name, ignoreCase: true },
+				]);
+			})
+			.then((includeMatches) => {
+				if (property === null) return includeMatches;
+				return Promise.all(includeMatches.map((t) => t[property as string]()));
+			});
 	}
 
 	public async getTextureById<Property extends TextureProperty>(

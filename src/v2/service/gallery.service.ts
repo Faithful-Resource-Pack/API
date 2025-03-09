@@ -1,4 +1,4 @@
-import { settings, textures } from "../firestorm";
+import { settings, textures, urlFromTextureData } from "../firestorm";
 import {
 	GalleryResult,
 	PackID,
@@ -9,7 +9,7 @@ import {
 	GalleryEdition,
 	Edition,
 	GalleryModalResult,
-	Texture,
+	FirestormTexture,
 } from "../interfaces";
 import PackService from "./pack.service";
 import PathService from "./path.service";
@@ -163,22 +163,21 @@ export default class GalleryService {
 	public async searchModal(id: number, version: string): Promise<GalleryModalResult> {
 		const packs = await this.packService.getRaw();
 
-		const groupedUrls = await Promise.all(
-			Object.keys(packs).map((pack) =>
-				this.textureService
-					.getURLById(id, pack, version)
-					.then((url) => ({ pack, url }))
-					// invalid urls get handled by the gallery itself
-					.catch(() => ({ pack, url: "" })),
-			),
-		);
+		const texture = (await this.textureService.getById(id, null)) as FirestormTexture;
 
-		const urls = groupedUrls.reduce<Record<PackID, string>>((acc, cur) => {
-			acc[cur.pack] = cur.url;
+		// optimization by only getting these once for all urls
+		const uses = await texture.uses();
+		const paths = await texture.paths(uses);
+
+		const urls = Object.values(packs).reduce<Record<PackID, string>>((acc, pack) => {
+			try {
+				const url = urlFromTextureData(pack, version, uses, paths);
+				acc[pack.id] = url;
+			} catch {
+				acc[pack.id] = "";
+			}
 			return acc;
 		}, {});
-
-		const texture = (await this.textureService.getById(id, null)) as Texture;
 
 		const all = await this.textureService.getPropertyByNameOrId(id, "all");
 
