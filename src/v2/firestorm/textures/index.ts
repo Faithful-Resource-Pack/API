@@ -65,7 +65,7 @@ export const textures = firestorm.collection<FirestormTexture>("textures", (el) 
 	el.paths = async (textureUses?: FirestormUse[]): Promise<FirestormPath[]> => {
 		// if uses are used somewhere else we can save a request by passing it in here
 		// (these methods are called a lot with the gallery/bot so it's worth the effort)
-		if (textureUses === undefined) textureUses = await el.uses();
+		textureUses ??= await el.uses();
 		return paths.search([
 			{
 				field: "use",
