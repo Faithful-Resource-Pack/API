@@ -26,49 +26,52 @@ export default class ContributionService {
 	async getStats(): Promise<ContributionStats> {
 		const cs = await this.getRaw();
 
-		// set ensures unique values much more quickly than a check object/array iteration
+		// set ensures unique values much more quickly than a check object
 		const authors = new Set();
 
+		// snake case because these are being jsonified
 		let total_last_week = 0;
 		let total_last_month = 0;
 		let total_last_day = 0;
 
-		const last_month = startOfDay(lastMonth()).getTime();
-		const last_week = startOfDay(lastWeek()).getTime();
-		const last_day = startOfDay(lastDay()).getTime();
+		const last_month = startOfDay(lastMonth());
+		const last_week = startOfDay(lastWeek());
+		const last_day = startOfDay(lastDay());
 
-		const aggregate: PackRecord = {};
-
-		Object.values(cs).forEach((cur) => {
-			cur.authors.forEach((a) => authors.add(a));
+		const groupedActivity = Object.values(cs).reduce<PackRecord>((acc, cur) => {
+			// for some reason you can't add multiple values to a set at once (blame JS)
+			cur.authors.forEach(authors.add, authors);
 
 			const { pack, date } = cur;
-			//! Group data by the start of date if time dont coincide
-			const start_of_day = startOfDay(date).getTime();
+			const start_of_day = startOfDay(date);
 
-			aggregate[pack] ||= {};
-			aggregate[pack][start_of_day] ||= {
+			// key by pack then date to remove duplicates
+			acc[pack] ||= {};
+			acc[pack][start_of_day] ||= {
 				date: start_of_day,
 				count: 0,
 			};
-			aggregate[pack][start_of_day].count++;
+			acc[pack][start_of_day].count++;
 
-			if (date >= last_week) total_last_week += 1;
-			if (date >= last_month) total_last_month += 1;
-			if (date >= last_day) total_last_day += 1;
-		});
+			if (date >= last_week) total_last_week++;
+			if (date >= last_month) total_last_month++;
+			if (date >= last_day) total_last_day++;
+			return acc;
+		}, {});
 
-		const finalActivity = {} as PackData;
-		const percentiles = {} as PackPercentile;
-		Object.entries(aggregate).forEach(([pack, packAggregate]) => {
-			finalActivity[pack] = Object.values(packAggregate);
+		const { finalActivity, percentiles } = Object.entries(groupedActivity).reduce(
+			(acc, [pack, packActivity]) => {
+				const activity = Object.values(packActivity);
+				// no longer need the date key since it's in the value object already
+				acc.finalActivity[pack] = activity;
 
-			const counts = Object.values(packAggregate)
-				.map((e) => e.count) // ? No need to filter 0 as the contruction of the record makes it impossible
-				.sort();
+				const counts = activity.map((e) => e.count).sort();
 
-			percentiles[pack] = counts[Math.round((counts.length * 95) / 100)];
-		});
+				acc.percentiles[pack] = counts[Math.round((counts.length * 95) / 100)];
+				return acc;
+			},
+			{ finalActivity: {} as PackData, percentiles: {} as PackPercentile },
+		);
 
 		return {
 			total_authors: authors.size,
