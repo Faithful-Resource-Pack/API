@@ -26,7 +26,9 @@ export default class UseFirestormRepository implements UseRepository {
 
 	async getUseByIdOrName(idOrName: string): Promise<Uses | Use> {
 		try {
-			return uses.get(idOrName);
+			// ! must use return await for try/catch to work properly
+			// https://stackoverflow.com/a/42750371/20327257
+			return await uses.get(idOrName);
 		} catch {
 			const out = await uses.search([
 				{
