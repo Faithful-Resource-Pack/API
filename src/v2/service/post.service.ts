@@ -12,10 +12,13 @@ import PostFirestormRepository from "../repository/posts.repository";
 export default class PostService {
 	private readonly postRepo = new PostFirestormRepository();
 
-	getByPermalink(permalink: string): Promise<WebsitePost> {
-		return this.postRepo
-			.getByPermalink(permalink)
-			.catch(() => Promise.reject(new NotFoundError("Post not found")));
+	async getByPermalink(permalink: string): Promise<WebsitePost> {
+		try {
+			return await this.postRepo.getByPermalink(permalink);
+		} catch {
+			// rethrow with our own information
+			throw new NotFoundError("Post not found");
+		}
 	}
 
 	public async getByIdOrPermalink(idOrSlug: string): Promise<WebsitePost> {
@@ -36,10 +39,13 @@ export default class PostService {
 		return this.postRepo.getRaw();
 	}
 
-	getById(id: number): Promise<WebsitePost> {
-		return this.postRepo
-			.getById(id)
-			.catch(() => Promise.reject(new NotFoundError("Post not found")));
+	async getById(id: number): Promise<WebsitePost> {
+		try {
+			return await this.postRepo.getById(id);
+		} catch {
+			// rethrow with our own information
+			throw new NotFoundError("Post not found");
+		}
 	}
 
 	getApprovedPosts(): Promise<WebsitePosts> {

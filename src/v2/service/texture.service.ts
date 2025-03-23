@@ -34,12 +34,11 @@ export default class TextureService {
 		return this.textureRepo.getRaw();
 	}
 
-	getById<Property extends TextureProperty>(
+	async getById<Property extends TextureProperty>(
 		id: number,
 		property: Property,
 	): Promise<PropertyToOutput<Property>> {
-		if (Number.isNaN(id) || id < 0)
-			return Promise.reject(new Error("Texture IDs are integers greater than 0"));
+		if (Number.isNaN(id) || id < 0) throw new Error("Texture IDs are integers greater than 0");
 		return this.textureRepo.getTextureById(id, property);
 	}
 
@@ -75,14 +74,15 @@ export default class TextureService {
 		return this.textureRepo.getAnimated();
 	}
 
-	getPropertyByNameOrId<Property extends TextureProperty>(
+	async getPropertyByNameOrId<Property extends TextureProperty>(
 		nameOrID: string | number,
 		property: Property,
 	): Promise<PropertyToOutput<Property>> {
-		// todo: fix typing
-		return this.textureRepo
-			.searchTexturePropertyByNameOrId<Property>(nameOrID, property)
-			.catch(() => Promise.reject(new Error("Service failed to make request")));
+		try {
+			return await this.textureRepo.searchTexturePropertyByNameOrId<Property>(nameOrID, property);
+		} catch {
+			throw new Error(`Failed to search property "${property}" on texture ${nameOrID}`);
+		}
 	}
 
 	// AlwaysID is a typescript hack to make sure the correct types are always returned

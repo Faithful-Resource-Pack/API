@@ -126,8 +126,7 @@ export default class TextureFirestormRepository implements TextureRepository {
 		id: number,
 		property: Property,
 	): Promise<PropertyToOutput<Property>> {
-		if (Number.isNaN(id) || id < 0)
-			return Promise.reject(new Error("Texture IDs must be integers greater than 0."));
+		if (Number.isNaN(id) || id < 0) throw new Error("Texture IDs must be integers greater than 0.");
 		const t = await textures.get(id);
 		if (property === null) return t as any;
 		return t[property as string]();

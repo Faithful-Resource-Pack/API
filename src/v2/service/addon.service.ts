@@ -86,9 +86,8 @@ export default class AddonService {
 		return this.addonRepo.getRaw();
 	}
 
-	getAddon(id: number): Promise<Addon> {
-		if (Number.isNaN(id) || id < 0)
-			return Promise.reject(new Error("Add-on IDs are integers greater than 0"));
+	async getAddon(id: number): Promise<Addon> {
+		if (Number.isNaN(id) || id < 0) throw new Error("Add-on IDs are integers greater than 0");
 		return this.addonRepo.getAddonById(id);
 	}
 
@@ -102,15 +101,13 @@ export default class AddonService {
 		return this.userService.getUserProfiles(addon.authors);
 	}
 
-	getFiles(id: number): Promise<Files> {
-		if (Number.isNaN(id) || id < 0)
-			return Promise.reject(new Error("Add-on IDs are integers greater than 0"));
+	async getFiles(id: number): Promise<Files> {
+		if (Number.isNaN(id) || id < 0) throw new Error("Add-on IDs are integers greater than 0");
 		return this.addonRepo.getFilesById(id);
 	}
 
 	async getAll(id: number): Promise<AddonAll> {
-		if (Number.isNaN(id) || id < 0)
-			return Promise.reject(new Error("Add-on IDs are integers greater than 0"));
+		if (Number.isNaN(id) || id < 0) throw new Error("Add-on IDs are integers greater than 0");
 
 		const results = await Promise.all([this.getAddon(id), this.getFiles(id)]);
 		return { ...results[0], files: results[1] };
@@ -492,8 +489,8 @@ export default class AddonService {
 		};
 
 		// get existing screenshots
-		const files = await this.getFiles(addonID).catch((): Files => []);
-		const header = files.filter((f) => f.use === "header")[0];
+		const files = await this.getFiles(addonID).catch<Files>(() => []);
+		const header = files.find((f) => f.use === "header");
 
 		if (header === undefined) return Promise.reject(new NotFoundError("Header not found"));
 

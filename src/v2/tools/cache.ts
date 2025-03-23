@@ -32,7 +32,7 @@ export interface CacheData<T> {
  * @returns Found data and whether that data has expired
  */
 export async function read<T>(key: string, duration = 86400000): Promise<CacheData<T>> {
-	if (NO_CACHE) return Promise.reject();
+	if (NO_CACHE) throw new Error("Cache disabled");
 
 	const content = await readFile(keyToPath(key), { encoding: "utf8" });
 	const json: Record<number, T> = JSON.parse(content);

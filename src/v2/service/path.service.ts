@@ -81,7 +81,7 @@ export default class PathService {
 
 		// check existing version to the paths provided
 		if (!versions.includes(body.version))
-			return Promise.reject(new BadRequestError("Incorrect input path version provided"));
+			throw new BadRequestError("Incorrect input path version provided");
 
 		settings.editField({
 			id: "versions",

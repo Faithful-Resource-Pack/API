@@ -88,7 +88,7 @@ export default class UserFirestormRepository implements UserRepository {
 	}
 
 	async getUsersByName(name: string): Promise<Users> {
-		if (!name) return Promise.reject(new Error("A name must be provided"));
+		if (!name) throw new Error("A name must be provided");
 
 		const arr = await users.search([
 			{
