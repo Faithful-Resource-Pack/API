@@ -420,7 +420,7 @@ export default class AddonService {
 		const files = await this.getFiles(id);
 
 		const realFiles = files
-			.filter((f) => f.use === "carousel" || f.use === "header" || f.use === "screenshot")
+			.filter((f) => ["header", "screenshot"].includes(f.use))
 			.map((f) => f.source.replace(/^http[s]?:\/\/.+?\//, ""))
 			.map((s) => this.fileService.removeFileByPath(s));
 
@@ -454,12 +454,12 @@ export default class AddonService {
 
 		// get existing screenshots
 		const files = await this.getFiles(addonID).catch((): Files => []);
-		const screens = files.filter((f) => ["screenshot", "carousel"].includes(f.use));
+		const screens = files.filter((f) => "screenshot" === f.use);
 
 		// find precise screen, by id else by index
-		const idedscreen = screens.find((s) => s.id && s.id === String(indexOrSlug));
-		const screen = idedscreen || screens[indexOrSlug];
-		if (screen === undefined) return Promise.reject(new NotFoundError("Screenshot not found"));
+		const foundScreen = screens.find((s) => s.id && s.id === String(indexOrSlug));
+		const screen: File = foundScreen || screens[indexOrSlug];
+		if (screen === undefined) throw new NotFoundError("Screenshot not found");
 
 		let { source } = screen;
 
@@ -492,7 +492,7 @@ export default class AddonService {
 		const files = await this.getFiles(addonID).catch<Files>(() => []);
 		const header = files.find((f) => f.use === "header");
 
-		if (header === undefined) return Promise.reject(new NotFoundError("Header not found"));
+		if (header === undefined) throw new NotFoundError("Header not found");
 
 		let { source } = header;
 

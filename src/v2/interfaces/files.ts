@@ -10,7 +10,7 @@ export interface FileParent {
 	id: string; // id of the parent
 }
 
-export type FileUse = "download" | "header" | "screenshot" | "carousel";
+export type FileUse = "download" | "header" | "screenshot";
 export interface File {
 	id?: string; // file unique id
 	name: string | null; // file name when uploaded
