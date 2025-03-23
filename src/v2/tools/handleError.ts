@@ -20,11 +20,12 @@ export default function handleError(err: any, route: string, method: string): AP
 	const stack = process.env.VERBOSE && err.stack ? err.stack : "";
 
 	let printed = false;
-	if (process.env.VERBOSE === "true") {
+	// silence post not found errors because they happen really frequently
+	if (process.env.VERBOSE === "true" && message !== "Post not found") {
 		console.error(`[${new Date().toUTCString()}] ${method} ${route}`);
 		// if the message already includes a stack don't print it twice
-		if (message?.stack) console.error(`(${code})`, message);
-		else console.error(`(${code})`, message, "\n", stack);
+		if (message?.stack) console.error(`${code}:`, message);
+		else console.error(`${code}:`, message, "\n", stack);
 		printed = true;
 	}
 	if (err instanceof AxiosError) {
