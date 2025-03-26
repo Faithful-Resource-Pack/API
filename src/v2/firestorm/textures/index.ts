@@ -39,8 +39,10 @@ export function urlFromTextureData(
 	if (!foundUse) throw new NotFoundError(`Pack ${pack.name} doesn't support this edition yet!`);
 
 	const candidatePaths = texturePaths.filter((p) => p.use === foundUse.id);
+
 	let path: Path;
-	if (version === "latest") {
+
+	if (version === "latest" || candidatePaths.length === 1) {
 		path = candidatePaths[0];
 		version = path.versions.sort(MinecraftSorter).at(-1);
 	} else path = candidatePaths.find((p) => p.versions.includes(version));
