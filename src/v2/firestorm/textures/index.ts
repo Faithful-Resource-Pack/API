@@ -44,7 +44,8 @@ export function urlFromTextureData(
 
 	if (version === "latest" || candidatePaths.length === 1) {
 		path = candidatePaths[0];
-		version = path.versions.sort(MinecraftSorter).at(-1);
+		// if there's one path try to get the right version, otherwise take the first one
+		if (!path.versions.includes(version)) version = path.versions.sort(MinecraftSorter).at(-1);
 	} else path = candidatePaths.find((p) => p.versions.includes(version));
 
 	if (!path) throw new NotFoundError(`No path found for version ${version}`);
