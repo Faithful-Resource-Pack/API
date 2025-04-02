@@ -207,7 +207,7 @@ export default function formatSwaggerDoc(app: Application, path: string) {
 			prefix: "/v2",
 			operationId: "PostScreenshot",
 			security: {
-				discord: ["addon:own"],
+				discord: ["addon:own", "administrator"],
 			},
 			description: "Post screenshot file for addon",
 		},
