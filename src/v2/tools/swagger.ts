@@ -81,9 +81,11 @@ export function formHandler(
 	app.post(
 		url,
 		async (req: ExRequestWithAuth<string>, _res: ExResponse, next: NextFunction) => {
-			req.user = await expressAuthentication(req, "discord", ["addon:own"]).catch((err) =>
-				next(err),
-			);
+			req.user = await expressAuthentication(
+				req,
+				"discord",
+				swaggerDocOptions.security.discord,
+			).catch((err) => next(err));
 			next();
 		},
 		upload.single("file"),
@@ -191,7 +193,7 @@ export default function formatSwaggerDoc(app: Application, path: string) {
 		prefix: "/v2",
 		operationId: "PostHeader",
 		security: {
-			discord: ["addon:own"],
+			discord: ["addon:own", "administrator"],
 		},
 		description: "Post header file for addon",
 	});
