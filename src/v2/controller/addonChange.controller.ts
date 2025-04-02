@@ -110,7 +110,7 @@ export class AddonChangeController extends Controller {
 	@Response<PermissionError>(403)
 	@Delete("{id_or_slug}")
 	@SuccessResponse(204)
-	@Security("discord", ["addon:own", "Administrator"])
+	@Security("discord", ["addon:own", "administrator"])
 	public async addonDelete(@Path() id_or_slug: string): Promise<void> {
 		const [addonID] = await this.service.getIdFromPath(id_or_slug);
 		this.service.delete(addonID);
@@ -144,7 +144,7 @@ export class AddonChangeController extends Controller {
 	@Response<PermissionError>(403)
 	@Delete("{id_or_slug}/screenshots/{index_or_slug}")
 	@SuccessResponse(204)
-	@Security("discord", ["addon:own", "Administrator"])
+	@Security("discord", ["addon:own", "administrator"])
 	public addonDeleteScreenshot(
 		@Path() id_or_slug: string,
 		@Path() index_or_slug: number | string,
@@ -160,7 +160,7 @@ export class AddonChangeController extends Controller {
 	@Response<PermissionError>(403)
 	@Delete("{id_or_slug}/header/")
 	@SuccessResponse(204)
-	@Security("discord", ["addon:own", "Administrator"])
+	@Security("discord", ["addon:own", "administrator"])
 	public addonDeleteHeader(@Path() id_or_slug: string): Promise<WriteConfirmation> {
 		return this.service.deleteHeader(id_or_slug);
 	}
