@@ -88,6 +88,20 @@ export default class PathFirestormRepository implements PathRepository {
 		);
 	}
 
+	async removeVersion(version: string): Promise<WriteConfirmation> {
+		const raw = await this.getRaw();
+		return paths.editFieldBulk(
+			Object.values(raw)
+				.filter((p) => p.versions.includes(version))
+				.map((p) => ({
+					id: p[ID_FIELD],
+					field: "versions",
+					operation: "set",
+					value: p.versions.filter((v) => v !== version),
+				})),
+		);
+	}
+
 	async addNewVersionToVersion(version: string, newVersion: string): Promise<WriteConfirmation> {
 		const raw = await this.getRaw();
 		return paths.editFieldBulk(

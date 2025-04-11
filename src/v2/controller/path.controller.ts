@@ -11,7 +11,7 @@ import {
 	Put,
 } from "tsoa";
 import { WriteConfirmation } from "firestorm-db";
-import { Path, InputPath, PathNewVersionParam } from "../interfaces";
+import { Path, InputPath, PathNewVersionParam, PathRemoveVersionParam } from "../interfaces";
 import PathService from "../service/path.service";
 
 @Route("paths")
@@ -85,6 +85,13 @@ export class PathsController extends Controller {
 	@Security("discord", ["administrator"])
 	public addVersion(@Body() body: PathNewVersionParam): Promise<WriteConfirmation> {
 		return this.service.addVersion(body);
+	}
+
+	@Post("versions/remove")
+	@Security("bot")
+	@Security("discord", ["administrator"])
+	public removeVersion(@Body() body: PathRemoveVersionParam): Promise<WriteConfirmation> {
+		return this.service.removeVersion(body.version);
 	}
 
 	/**

@@ -61,7 +61,7 @@ export default class PathService {
 	}
 
 	async modifyVersion(oldVersion: string, newVersion: string): Promise<WriteConfirmation> {
-		const allVersions: string[] = await settings.get("versions");
+		const allVersions: Record<string, string[]> = await settings.get("versions");
 		const edition = Object.entries(allVersions).find((v) => v[1].includes(oldVersion))?.[0];
 
 		settings.editField({
@@ -69,10 +69,24 @@ export default class PathService {
 			field: edition,
 			operation: "set",
 			// map old version to new version, keep the rest the same
-			value: allVersions[edition].map((v: string) => (v === oldVersion ? newVersion : v)),
+			value: allVersions[edition].map((v) => (v === oldVersion ? newVersion : v)),
 		});
 
 		return this.repo.modifyVersion(oldVersion, newVersion);
+	}
+
+	async removeVersion(version: string): Promise<WriteConfirmation> {
+		const allVersions: Record<string, string[]> = await settings.get("versions");
+		const edition = Object.entries(allVersions).find((v) => v[1].includes(version))?.[0];
+
+		settings.editField({
+			id: "version",
+			field: edition,
+			operation: "set",
+			value: allVersions[edition].filter((v) => v !== version),
+		});
+
+		return this.repo.removeVersion(version);
 	}
 
 	async addVersion(body: PathNewVersionParam): Promise<WriteConfirmation> {

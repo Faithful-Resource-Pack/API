@@ -454,7 +454,7 @@ export default class AddonService {
 
 		// get existing screenshots
 		const files = await this.getFiles(addonID).catch((): Files => []);
-		const screens = files.filter((f) => "screenshot" === f.use);
+		const screens = files.filter((f) => f.use === "screenshot");
 
 		// find precise screen, by id else by index
 		const foundScreen = screens.find((s) => s.id && s.id === String(indexOrSlug));
