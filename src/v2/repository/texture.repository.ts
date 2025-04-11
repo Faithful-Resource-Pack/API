@@ -11,7 +11,7 @@ import {
 } from "../interfaces";
 import { NotFoundError } from "../tools/errors";
 import { textures, paths, uses, contributions, settings, packs } from "../firestorm";
-import { MinecraftSorter } from "../tools/sorter";
+import versionSorter from "../tools/versionSorter";
 
 export default class TextureFirestormRepository implements TextureRepository {
 	async getByNameIdAndTag(
@@ -163,7 +163,7 @@ export default class TextureFirestormRepository implements TextureRepository {
 		const s = await settings.readRaw(true);
 		return Object.values(s.versions as string[])
 			.flat()
-			.sort(MinecraftSorter)
+			.sort(versionSorter)
 			.reverse();
 	}
 

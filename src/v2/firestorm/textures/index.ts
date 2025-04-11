@@ -18,7 +18,7 @@ import "../config";
 import { uses } from "./uses";
 import { paths } from "./paths";
 import { contributions, packs } from "..";
-import { MinecraftSorter } from "../../tools/sorter";
+import versionSorter from "../../tools/versionSorter";
 import { NotFoundError } from "../../tools/errors";
 
 /**
@@ -45,7 +45,7 @@ export function urlFromTextureData(
 	if (version === "latest" || candidatePaths.length === 1) {
 		path = candidatePaths[0];
 		// if there's one path try to get the right version, otherwise take the first one
-		if (!path.versions.includes(version)) version = path.versions.sort(MinecraftSorter).at(-1);
+		if (!path.versions.includes(version)) version = path.versions.sort(versionSorter).at(-1);
 	} else path = candidatePaths.find((p) => p.versions.includes(version));
 
 	if (!path) throw new NotFoundError(`No path found for version ${version}`);
@@ -103,9 +103,9 @@ export const textures = firestorm.collection<FirestormTexture>("textures", (el) 
 		const texturePaths = await el.paths();
 		const foundPath = texturePaths.find((path) => path.mcmeta);
 		if (!foundPath) return {};
-		const version = foundPath.versions.sort(MinecraftSorter).at(-1);
+		const version = foundPath.versions.sort(versionSorter).at(-1);
 		return axios
-			.get(`${baseURL}/${version}/${foundPath.name}.mcmeta`)
+			.get<MCMETA>(`${baseURL}/${version}/${foundPath.name}.mcmeta`)
 			.then((res) => (res ? res.data : {}))
 			.catch(() => ({})); // avoid crash if mcmeta file cannot be found
 	};
