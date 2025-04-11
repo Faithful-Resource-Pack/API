@@ -39,29 +39,6 @@ export class PathsController extends Controller {
 	}
 
 	/**
-	 * Get path's use by internal ID (e.g. 6096bcd96fb8b)
-	 * @param id Internal ID
-	 */
-	@Get("{id}")
-	public getPathById(id: string): Promise<Path> {
-		return this.service.getPathById(id);
-	}
-
-	/**
-	 * Update current path
-	 * @param body Input data
-	 */
-	@Put("{id}")
-	@Security("bot")
-	@Security("discord", ["administrator"])
-	public updatePath(@URLPath() id: string, @Body() body: InputPath | Path): Promise<Path> {
-		return this.service.updatePathById(id, {
-			...body,
-			id,
-		});
-	}
-
-	/**
 	 * Change one version to a new version (e.g. 1.17 -> 1.17.1)
 	 * @param old_version version to replace
 	 * @param new_version version to replace with
@@ -87,11 +64,38 @@ export class PathsController extends Controller {
 		return this.service.addVersion(body);
 	}
 
+	/**
+	 * Remove a version from existing paths
+	 * @param body Version name to remove
+	 */
 	@Post("versions/remove")
 	@Security("bot")
 	@Security("discord", ["administrator"])
 	public removeVersion(@Body() body: PathRemoveVersionParam): Promise<WriteConfirmation> {
 		return this.service.removeVersion(body.version);
+	}
+
+	/**
+	 * Get path's use by internal ID (e.g. 6096bcd96fb8b)
+	 * @param id Internal ID
+	 */
+	@Get("{id}")
+	public getPathById(id: string): Promise<Path> {
+		return this.service.getPathById(id);
+	}
+
+	/**
+	 * Update current path
+	 * @param body Input data
+	 */
+	@Put("{id}")
+	@Security("bot")
+	@Security("discord", ["administrator"])
+	public updatePath(@URLPath() id: string, @Body() body: InputPath | Path): Promise<Path> {
+		return this.service.updatePathById(id, {
+			...body,
+			id,
+		});
 	}
 
 	/**
