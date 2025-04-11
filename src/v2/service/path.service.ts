@@ -5,6 +5,7 @@ import { InputPath, Path, PathNewVersionParam, Paths } from "../interfaces";
 import PathFirestormRepository from "../repository/path.repository";
 import TextureService from "./texture.service";
 import { settings } from "../firestorm";
+import versionSorter from "../tools/versionSorter";
 
 export default class PathService {
 	private readonly useService: UseService;
@@ -69,7 +70,9 @@ export default class PathService {
 			field: edition,
 			operation: "set",
 			// map old version to new version, keep the rest the same
-			value: allVersions[edition].map((v) => (v === oldVersion ? newVersion : v)),
+			value: allVersions[edition]
+				.map((v) => (v === oldVersion ? newVersion : v))
+				.sort(versionSorter),
 		});
 
 		return this.repo.modifyVersion(oldVersion, newVersion);

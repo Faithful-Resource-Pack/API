@@ -2,6 +2,7 @@ import { ID_FIELD, SearchOption, WriteConfirmation } from "firestorm-db";
 import { InputPath, Path, Paths, PathRepository } from "../interfaces";
 import { paths } from "../firestorm/textures/paths";
 import { settings } from "../firestorm";
+import versionSorter from "../tools/versionSorter";
 
 export default class PathFirestormRepository implements PathRepository {
 	getRaw(): Promise<Record<string, Path>> {
@@ -83,7 +84,7 @@ export default class PathFirestormRepository implements PathRepository {
 					field: "versions",
 					operation: "set",
 					// replace old version with new version
-					value: p.versions.map((v) => (v === oldVersion ? newVersion : v)),
+					value: p.versions.map((v) => (v === oldVersion ? newVersion : v)).sort(versionSorter),
 				})),
 		);
 	}
@@ -110,9 +111,9 @@ export default class PathFirestormRepository implements PathRepository {
 				.map((p) => ({
 					id: p[ID_FIELD],
 					field: "versions",
-					operation: "array-push",
-					// add new version to version array
-					value: newVersion,
+					operation: "array-splice",
+					// equivalent of array_unshift (new versions go at start of list)
+					value: [0, 0, newVersion],
 				})),
 		);
 	}

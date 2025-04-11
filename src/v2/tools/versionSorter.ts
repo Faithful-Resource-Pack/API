@@ -3,7 +3,7 @@
 
 /**
  * Sorts a given collection of Minecraft versions
- * @example [].sort(minecraftSorter)
+ * @example [].sort(versionSorter)
  * @author TheRolf
  */
 export default function versionSorter(a: string, b: string): number {
