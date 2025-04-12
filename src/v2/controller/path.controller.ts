@@ -66,7 +66,7 @@ export class PathsController extends Controller {
 	 * @param old_version version to replace
 	 * @param new_version version to replace with
 	 */
-	@Put("versions/modify/{old_version}/{new_version}")
+	@Put("versions/rename/{old_version}/{new_version}")
 	@Security("bot")
 	@Security("discord", ["administrator"])
 	public renameVersion(
