@@ -39,28 +39,15 @@ export class PathsController extends Controller {
 	}
 
 	/**
-	 * Change one version to a new version (e.g. 1.17 -> 1.17.1)
-	 * @param old_version version to replace
-	 * @param new_version version to replace with
-	 */
-	@Put("versions/modify/{old_version}/{new_version}")
-	@Security("bot")
-	@Security("discord", ["administrator"])
-	public modifyVersion(
-		@URLPath() old_version: string,
-		@URLPath() new_version: string,
-	): Promise<WriteConfirmation> {
-		return this.service.modifyVersion(old_version, new_version);
-	}
-
-	/**
 	 * Add a version to existing paths
 	 * @param body Version name, edition it belongs to, and reference version if needed
 	 */
 	@Post("versions/add")
 	@Security("bot")
 	@Security("discord", ["administrator"])
-	public addVersion(@Body() body: PathNewVersionParam): Promise<WriteConfirmation> {
+	public addVersion(
+		@Body() body: PathNewVersionParam,
+	): Promise<[WriteConfirmation, WriteConfirmation]> {
 		return this.service.addVersion(body);
 	}
 
@@ -71,8 +58,25 @@ export class PathsController extends Controller {
 	@Post("versions/remove")
 	@Security("bot")
 	@Security("discord", ["administrator"])
-	public removeVersion(@Body() body: PathRemoveVersionParam): Promise<WriteConfirmation> {
+	public removeVersion(
+		@Body() body: PathRemoveVersionParam,
+	): Promise<[WriteConfirmation, WriteConfirmation]> {
 		return this.service.removeVersion(body.version);
+	}
+
+	/**
+	 * Rename a version (e.g. 1.17 -> 1.17.1)
+	 * @param old_version version to replace
+	 * @param new_version version to replace with
+	 */
+	@Put("versions/modify/{old_version}/{new_version}")
+	@Security("bot")
+	@Security("discord", ["administrator"])
+	public renameVersion(
+		@URLPath() old_version: string,
+		@URLPath() new_version: string,
+	): Promise<[WriteConfirmation, WriteConfirmation]> {
+		return this.service.renameVersion(old_version, new_version);
 	}
 
 	/**

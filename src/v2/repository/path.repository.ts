@@ -74,7 +74,7 @@ export default class PathFirestormRepository implements PathRepository {
 		return this.getPathById(pathID);
 	}
 
-	async modifyVersion(oldVersion: string, newVersion: string): Promise<WriteConfirmation> {
+	async renameVersion(oldVersion: string, newVersion: string): Promise<WriteConfirmation> {
 		const raw = await this.getRaw();
 		return paths.editFieldBulk(
 			Object.values(raw)
