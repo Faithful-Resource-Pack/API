@@ -57,7 +57,7 @@ export interface FirestormTexture extends Texture {
 	paths(textureUses?: FirestormUse[]): Promise<FirestormPath[]>;
 	url(pack: PackID, version: string): Promise<string>;
 	contributions(): Promise<FirestormContribution[]>;
-	mcmeta(): Promise<MCMETA>;
+	mcmeta(texturePaths?: FirestormPath[]): Promise<MCMETA>;
 	all(): Promise<TextureAll>;
 }
 

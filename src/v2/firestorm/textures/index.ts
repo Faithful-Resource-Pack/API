@@ -96,11 +96,11 @@ export const textures = firestorm.collection<FirestormTexture>("textures", (el) 
 			},
 		]);
 
-	el.mcmeta = async (): Promise<MCMETA> => {
+	el.mcmeta = async (texturePaths?: FirestormPath[]): Promise<MCMETA> => {
 		// mcmetas only exist on java edition
 		const baseURL = "https://raw.githubusercontent.com/Faithful-Pack/Default-Java";
 
-		const texturePaths = await el.paths();
+		texturePaths ??= await el.paths();
 		const foundPath = texturePaths.find((path) => path.mcmeta);
 		if (!foundPath) return {};
 		const version = foundPath.versions.sort(versionSorter).at(-1);
@@ -112,13 +112,14 @@ export const textures = firestorm.collection<FirestormTexture>("textures", (el) 
 
 	el.all = async (): Promise<TextureAll> => {
 		const textureUses = await el.uses();
+		const texturePaths = await el.paths(textureUses);
 		return {
 			id: el.id,
 			name: el.name,
 			tags: el.tags,
 			uses: textureUses,
-			paths: await el.paths(textureUses),
-			mcmeta: await el.mcmeta(),
+			paths: texturePaths,
+			mcmeta: await el.mcmeta(texturePaths),
 			contributions: await el.contributions(),
 		};
 	};
