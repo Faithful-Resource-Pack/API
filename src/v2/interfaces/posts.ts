@@ -13,10 +13,11 @@ export interface PostChangelog {
 export interface CreateWebsitePost {
 	title: string; // Post main title
 	permalink: string; // link to the post
-	date: string; // date with format MM-DD-YYY
+	date: string; // date with format YYYY-MM-DD
 	header_img?: string; // header image url
 	description: string; // post HTML content
 	published: boolean;
+	discontinued?: true; // if false the key isn't included
 	downloads?: PostDownload; // attached downloads
 	changelog?: PostChangelog; // attached article changelog
 }
