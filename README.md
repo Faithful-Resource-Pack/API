@@ -21,12 +21,13 @@
 
 ## Requirements
 - NodeJS 18+ https://nodejs.org
+- pnpm (`corepack enable` + `corepack prepare pnpm@latest --activate`)
 
 ## Running
 
 ```bash
-npm install
+pnpm install
 ```
 ```bash
-npm run dev
+pnpm run dev
 ```

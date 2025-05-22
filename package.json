@@ -3,12 +3,12 @@
 	"version": "2.0.0",
 	"description": "Public RESTful API for Faithful's texture database, add-on submission, and more.",
 	"scripts": {
-		"dev": "npm run spec-and-routes && npm run nodemon",
+		"dev": "pnpm run spec-and-routes && pnpm run nodemon",
 		"nodemon": "nodemon",
 		"compile": "tsc",
 		"spec-and-routes": "tsoa spec-and-routes",
 		"exec": "ts-node src/index.ts",
-		"build": "npm run spec-and-routes && npm run compile && cp -R public dist/",
+		"build": "pnpm run spec-and-routes && pnpm run compile && cp -R public dist/",
 		"start": "node dist/src/index.js",
 		"swag": "tsoa spec",
 		"lint": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
@@ -39,6 +39,7 @@
 		"ts-node": "^10.9.2"
 	},
 	"dependencies": {
+		"@tsoa/runtime": "^6.6.0",
 		"api-error-handler": "^1.0.0",
 		"axios": "^1.9.0",
 		"body-parser": "^2.2.0",
@@ -50,7 +51,7 @@
 		"firestorm-db": "^1.13.0",
 		"form-data": "^4.0.2",
 		"isomorphic-dompurify": "^2.25.0",
-		"multer": "^1.4.5-lts.2",
+		"multer": "^2.0.0",
 		"response-time": "^2.3.3",
 		"statuses": "^2.0.1",
 		"swagger-ui-express": "^5.0.1",
