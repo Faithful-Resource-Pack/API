@@ -133,7 +133,7 @@ export default class TextureService {
 		const useResults = await Promise.all(
 			// addBulk maintains key order so we can use the index reliably here
 			body.map((tex, i) =>
-				this.useService.generateAppendableUses(createdTextures[i][ID_FIELD], tex.uses),
+				this.useService.generateAppendableUses(createdTextures[i][ID_FIELD], tex.uses, true),
 			),
 		);
 

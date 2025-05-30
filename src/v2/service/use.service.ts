@@ -74,6 +74,7 @@ export default class UseService {
 		return this.repo.setMultiple(uses);
 	}
 
+	// used for editing an existing texture
 	async appendUse(textureID: string, use: EntireUseToCreate): Promise<void> {
 		const lastCharCode = await this.repo.lastCharCode(textureID);
 		const nextLetter = String.fromCharCode(lastCharCode + 1);
@@ -94,8 +95,10 @@ export default class UseService {
 	async generateAppendableUses(
 		textureID: string,
 		uses: EntireUseToCreate[],
+		firstUse = false,
 	): Promise<{ pathsToCreate: InputPath[]; usesToCreate: Uses }> {
-		const lastCharCode = await this.repo.lastCharCode(textureID);
+		// using firstUse saves a request for each use added when adding a texture
+		const lastCharCode = firstUse ? "a".charCodeAt(0) - 1 : await this.repo.lastCharCode(textureID);
 		const pathsToCreate: InputPath[] = [];
 		const usesToCreate = uses.map((use, charOffset) => {
 			// add one to start after the previous letter
@@ -121,6 +124,7 @@ export default class UseService {
 		return { pathsToCreate, usesToCreate };
 	}
 
+	// used when adding a new texture
 	async appendMultipleUses(textureID: string, uses: EntireUseToCreate[]): Promise<void> {
 		const { pathsToCreate, usesToCreate } = await this.generateAppendableUses(textureID, uses);
 		await this.createMultipleUses(usesToCreate);
