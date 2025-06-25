@@ -80,7 +80,7 @@ export interface UserRepository {
 	getAddonsApprovedById(id: string): Promise<Addons>;
 	getAddonsById(id: string): Promise<Addons>;
 	update(id: string, user: User): Promise<User>;
-	delete(id: string): Promise<WriteConfirmation>;
+	delete(id: string): Promise<WriteConfirmation[]>;
 	getUsersFromRole(role: string, username?: string): Promise<Users>;
 	getRoles(): Promise<User["roles"]>;
 }

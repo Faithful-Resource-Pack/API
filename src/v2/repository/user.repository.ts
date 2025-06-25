@@ -14,6 +14,7 @@ import {
 	UserProfile,
 } from "../interfaces";
 import { NotFoundError } from "../tools/errors";
+import AddonService from "../service/addon.service";
 
 const mapUser = (user: Partial<User>): User => ({
 	// falsy checking
@@ -190,8 +191,42 @@ export default class UserFirestormRepository implements UserRepository {
 		return this.getUserById(id);
 	}
 
-	delete(id: string): Promise<WriteConfirmation> {
-		return users.remove(id);
+	async delete(id: string): Promise<WriteConfirmation[]> {
+		const rawAddons = await addons.readRaw();
+		const { addonsToTransfer, addonsToDelete } = Object.values(rawAddons)
+			.filter((a) => a.authors.includes(id))
+			.reduce<{ addonsToTransfer: Addons; addonsToDelete: Addons }>(
+				(acc, cur) => {
+					// delete addons that are only owned by the deleted user
+					if (cur.authors.length === 1) acc.addonsToDelete.push(cur);
+					// remove user from addons with multiple authors
+					else acc.addonsToTransfer.push(cur);
+					return acc;
+				},
+				{ addonsToTransfer: [], addonsToDelete: [] },
+			);
+
+		const proms = [users.remove(id)];
+		if (addonsToTransfer.length)
+			proms.push(
+				addons.editFieldBulk(
+					addonsToTransfer.map((a) => ({
+						id: a[ID_FIELD],
+						field: "authors",
+						operation: "set",
+						value: a.authors.filter((c) => c !== id),
+					})),
+				),
+			);
+
+		if (addonsToDelete.length) {
+			// need to delete with service to remove files
+			const service = new AddonService();
+			await Promise.all(addonsToDelete.map((a) => service.delete(a[ID_FIELD])));
+		}
+
+		// [remove user, transfer addons]
+		return Promise.all(proms);
 	}
 
 	async getUserProfiles(searchedUsers: string[]): Promise<UserProfile[]> {

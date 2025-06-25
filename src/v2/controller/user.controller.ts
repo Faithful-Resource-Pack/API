@@ -261,7 +261,7 @@ export class UserController extends Controller {
 	 */
 	@Delete("{id}")
 	@Security("discord", ["account:delete", "administrator"])
-	public delete(@Path() id: string): Promise<WriteConfirmation> {
+	public delete(@Path() id: string): Promise<WriteConfirmation[]> {
 		return this.userService.delete(id);
 	}
 }
