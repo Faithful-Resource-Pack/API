@@ -23,8 +23,8 @@ import {
 	User,
 	UserCreationParams,
 	UserStats,
-	UserProfile,
 	Username,
+	UpdateUserProfile,
 } from "../interfaces";
 import UserService from "../service/user.service";
 import * as cache from "../tools/cache";
@@ -51,7 +51,7 @@ export class UserController extends Controller {
 	@Post("profile")
 	@Security("discord", [])
 	public setProfile(
-		@Body() body: UserProfile,
+		@Body() body: UpdateUserProfile,
 		@Request() request: ExRequestWithAuth<string>,
 	): Promise<void> {
 		return this.userService.setProfileById(request.user, body);

@@ -45,6 +45,10 @@ export interface UserProfile {
 	uuid: string | undefined;
 }
 
+export interface UpdateUserProfile extends UserProfile {
+	anonymous: boolean;
+}
+
 export interface User extends UserCreationParams {
 	id: string; // discord user id
 	media?: Medias;

@@ -9,6 +9,7 @@ import {
 	UserStats,
 	UserProfile,
 	Username,
+	UpdateUserProfile,
 } from "../interfaces";
 import UserFirestormRepository from "../repository/user.repository";
 import { BadRequestError } from "../tools/errors";
@@ -101,17 +102,17 @@ export default class UserService {
 		return this.repo.getProfileOrCreate(user);
 	}
 
-	public async setProfileById(id: string, body: UserProfile): Promise<void> {
+	public async setProfileById(id: string, body: UpdateUserProfile): Promise<void> {
 		const user = await this.getUserById(id);
 
 		const username = (body.username || "").trim();
-		if (username.length === 0) {
-			throw new BadRequestError("Username cannot be empty");
-		}
+		if (username.length === 0) throw new BadRequestError("Username cannot be empty");
+
 		user.username = username;
 
 		user.uuid = body.uuid;
 		user.media = body.media;
+		user.anonymous = body.anonymous;
 
 		await this.update(id, user);
 	}
