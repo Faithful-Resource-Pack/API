@@ -198,7 +198,7 @@ export default class TextureFirestormRepository implements TextureRepository {
 		return Promise.all(promises);
 	}
 
-	public async changeTexture(id: string, body: TextureCreationParam): Promise<Texture> {
+	public async editTexture(id: string, body: TextureCreationParam): Promise<Texture> {
 		const unmapped = { id, ...body };
 		await textures.set(id, unmapped);
 		return this.searchTextureByNameOrId<true>(id);

@@ -62,7 +62,7 @@ export interface FirestormTexture extends Texture {
 }
 
 export interface TextureRepository {
-	changeTexture(id: string, body: TextureCreationParam): Promise<Texture>;
+	editTexture(id: string, body: TextureCreationParam): Promise<Texture>;
 	getRaw(): Promise<Record<string, Texture>>;
 	getByNameIdAndTag(
 		tag: string | undefined,

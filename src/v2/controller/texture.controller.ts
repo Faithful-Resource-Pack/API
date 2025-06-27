@@ -221,8 +221,8 @@ export class TextureController extends Controller {
 	@Put("{id}")
 	@Security("bot")
 	@Security("discord", ["administrator"])
-	public changeTexture(@Path() id: string, @Body() body: TextureCreationParam): Promise<Texture> {
-		return this.service.changeTexture(id, body);
+	public editTexture(@Path() id: string, @Body() body: TextureCreationParam): Promise<Texture> {
+		return this.service.editTexture(id, body);
 	}
 
 	/**
