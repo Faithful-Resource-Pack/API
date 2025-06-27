@@ -12,18 +12,19 @@ export interface PackGitHub {
 
 export type PackType = "submission" | "default" | "all";
 
-export interface PackSearch {
-	tag?: string;
-	name?: string;
-	resolution?: number;
-	type?: PackType;
-}
+export type PackSearch = Partial<{
+	tag: string;
+	name: string;
+	resolution: number;
+	type: PackType;
+}>;
 
 export interface CreationPack {
 	// either can be specified manually or serialized automatically
 	id?: string;
 	name: string;
 	tags: string[];
+	color: string;
 	logo: string;
 	resolution: number;
 	// not all editions are required
