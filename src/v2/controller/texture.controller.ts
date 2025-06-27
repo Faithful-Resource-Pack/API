@@ -180,15 +180,15 @@ export class TextureController extends Controller {
 	}
 
 	/**
-	 * Merge two texture together
-	 * @param add_id Texture to add uses to
-	 * @param remove_id Texture to delete
+	 * Merge two textures together
+	 * @param source Texture to take existing uses from (will be deleted)
+	 * @param destination Texture to keep
 	 */
-	@Put("merge/{add_id}/{remove_id}")
+	@Put("merge/{source}/{destination}")
 	@Security("bot")
 	@Security("discord", ["administrator"])
-	public mergeTextures(@Path() add_id: string, @Path() remove_id: string): Promise<void> {
-		return this.service.mergeTextures(add_id, remove_id);
+	public mergeTextures(@Path() source: string, @Path() destination: string): Promise<void> {
+		return this.service.mergeTextures(source, destination);
 	}
 
 	/**

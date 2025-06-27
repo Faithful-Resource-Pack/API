@@ -96,10 +96,10 @@ export default class TextureService {
 		return this.textureRepo.getURLById(id, pack, version);
 	}
 
-	async mergeTextures(addID: string, removeID: string) {
-		// append the uses of the removed texture to the uses of the kept texture
+	async mergeTextures(source: string, destination: string) {
+		// append the uses of the source texture to the uses of the destination texture
 		const { uses: usesToRemove, paths: pathsToRemove } = await this.getPropertyByNameOrId(
-			removeID,
+			source,
 			"all",
 		);
 
@@ -115,8 +115,8 @@ export default class TextureService {
 				}),
 		}));
 
-		await this.useService.appendMultipleUses(addID, usesToCreate);
-		await this.deleteTexture(removeID);
+		await this.useService.appendMultipleUses(destination, usesToCreate);
+		await this.deleteTexture(source);
 	}
 
 	createTexture(texture: TextureCreationParam): Promise<Texture> {
