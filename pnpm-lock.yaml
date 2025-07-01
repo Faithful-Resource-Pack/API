@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      '@eslint/js':
-        specifier: ^9.30.0
-        version: 9.30.0
       '@tsoa/runtime':
         specifier: ^6.6.0
         version: 6.6.0
@@ -35,9 +32,6 @@ importers:
       dotenv:
         specifier: ^16.5.0
         version: 16.5.0
-      eslint:
-        specifier: ^9.30.0
-        version: 9.30.0
       express:
         specifier: ^4.21.2
         version: 4.21.2
@@ -65,10 +59,10 @@ importers:
       tsoa:
         specifier: ^6.6.0
         version: 6.6.0
-      typescript-eslint:
-        specifier: ^8.35.1
-        version: 8.35.1(eslint@9.30.0)(typescript@5.8.3)
     devDependencies:
+      '@eslint/js':
+        specifier: ^9.30.0
+        version: 9.30.0
       '@types/api-error-handler':
         specifier: ^1.0.36
         version: 1.0.36
@@ -96,6 +90,9 @@ importers:
       '@types/swagger-ui-express':
         specifier: ^4.1.8
         version: 4.1.8
+      eslint:
+        specifier: ^9.30.0
+        version: 9.30.0
       nodemon:
         specifier: ^3.1.10
         version: 3.1.10
@@ -105,6 +102,9 @@ importers:
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@24.0.4)(typescript@5.8.3)
+      typescript-eslint:
+        specifier: ^8.35.1
+        version: 8.35.1(eslint@9.30.0)(typescript@5.8.3)
 
 packages:
 

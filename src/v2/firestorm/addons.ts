@@ -18,11 +18,10 @@ export const addons = firestorm.collection<FirestormAddon>("addons", (el) => {
 			},
 		]);
 
-	el.all = (): Promise<AddonAll> =>
-		el.getFiles().then((f) => ({
-			...el,
-			files: f,
-		}));
+	el.all = async (): Promise<AddonAll> => ({
+		...el,
+		files: await el.getFiles(),
+	});
 
 	return el;
 });
