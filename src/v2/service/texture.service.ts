@@ -18,7 +18,6 @@ export default class TextureService {
 
 	private readonly pathService = new PathService();
 
-	// eslint-disable-next-line no-use-before-define
 	static instance: TextureService;
 
 	static getInstance() {

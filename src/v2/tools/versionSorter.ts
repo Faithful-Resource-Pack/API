@@ -1,6 +1,3 @@
-/* eslint-disable radix */
-/* eslint-disable no-plusplus */
-
 /**
  * Sorts a given collection of Minecraft versions
  * @example [].sort(versionSorter)

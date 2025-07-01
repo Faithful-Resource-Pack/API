@@ -1,5 +1,3 @@
-/* eslint-disable max-classes-per-file */
-
 export class APIError extends Error {
 	readonly statusCode: number;
 

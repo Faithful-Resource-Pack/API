@@ -33,13 +33,7 @@ function returnHandler(
 ) {
 	if (response.headersSent) return;
 	Object.keys(headers).forEach((name) => response.set(name, headers[name]));
-	if (
-		data &&
-		typeof data.pipe === "function" &&
-		data.readable &&
-		// eslint-disable-next-line no-underscore-dangle
-		typeof data._read === "function"
-	)
+	if (data && typeof data.pipe === "function" && data.readable && typeof data._read === "function")
 		data.pipe(response);
 	else if (data !== null && data !== undefined) response.status(statusCode || 200).json(data);
 	else response.status(statusCode || 204).end();

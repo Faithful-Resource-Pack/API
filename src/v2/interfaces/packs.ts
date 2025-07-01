@@ -37,7 +37,8 @@ export interface Pack extends CreationPack {
 }
 
 export interface PackAll extends Pack {
-	submission: Submission | {};
+	// https://www.totaltypescript.com/the-empty-object-type-in-typescript
+	submission: Submission | Record<string, never>;
 }
 
 export interface CreationPackAll extends CreationPack {
