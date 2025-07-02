@@ -45,7 +45,7 @@ app.listen(PORT, () => {
 });
 
 // show deprecation for v1 API
-app.all("/v1/*", (_req, res) => {
+app.all("/v1/*route", (_req, res) => {
 	res.status(410).json({
 		message: "API v1 has been discontinued. Please switch to API v2 for all new endpoints.",
 	});
