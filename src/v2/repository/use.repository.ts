@@ -65,10 +65,6 @@ export default class UseFirestormRepository implements UseRepository {
 		);
 	}
 
-	deleteUse(id: string): Promise<WriteConfirmation[]> {
-		return this.removeUseById(id);
-	}
-
 	async set(use: Use): Promise<Use> {
 		await uses.set(use.id, use);
 		return uses.get(use.id);

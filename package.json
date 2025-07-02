@@ -12,7 +12,7 @@
 		"build": "pnpm run spec-and-routes && pnpm run compile && cp -R public dist/",
 		"start": "node dist/src/index.js",
 		"swag": "tsoa spec",
-		"lint": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
+		"lint": "eslint .",
 		"prettier": "prettier \"{,!(node_modules)/**/}*.{js,ts}\" --config .prettierrc --write"
 	},
 	"devDependencies": {

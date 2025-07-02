@@ -100,13 +100,13 @@ export class PathsController extends Controller {
 	}
 
 	/**
-	 * Delete use by internal id (e.g. 6096bcd96fb8b)
+	 * Delete path by internal id (e.g. 6096bcd96fb8b)
 	 * @param id Internal ID
 	 */
 	@Delete("{id}")
 	@Security("bot")
 	@Security("discord", ["administrator"])
-	public deleteUse(@URLPath() id: string): Promise<WriteConfirmation> {
+	public deletePath(@URLPath() id: string): Promise<WriteConfirmation> {
 		return this.service.removePathById(id);
 	}
 }

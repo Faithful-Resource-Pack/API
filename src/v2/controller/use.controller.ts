@@ -72,6 +72,6 @@ export class UseController extends Controller {
 	@Delete("{id}")
 	@Security("discord", ["administrator"])
 	public deleteUse(@Path() id: string): Promise<WriteConfirmation[]> {
-		return this.service.deleteUse(id);
+		return this.service.removeUseById(id);
 	}
 }

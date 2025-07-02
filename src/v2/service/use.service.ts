@@ -53,8 +53,8 @@ export default class UseService {
 		});
 	}
 
-	deleteUse(id: string): Promise<WriteConfirmation[]> {
-		return this.repo.deleteUse(id);
+	removeUseById(id: string): Promise<WriteConfirmation[]> {
+		return this.repo.removeUseById(id);
 	}
 
 	getUsesByIdsAndEdition(idArr: number[], edition: GalleryEdition): Promise<Uses> {
