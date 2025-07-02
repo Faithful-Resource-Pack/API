@@ -33,7 +33,7 @@ export default class SubmissionService {
 		return this.repo.update(id, pack);
 	}
 
-	public delete(id: PackID): Promise<WriteConfirmation> {
-		return this.repo.delete(id);
+	public remove(id: PackID): Promise<WriteConfirmation> {
+		return this.repo.remove(id);
 	}
 }

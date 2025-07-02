@@ -42,7 +42,7 @@ export default class SubmissionFirestormRepository implements SubmissionReposito
 		return submissions.get(packId);
 	}
 
-	delete(packId: PackID): Promise<WriteConfirmation> {
+	remove(packId: PackID): Promise<WriteConfirmation> {
 		return submissions.remove(packId);
 	}
 }

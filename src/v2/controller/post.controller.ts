@@ -144,6 +144,6 @@ export class PostController extends Controller {
 	@Security("discord", ["administrator"])
 	@Delete("{id}")
 	public deletePost(@Path() id: number): Promise<WriteConfirmation> {
-		return this.service.delete(id);
+		return this.service.remove(id);
 	}
 }

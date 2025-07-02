@@ -76,7 +76,7 @@ export default class PostService {
 		return this.postRepo.update(id, post);
 	}
 
-	delete(id: number): Promise<WriteConfirmation> {
-		return this.postRepo.delete(id);
+	remove(id: number): Promise<WriteConfirmation> {
+		return this.postRepo.remove(id);
 	}
 }

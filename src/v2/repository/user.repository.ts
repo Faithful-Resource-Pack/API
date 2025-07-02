@@ -191,7 +191,7 @@ export default class UserFirestormRepository implements UserRepository {
 		return this.getUserById(id);
 	}
 
-	async delete(id: string): Promise<WriteConfirmation[]> {
+	async remove(id: string): Promise<WriteConfirmation[]> {
 		const rawAddons = await addons.readRaw();
 		const { addonsToTransfer, addonsToDelete } = Object.values(rawAddons)
 			.filter((a) => a.authors.includes(id))
@@ -222,7 +222,7 @@ export default class UserFirestormRepository implements UserRepository {
 		if (addonsToDelete.length) {
 			// need to delete with service to remove files
 			const service = new AddonService();
-			await Promise.all(addonsToDelete.map((a) => service.delete(a[ID_FIELD])));
+			await Promise.all(addonsToDelete.map((a) => service.remove(a[ID_FIELD])));
 		}
 
 		// [remove user, transfer addons]

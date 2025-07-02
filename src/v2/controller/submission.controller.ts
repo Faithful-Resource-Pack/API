@@ -62,7 +62,7 @@ export class SubmissionController extends Controller {
 	@Delete("{id}")
 	@Security("bot")
 	@Security("discord", ["administrator"])
-	public delete(id: PackID): Promise<WriteConfirmation> {
-		return this.service.delete(id);
+	public remove(id: PackID): Promise<WriteConfirmation> {
+		return this.service.remove(id);
 	}
 }

@@ -37,5 +37,5 @@ export interface WebsitePostRepository {
 	getByPermalink(permalink: string): Promise<WebsitePost>;
 	create(post: CreateWebsitePost): Promise<WebsitePost>;
 	update(id: number, post: CreateWebsitePost): Promise<WebsitePost>;
-	delete(id: number): Promise<WriteConfirmation>;
+	remove(id: number): Promise<WriteConfirmation>;
 }

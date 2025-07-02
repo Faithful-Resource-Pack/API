@@ -34,5 +34,5 @@ export interface SubmissionRepository {
 	getById(id: PackID): Promise<Submission>;
 	create(packId: PackID, packToCreate: Submission): Promise<Submission>;
 	update(packId: PackID, newPack: Submission): Promise<Submission>;
-	delete(packId: PackID): Promise<WriteConfirmation>;
+	remove(packId: PackID): Promise<WriteConfirmation>;
 }

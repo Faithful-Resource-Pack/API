@@ -86,8 +86,8 @@ export default class PackFirestormRepository implements PackRepository {
 		data.id = newPack;
 		const submission = await this.submissionRepo.getById(oldPack).catch<null>(() => null);
 		if (submission) data.submission = submission;
-		this.delete(oldPack);
-		this.submissionRepo.delete(oldPack);
+		this.remove(oldPack);
+		this.submissionRepo.remove(oldPack);
 		this.create(newPack, data);
 	}
 
@@ -110,9 +110,9 @@ export default class PackFirestormRepository implements PackRepository {
 		return packs.get(packId);
 	}
 
-	async delete(packId: PackID): Promise<WriteConfirmation> {
+	async remove(packId: PackID): Promise<WriteConfirmation> {
 		// try removing submission data if exists too
-		this.submissionRepo.delete(packId).catch(() => {});
+		this.submissionRepo.remove(packId).catch(() => {});
 
 		// remove associated contributions
 		const contribs = await contributions.search([

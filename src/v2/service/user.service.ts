@@ -131,7 +131,7 @@ export default class UserService {
 		return this.repo.update(id, user);
 	}
 
-	public delete(id: string): Promise<WriteConfirmation[]> {
-		return this.repo.delete(id);
+	public remove(id: string): Promise<WriteConfirmation[]> {
+		return this.repo.remove(id);
 	}
 }

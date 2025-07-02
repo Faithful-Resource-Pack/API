@@ -411,7 +411,7 @@ export default class AddonService {
 		return newFile;
 	}
 
-	public async delete(id: number): Promise<void> {
+	public async remove(id: number): Promise<void> {
 		const parent: FileParent = {
 			type: "addons",
 			id: String(id),
@@ -428,7 +428,7 @@ export default class AddonService {
 		// remove addon links
 		// remove real files
 		const deletePromises = [
-			this.addonRepo.delete(id),
+			this.addonRepo.remove(id),
 			this.fileService.removeFilesByParent(parent),
 			...realFiles,
 		];

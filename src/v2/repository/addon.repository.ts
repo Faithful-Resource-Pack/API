@@ -42,7 +42,7 @@ export default class AddonFirestormRepository implements AddonRepository {
 		return this.getAddonBySlug(addon.slug);
 	}
 
-	delete(id: number): Promise<WriteConfirmation> {
+	remove(id: number): Promise<WriteConfirmation> {
 		return addons.remove(String(id));
 	}
 

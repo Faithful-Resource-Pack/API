@@ -60,5 +60,5 @@ export interface PackRepository {
 	renamePack(oldPack: PackID, newPack: string): Promise<void>;
 	create(packId: string, packToCreate: CreationPackAll): Promise<CreationPackAll>;
 	update(packId: PackID, newPack: Pack): Promise<Pack>;
-	delete(packId: PackID): Promise<WriteConfirmation>;
+	remove(packId: PackID): Promise<WriteConfirmation>;
 }

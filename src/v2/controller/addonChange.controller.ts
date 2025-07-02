@@ -113,7 +113,7 @@ export class AddonChangeController extends Controller {
 	@Security("discord", ["addon:own", "administrator"])
 	public async addonDelete(@Path() id_or_slug: string): Promise<void> {
 		const [addonID] = await this.service.getIdFromPath(id_or_slug);
-		this.service.delete(addonID);
+		this.service.remove(addonID);
 	}
 
 	// no routes, exported to use with formHandler later

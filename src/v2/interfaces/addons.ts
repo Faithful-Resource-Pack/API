@@ -84,6 +84,6 @@ export interface AddonRepository {
 	getAddonByStatus(status: AddonStatus): Promise<Addons>;
 	getFilesById(addonId: number): Promise<Files>;
 	create(addon: Addon): Promise<Addon>;
-	delete(id: number): Promise<WriteConfirmation>;
+	remove(id: number): Promise<WriteConfirmation>;
 	update(id: number, addon: Addon): Promise<Addon>;
 }

@@ -42,7 +42,7 @@ export default class PostFirestormRepository implements WebsitePostRepository {
 		return posts.get(id);
 	}
 
-	delete(id: number): Promise<WriteConfirmation> {
+	remove(id: number): Promise<WriteConfirmation> {
 		return posts.remove(id);
 	}
 }
