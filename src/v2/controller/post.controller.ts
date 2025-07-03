@@ -35,7 +35,7 @@ export class PostController extends Controller {
 	private readonly service = new PostService();
 
 	/**
-	 * Get the raw collection
+	 * Get all posts in the collection
 	 */
 	@Response<PermissionError>(403)
 	@Response<NotFoundError>(404)
@@ -85,7 +85,7 @@ export class PostController extends Controller {
 	}
 
 	/**
-	 * Get the possible downloads for the given post
+	 * Get the downloads for a given post (if exists)
 	 * @param id ID of the requested post
 	 */
 	@Response<NotFoundError>(404)
@@ -95,7 +95,7 @@ export class PostController extends Controller {
 	}
 
 	/**
-	 * Get the possible changelog for the given post
+	 * Get the changelog for the given post (if exists)
 	 * @param id ID of the requested post
 	 */
 	@Response<NotFoundError>(404)

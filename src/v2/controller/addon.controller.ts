@@ -32,48 +32,8 @@ import * as cache from "../tools/cache";
 export class AddonController extends Controller {
 	private readonly service = new AddonService();
 
-	private async getAddonProperty(id: number, property: AddonProperty): Promise<Addon | Files> {
-		switch (property) {
-			case "files": {
-				const foundFiles = await this.service.getFiles(id);
-				return foundFiles.map((f) => {
-					if ((f.use === "header" || f.use === "screenshot") && f.source.startsWith("/"))
-						f.source = process.env.DB_IMAGE_ROOT + f.source;
-
-					if (
-						f.use === "download" &&
-						!f.source.startsWith("https://") &&
-						!f.source.startsWith("http://")
-					)
-						f.source = `http://${f.source}`;
-
-					return f;
-				});
-			}
-			case "all":
-			default: {
-				const addon = await this.service.getAll(id);
-				addon.files = addon.files.map((f) => {
-					if ((f.use === "header" || f.use === "screenshot") && f.source.startsWith("/"))
-						f.source = process.env.DB_IMAGE_ROOT + f.source;
-
-					if (
-						f.use === "download" &&
-						!f.source.startsWith("https://") &&
-						!f.source.startsWith("http://")
-					)
-						f.source = `http://${f.source}`;
-
-					return f;
-				});
-
-				return addon;
-			}
-		}
-	}
-
 	/**
-	 * Get the raw collection
+	 * Get all add-ons in the collection
 	 */
 	@Response<NotFoundError>(404)
 	@Response<PermissionError>(403)
@@ -82,14 +42,6 @@ export class AddonController extends Controller {
 	@Get("raw")
 	public getRaw(): Promise<Record<string, Addon>> {
 		return this.service.getRaw();
-	}
-
-	/**
-	 * Get all add-ons matching the given status
-	 * @param status Add-on status
-	 */
-	public getAddonsByStatus(status: AddonStatus): Promise<Addons> {
-		return this.service.getAddonByStatus(status);
 	}
 
 	/**
@@ -121,7 +73,7 @@ export class AddonController extends Controller {
 	@Get("{id_or_slug}")
 	public async getAddon(@Path() id_or_slug: string | AddonStatus): Promise<Addon | Addons> {
 		if (AddonStatusValues.includes(id_or_slug as AddonStatus))
-			return this.getAddonsByStatus(id_or_slug as AddonStatus);
+			return this.service.getAddonsByStatus(id_or_slug as AddonStatus);
 		const [, addon] = await this.service.getAddonFromSlugOrId(id_or_slug);
 		return addon;
 	}
@@ -170,7 +122,7 @@ export class AddonController extends Controller {
 		@Path() property: AddonProperty,
 	): Promise<Addon | Files> {
 		const [addonID] = await this.service.getAddonFromSlugOrId(id_or_slug);
-		return this.getAddonProperty(addonID, property);
+		return this.service.getAddonProperty(addonID, property);
 	}
 
 	/**

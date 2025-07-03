@@ -40,7 +40,7 @@ export class TextureController extends Controller {
 	private readonly service = new TextureService();
 
 	/**
-	 * Get the raw collection of textures
+	 * Get all textures in the collection
 	 */
 	@Get("raw")
 	public getRaw(): Promise<Record<string, Texture>> {
@@ -65,7 +65,7 @@ export class TextureController extends Controller {
 
 	/**
 	 * Get all pack resolutions in the database
-	 * @returns array of integers
+	 * @returns Array of pack resolutions
 	 */
 	@Get("resolutions")
 	public getResolutions(): Promise<number[]> {
@@ -74,7 +74,7 @@ export class TextureController extends Controller {
 
 	/**
 	 * Get all animated textures in the database
-	 * @returns array of texture IDs
+	 * @returns Array of texture IDs
 	 */
 	@Get("animated")
 	public getAnimated(): Promise<number[]> {

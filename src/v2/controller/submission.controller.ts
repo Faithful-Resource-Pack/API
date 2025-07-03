@@ -9,7 +9,7 @@ export class SubmissionController extends Controller {
 	private readonly service = new SubmissionService();
 
 	/**
-	 * Get the raw collection of submittable packs
+	 * Get all submittable packs in the collection
 	 */
 	@Get("raw")
 	public getRaw(): Promise<Record<string, Submission>> {

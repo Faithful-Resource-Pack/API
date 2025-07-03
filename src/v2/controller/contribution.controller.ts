@@ -30,7 +30,7 @@ export class ContributionController extends Controller {
 	private readonly service = new ContributionService();
 
 	/**
-	 * Get the raw collection of contributions
+	 * Get all contributions in the collection
 	 */
 	@Get("raw")
 	public getRaw(): Promise<Record<string, Contribution>> {
@@ -82,7 +82,7 @@ export class ContributionController extends Controller {
 	}
 
 	/**
-	 * Get texture by internal ID (e.g. 61cdce61d3697)
+	 * Get contribution by ID (e.g. 61cdce61d3697)
 	 * @param id Contribution ID
 	 */
 	@Get("{id}")
@@ -145,7 +145,7 @@ export class ContributionController extends Controller {
 	}
 
 	/**
-	 * Delete a contribution by internal ID (e.g. 61cdce61d3697)
+	 * Delete a contribution by its ID (e.g. 61cdce61d3697)
 	 * @param id Contribution ID
 	 */
 	@Delete("{id}")
@@ -156,8 +156,8 @@ export class ContributionController extends Controller {
 	}
 
 	/**
-	 * Update existing contribution with new information by internal ID (e.g. 61cdce61d3697)
-	 * @param id Internal ID
+	 * Update existing contribution with new information by ID (e.g. 61cdce61d3697)
+	 * @param id Contribution ID
 	 * @param body New information
 	 */
 	@Put("{id}")

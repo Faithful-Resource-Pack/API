@@ -7,17 +7,11 @@ import {
 	GalleryEdition,
 } from "../interfaces";
 import GalleryService from "../service/gallery.service";
-import TextureService from "../service/texture.service";
 import * as cache from "../tools/cache";
-import PackService from "../service/pack.service";
 
 @Route("gallery")
 @Tags("Gallery")
 export class GalleryController extends Controller {
-	private readonly textureService = new TextureService();
-
-	private readonly packService = new PackService();
-
 	private readonly service = new GalleryService();
 
 	/**
@@ -58,7 +52,7 @@ export class GalleryController extends Controller {
 
 	/**
 	 * Get gallery modal data with urls, mcmeta, texture, uses and paths
-	 * @param id Searched texture name
+	 * @param id Searched texture ID
 	 * @param version Minecraft version for the images
 	 */
 	@Get("modal/{id}/{version}")

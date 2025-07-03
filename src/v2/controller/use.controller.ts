@@ -9,7 +9,7 @@ export class UseController extends Controller {
 	private readonly service = new UseService();
 
 	/**
-	 * Get the raw collection of uses
+	 * Get all uses in the collection
 	 */
 	@Get("raw")
 	public getRaw(): Promise<Record<string, Use>> {
@@ -22,14 +22,12 @@ export class UseController extends Controller {
 	 */
 	@Post("")
 	@Security("discord", ["administrator"])
-	public createUse(@Body() body: CreationUse & { id: string }): Promise<Use> {
-		return this.service.createUse({
-			...body,
-		});
+	public createUse(@Body() body: Use): Promise<Use> {
+		return this.service.createUse(body);
 	}
 
 	/**
-	 * Append a use onto a texture
+	 * Append a use onto an existing texture
 	 */
 	@Post("{texture_id}")
 	@Security("discord", ["administrator"])
@@ -38,8 +36,8 @@ export class UseController extends Controller {
 	}
 
 	/**
-	 * Get a path's use by ID
-	 * @param id_or_name - Use ID or Use Name
+	 * Get a use's path by ID or name
+	 * @param id_or_name Use ID or Use Name
 	 */
 	@Get("{id_or_name}/paths")
 	public getPathUseByIdOrName(@Path() id_or_name: string): Promise<Paths> {
@@ -47,7 +45,7 @@ export class UseController extends Controller {
 	}
 
 	/**
-	 * Get a use by ID
+	 * Get a use by ID or name
 	 * @param id_or_name Use ID or Use Name
 	 */
 	@Get("{id_or_name}")
@@ -56,7 +54,7 @@ export class UseController extends Controller {
 	}
 
 	/**
-	 * Update texture use by use ID
+	 * Update texture use
 	 * @param id Use ID
 	 */
 	@Put("{id}")
@@ -66,7 +64,7 @@ export class UseController extends Controller {
 	}
 
 	/**
-	 * Remove texture use by use ID with its associated paths
+	 * Remove texture use along with its associated paths
 	 * @param id Use ID
 	 */
 	@Delete("{id}")

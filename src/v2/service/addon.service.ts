@@ -18,6 +18,7 @@ import FileService from "./file.service";
 import {
 	AddonCreationParam,
 	AddonDataParam,
+	AddonProperty,
 	AddonReview,
 	AddonStats,
 	AddonStatsAdmin,
@@ -185,7 +186,7 @@ export default class AddonService {
 		return this.addonRepo.getAddonBySlug(slug);
 	}
 
-	getAddonByStatus(status: AddonStatus): Promise<Addons> {
+	getAddonsByStatus(status: AddonStatus): Promise<Addons> {
 		return this.addonRepo.getAddonByStatus(status);
 	}
 
@@ -569,5 +570,45 @@ export default class AddonService {
 			},
 			fields: reason,
 		});
+	}
+
+	public async getAddonProperty(id: number, property: AddonProperty): Promise<Addon | Files> {
+		switch (property) {
+			case "files": {
+				const foundFiles = await this.getFiles(id);
+				return foundFiles.map((f) => {
+					if ((f.use === "header" || f.use === "screenshot") && f.source.startsWith("/"))
+						f.source = process.env.DB_IMAGE_ROOT + f.source;
+
+					if (
+						f.use === "download" &&
+						!f.source.startsWith("https://") &&
+						!f.source.startsWith("http://")
+					)
+						f.source = `http://${f.source}`;
+
+					return f;
+				});
+			}
+			case "all":
+			default: {
+				const addon = await this.getAll(id);
+				addon.files = addon.files.map((f) => {
+					if ((f.use === "header" || f.use === "screenshot") && f.source.startsWith("/"))
+						f.source = process.env.DB_IMAGE_ROOT + f.source;
+
+					if (
+						f.use === "download" &&
+						!f.source.startsWith("https://") &&
+						!f.source.startsWith("http://")
+					)
+						f.source = `http://${f.source}`;
+
+					return f;
+				});
+
+				return addon;
+			}
+		}
 	}
 }

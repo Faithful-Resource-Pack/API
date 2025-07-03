@@ -27,8 +27,8 @@ export interface CacheData<T> {
 
 /**
  * Asynchronously read a cache file
- * @param key cache key to read
- * @param duration duration cache should persist in seconds (default 1 day)
+ * @param key Cache key to read
+ * @param duration Duration cache should persist in seconds (default 1 day)
  * @returns Found data and whether that data has expired
  */
 export async function read<T>(key: string, duration = 86400000): Promise<CacheData<T>> {
@@ -64,8 +64,8 @@ export async function purge(pattern?: string | RegExp): Promise<void[]> {
 
 /**
  * Asynchronously write a new cache file
- * @param key cache key to write
- * @param value data to write
+ * @param key Cache key to write
+ * @param value Data to write
  */
 export function write<T>(key: string, value: T): Promise<void> {
 	// this probably isn't the best way to store data but it works
@@ -76,10 +76,10 @@ export function write<T>(key: string, value: T): Promise<void> {
 
 /**
  * Read cache and write if expired or doesn't exist using callback results
- * @param key key to write to/read from
- * @param callback fallback data to use
- * @param duration duration cache should persist in seconds (default 1 day)
- * @returns found data
+ * @param key Key to write to/read from
+ * @param callback Fallback data to use
+ * @param duration Duration cache should persist in seconds (default 1 day)
+ * @returns Found data
  */
 export async function handle<T>(
 	key: string,

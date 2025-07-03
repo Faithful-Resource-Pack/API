@@ -67,7 +67,7 @@ export class UserController extends Controller {
 	}
 
 	/**
-	 * Get the raw collection of users
+	 * Get all users in the collection
 	 */
 	@Get("raw")
 	@Security("discord", ["administrator"])

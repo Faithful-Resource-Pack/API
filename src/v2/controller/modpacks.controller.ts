@@ -10,7 +10,7 @@ export class ModpacksController extends Controller {
 	private readonly service = new ModpacksService();
 
 	/**
-	 * Get the raw collection of mods
+	 * Get all mods in the collection
 	 */
 	@Get("raw")
 	public getRaw(): Promise<Record<string, Modpack>> {

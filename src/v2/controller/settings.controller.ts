@@ -20,7 +20,7 @@ export class SettingsController extends Controller {
 	private readonly settingsService = new SettingsService();
 
 	/**
-	 * Get the raw collection
+	 * Get all settings in the collection
 	 */
 	@SuccessResponse(200)
 	@Get("raw")

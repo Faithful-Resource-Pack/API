@@ -20,7 +20,7 @@ export class PathsController extends Controller {
 	private readonly service = new PathService();
 
 	/**
-	 * Get the raw collection of paths
+	 * Get all paths in the collection
 	 */
 	@Get("raw")
 	public getRaw(): Promise<Record<string, Path>> {
@@ -63,8 +63,8 @@ export class PathsController extends Controller {
 
 	/**
 	 * Rename a version (e.g. 1.17 -> 1.17.1)
-	 * @param old_version version to replace
-	 * @param new_version version to replace with
+	 * @param old_version Version to replace
+	 * @param new_version Version to replace with
 	 */
 	@Put("versions/rename/{old_version}/{new_version}")
 	@Security("bot")
@@ -77,8 +77,8 @@ export class PathsController extends Controller {
 	}
 
 	/**
-	 * Get path's use by internal ID (e.g. 6096bcd96fb8b)
-	 * @param id Internal ID
+	 * Get path by its ID (e.g. 6096bcd96fb8b)
+	 * @param id Path ID
 	 */
 	@Get("{id}")
 	public getPathById(id: string): Promise<Path> {
@@ -100,8 +100,8 @@ export class PathsController extends Controller {
 	}
 
 	/**
-	 * Delete path by internal id (e.g. 6096bcd96fb8b)
-	 * @param id Internal ID
+	 * Delete path by its id (e.g. 6096bcd96fb8b)
+	 * @param id Path ID
 	 */
 	@Delete("{id}")
 	@Security("bot")

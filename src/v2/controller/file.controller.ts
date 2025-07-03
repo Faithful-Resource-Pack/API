@@ -8,7 +8,7 @@ export class FileController extends Controller {
 	private readonly service = new FileService();
 
 	/**
-	 * Get the raw collection of files
+	 * Get all files in the collection
 	 */
 	@Get("raw")
 	@Security("bot")

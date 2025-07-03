@@ -9,7 +9,7 @@ export class PackController extends Controller {
 	private readonly service = new PackService();
 
 	/**
-	 * Get the raw collection of packs
+	 * Get all packs in the collection
 	 */
 	@Get("raw")
 	public getRaw(): Promise<Record<string, Pack>> {

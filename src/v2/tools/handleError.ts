@@ -4,8 +4,8 @@ import { APIError } from "./errors";
 
 /**
  * Handle and log errors
- * @param err error to handle
- * @returns front-end API error to show user
+ * @param err Error to handle
+ * @returns Front-end API error to show user
  */
 export default function handleError(err: any, route: string, method: string): APIError {
 	const code =
