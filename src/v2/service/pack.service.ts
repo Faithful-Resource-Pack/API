@@ -43,13 +43,8 @@ export default class PackService {
 	}
 
 	public serializeDisplayName(name: string): string {
-		return name
-			.toLowerCase()
-			.trim()
-			.replace(/ /g, "_")
-			.replace(/\W/g, "") // remove special characters
-			.replace(/jappa/g, "") // backwards compatibility
-			.replace(/programmer art/g, "progart");
+		// remove special characters and replace spaces with underscores
+		return name.toLowerCase().trim().replace(/ /g, "_").replace(/\W/g, "");
 	}
 
 	public create(body: CreationPackAll): Promise<CreationPackAll> {
