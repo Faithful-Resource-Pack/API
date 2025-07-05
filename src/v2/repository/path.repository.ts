@@ -84,7 +84,11 @@ export default class PathFirestormRepository implements PathRepository {
 					field: "versions",
 					operation: "set",
 					// replace old version with new version
-					value: p.versions.map((v) => (v === oldVersion ? newVersion : v)).sort(versionSorter),
+					value: p.versions
+						.map((v) => (v === oldVersion ? newVersion : v))
+						.sort(versionSorter)
+						// newest at top
+						.reverse(),
 				})),
 		);
 	}

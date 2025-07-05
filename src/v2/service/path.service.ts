@@ -111,7 +111,9 @@ export default class PathService {
 				// map old version to new version, keep the rest the same
 				value: allVersions[edition]
 					.map((v) => (v === oldVersion ? newVersion : v))
-					.sort(versionSorter),
+					.sort(versionSorter)
+					// newest at top
+					.reverse(),
 			}),
 			this.repo.renameVersion(oldVersion, newVersion),
 		]);
