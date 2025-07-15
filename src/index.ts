@@ -61,19 +61,15 @@ app.get("/", (_req, res) => res.redirect("/docs"));
 app.use(
 	"/docs",
 	swaggerUi.serve,
-	swaggerUi.setup(
-		formatSwaggerDoc(app, "./public/swagger.json"),
-		// @types/swagger-ui-express isn't updated and complains
-		{
-			customCssUrl: "/custom.css",
-			customJs: ["/custom.js", "/customDOM.js"],
-			swaggerOptions: {
-				tryItOutEnabled: true,
-			},
-			customfavIcon: "https://database.faithfulpack.net/images/branding/logos/favicon.ico",
-			customSiteTitle: "Faithful API",
-		} as any,
-	),
+	swaggerUi.setup(formatSwaggerDoc(app, "./public/swagger.json"), {
+		customCssUrl: "/custom.css",
+		customJs: ["/custom.js", "/customDOM.js"],
+		swaggerOptions: {
+			tryItOutEnabled: true,
+		},
+		customfavIcon: "https://database.faithfulpack.net/images/branding/logos/favicon.ico",
+		customSiteTitle: "Faithful API",
+	}),
 );
 
 // handle errors
