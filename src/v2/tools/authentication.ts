@@ -3,7 +3,7 @@ import "dotenv/config";
 import { Request as ExRequest } from "express";
 import axios from "axios";
 import { APIUser } from "discord-api-types/v10";
-import { PermissionError, NotFoundError, APIError } from "./errors";
+import { PermissionError, NotFoundError, APIError } from "./errorTypes";
 import UserService from "../service/user.service";
 import AddonService from "../service/addon.service";
 import PostService from "../service/post.service";

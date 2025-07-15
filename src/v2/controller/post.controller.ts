@@ -25,7 +25,7 @@ import {
 	WebsitePosts,
 } from "../interfaces";
 
-import { BadRequestError, NotFoundError, PermissionError } from "../tools/errors";
+import { BadRequestError, NotFoundError, PermissionError } from "../tools/errorTypes";
 import * as cache from "../tools/cache";
 import PostService from "../service/post.service";
 

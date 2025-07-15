@@ -12,7 +12,7 @@ import {
 	UpdateUserProfile,
 } from "../interfaces";
 import UserFirestormRepository from "../repository/user.repository";
-import { BadRequestError } from "../tools/errors";
+import { BadRequestError } from "../tools/errorTypes";
 
 export default class UserService {
 	private readonly repo = new UserFirestormRepository();

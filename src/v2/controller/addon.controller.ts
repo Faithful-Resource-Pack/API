@@ -24,7 +24,7 @@ import {
 } from "../interfaces";
 
 import AddonService from "../service/addon.service";
-import { NotAvailableError, NotFoundError, PermissionError } from "../tools/errors";
+import { NotAvailableError, NotFoundError, PermissionError } from "../tools/errorTypes";
 import * as cache from "../tools/cache";
 
 @Route("addons")

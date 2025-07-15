@@ -6,7 +6,7 @@ import {
 	CreateWebsitePost,
 	WebsitePosts,
 } from "../interfaces";
-import { NotFoundError } from "../tools/errors";
+import { NotFoundError } from "../tools/errorTypes";
 import PostFirestormRepository from "../repository/posts.repository";
 
 export default class PostService {

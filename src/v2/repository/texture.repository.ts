@@ -9,7 +9,7 @@ import {
 	TextureRepository,
 	PropertyToOutput,
 } from "../interfaces";
-import { NotFoundError } from "../tools/errors";
+import { NotFoundError } from "../tools/errorTypes";
 import { textures, paths, uses, contributions, settings, packs } from "../firestorm";
 import versionSorter from "../tools/versionSorter";
 

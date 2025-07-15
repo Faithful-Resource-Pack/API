@@ -5,7 +5,7 @@ import { readFileSync } from "fs";
 import { MulterFile } from "v2/interfaces";
 import { AddonChangeController } from "../controller/addonChange.controller";
 import { expressAuthentication, ExRequestWithAuth } from "./authentication";
-import { BadRequestError } from "./errors";
+import { BadRequestError } from "./errorTypes";
 
 const MIME_TYPES_ACCEPTED = ["image/gif", "image/png", "image/jpeg"];
 
@@ -39,9 +39,9 @@ function returnHandler(
 	else response.status(statusCode || 204).end();
 }
 
-async function promiseHandler(
+async function promiseHandler<T>(
 	controllerObj: Controller,
-	promise: any,
+	promise: T | Promise<T>,
 	response: ExResponse,
 	successStatus: number,
 	next: NextFunction,
@@ -52,7 +52,7 @@ async function promiseHandler(
 		const headers = controllerObj.getHeaders();
 
 		returnHandler(response, statusCode, data, headers);
-	} catch (error) {
+	} catch (error: unknown) {
 		next(error);
 	}
 }
@@ -68,7 +68,7 @@ export function formHandler(
 	app: Application,
 	url: string,
 	controller: Controller,
-	method: (this: Controller, param: any, file: MulterFile, req: ExRequest) => any,
+	method: (this: Controller, param: unknown, file: MulterFile, req: ExRequest) => any,
 	swaggerDoc: Swagger.Spec3,
 	swaggerDocOptions: SwaggerDocOptions,
 ): Swagger.Spec3 {
@@ -85,15 +85,11 @@ export function formHandler(
 		upload.single("file"),
 		(req: ExRequest, res: ExResponse, next: NextFunction) => {
 			try {
+				const firstParam = Object.keys(req.params)[0];
 				// bind method to controller object
-				const promise = method.call(
-					controller,
-					req.params[Object.keys(req.params)[0]],
-					req.file,
-					req,
-				);
+				const promise = method.call(controller, req.params[firstParam], req.file, req);
 				promiseHandler(controller, promise, res, 200, next);
-			} catch (error) {
+			} catch (error: unknown) {
 				next(error);
 			}
 		},

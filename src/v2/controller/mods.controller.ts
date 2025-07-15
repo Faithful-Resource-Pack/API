@@ -1,7 +1,7 @@
 import { Controller, Get, Path, Request, Route, SuccessResponse, Tags, Response } from "tsoa";
 import { Request as ExRequest } from "express";
 import { Mod } from "../interfaces";
-import { NotFoundError } from "../tools/errors";
+import { NotFoundError } from "../tools/errorTypes";
 import ModsService from "../service/mods.service";
 import * as cache from "../tools/cache";
 

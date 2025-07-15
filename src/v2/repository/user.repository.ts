@@ -13,7 +13,7 @@ import {
 	Username,
 	UserProfile,
 } from "../interfaces";
-import { NotFoundError } from "../tools/errors";
+import { NotFoundError } from "../tools/errorTypes";
 import AddonService from "../service/addon.service";
 
 const mapUser = (user: Partial<User>): User => ({

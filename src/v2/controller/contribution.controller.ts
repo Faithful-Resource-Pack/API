@@ -21,7 +21,7 @@ import {
 	PackID,
 } from "../interfaces";
 import ContributionService from "../service/contribution.service";
-import { NotAvailableError } from "../tools/errors";
+import { NotAvailableError } from "../tools/errorTypes";
 import * as cache from "../tools/cache";
 
 @Route("contributions")

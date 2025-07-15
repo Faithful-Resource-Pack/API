@@ -12,7 +12,7 @@ import {
 	FileParent,
 	MulterFile,
 } from "../interfaces";
-import { BadRequestError, NotFoundError } from "../tools/errors";
+import { BadRequestError, NotFoundError } from "../tools/errorTypes";
 import UserService from "./user.service";
 import FileService from "./file.service";
 import {

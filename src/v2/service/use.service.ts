@@ -9,7 +9,7 @@ import {
 	GalleryEdition,
 } from "../interfaces";
 import UseFirestormRepository from "../repository/use.repository";
-import { BadRequestError, NotFoundError } from "../tools/errors";
+import { BadRequestError, NotFoundError } from "../tools/errorTypes";
 import PathService from "./path.service";
 
 export default class UseService {

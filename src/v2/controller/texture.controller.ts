@@ -32,7 +32,7 @@ import {
 	EntireTextureToCreate,
 } from "../interfaces";
 import TextureService from "../service/texture.service";
-import { NotFoundError } from "../tools/errors";
+import { NotFoundError } from "../tools/errorTypes";
 
 @Route("textures")
 @Tags("Textures")
@@ -117,10 +117,7 @@ export class TextureController extends Controller {
 		if (typeof id_or_name === "string" && id_or_name.includes(",")) {
 			const idArray = id_or_name.split(",");
 			return Promise.allSettled(idArray.map((id) => this.service.getByNameOrId(id))).then((res) =>
-				res
-					.filter((p) => p.status === "fulfilled")
-					.map((p: any) => p.value)
-					.flat(),
+				res.filter((p) => p.status === "fulfilled").flatMap((p) => p.value),
 			);
 		}
 		return this.service.getByNameOrId(id_or_name);
@@ -149,12 +146,7 @@ export class TextureController extends Controller {
 			const idArray = id_or_name.split(",");
 			return Promise.allSettled(
 				idArray.map((id) => this.service.getPropertyByNameOrId(id, property)),
-			).then((res) =>
-				res
-					.filter((p) => p.status === "fulfilled")
-					.map((p: any) => p.value)
-					.flat(),
-			);
+			).then((res) => res.filter((p) => p.status === "fulfilled").flatMap((p: any) => p.value));
 		}
 
 		return this.service.getPropertyByNameOrId(id_or_name, property);

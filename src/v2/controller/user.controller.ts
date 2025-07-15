@@ -14,7 +14,7 @@ import {
 } from "tsoa";
 import { WriteConfirmation } from "firestorm-db";
 import { APIUser } from "discord-api-types/v10";
-import { BadRequestError, ForbiddenError, NotAvailableError } from "../tools/errors";
+import { BadRequestError, ForbiddenError, NotAvailableError } from "../tools/errorTypes";
 import {
 	Addons,
 	Contributions,
@@ -132,11 +132,7 @@ export class UserController extends Controller {
 		if (typeof id_or_username === "string" && id_or_username.includes(",")) {
 			const idArray = id_or_username.split(",");
 			return Promise.allSettled(idArray.map((id) => this.userService.getUsersByNameOrId(id))).then(
-				(res) =>
-					res
-						.filter((p) => p.status === "fulfilled")
-						.map((p: any) => p.value)
-						.flat(),
+				(res) => res.filter((p) => p.status === "fulfilled").flatMap((p) => p.value),
 			);
 		}
 

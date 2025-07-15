@@ -1,6 +1,6 @@
 import { AxiosError } from "axios";
 import status from "statuses";
-import { APIError } from "./errors";
+import { APIError } from "./errorTypes";
 
 /**
  * Handle and log errors

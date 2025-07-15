@@ -19,7 +19,7 @@ import { uses } from "./uses";
 import { paths } from "./paths";
 import { contributions, packs } from "..";
 import versionSorter from "../../tools/versionSorter";
-import { NotFoundError } from "../../tools/errors";
+import { NotFoundError } from "../../tools/errorTypes";
 
 /**
  * Request-less version of texture.url() for bulk usage
