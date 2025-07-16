@@ -104,8 +104,8 @@ export class TextureController extends Controller {
 	 * @param name Name to search by
 	 */
 	@Get("search")
-	public searchTexture(@Query() tag?: string, @Query() name?: string): Promise<Textures> {
-		return this.service.searchByNameIdAndTag(tag, name);
+	public searchTexture(@Query() name?: string, @Query() tag?: string): Promise<Textures> {
+		return this.service.search(name, tag, true);
 	}
 
 	/**
@@ -129,7 +129,7 @@ export class TextureController extends Controller {
 	 * @param property Property from the texture
 	 */
 	@Get("{id_or_name}/{property}")
-	public getTexturesProperty(
+	public getTextureProperty(
 		@Path() id_or_name: string | number,
 		@Path() property: TextureProperty,
 	): Promise<
@@ -145,11 +145,11 @@ export class TextureController extends Controller {
 		if (typeof id_or_name === "string" && id_or_name.includes(",")) {
 			const idArray = id_or_name.split(",");
 			return Promise.allSettled(
-				idArray.map((id) => this.service.getPropertyByNameOrId(id, property)),
-			).then((res) => res.filter((p) => p.status === "fulfilled").flatMap((p: any) => p.value));
+				idArray.map((id) => this.service.searchProperty(id, property)),
+			).then((res) => res.filter((p) => p.status === "fulfilled").map((p) => p.value));
 		}
 
-		return this.service.getPropertyByNameOrId(id_or_name, property);
+		return this.service.searchProperty(id_or_name, property);
 	}
 
 	/**

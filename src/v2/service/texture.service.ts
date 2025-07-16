@@ -6,6 +6,7 @@ import {
 	TextureCreationParam,
 	TextureProperty,
 	PropertyToOutput,
+	FirestormTexture,
 } from "../interfaces/textures";
 import TextureFirestormRepository from "../repository/texture.repository";
 import PathService from "./path.service";
@@ -33,36 +34,50 @@ export default class TextureService {
 		return this.textureRepo.getRaw();
 	}
 
-	async getById<Property extends TextureProperty>(
+	getById(id: string | number) {
+		return this.textureRepo.getById(id);
+	}
+
+	getByNameOrId(nameOrID: string | number): Promise<FirestormTexture | FirestormTexture[]> {
+		return this.textureRepo.search(nameOrID);
+	}
+
+	async getPropertyById<Property extends TextureProperty>(
 		id: number,
 		property: Property,
 	): Promise<PropertyToOutput<Property>> {
-		if (Number.isNaN(id) || id < 0) throw new Error("Texture IDs are integers greater than 0");
-		return this.textureRepo.getTextureById(id, property);
+		// even though it uses the name endpoint it's still pretty fast
+		// since it returns early if it finds an numeric id
+		return this.textureRepo.searchProperty(id, property);
 	}
 
-	getByNameIdAndTag(tag: string | undefined, search: string | undefined): Promise<Textures> {
-		return this.textureRepo.getByNameIdAndTag(tag, search);
+	// used on webapp texture page + gallery
+	async search(
+		search: string | undefined,
+		tag: string | undefined,
+		partial = false,
+	): Promise<Textures> {
+		const results = await this.textureRepo.search(search, tag, partial);
+		return Array.isArray(results) ? results : [results];
 	}
 
-	searchByNameIdAndTag(tag: string | undefined, search: string | undefined): Promise<Textures> {
-		return this.textureRepo.getByNameIdAndTag(tag, search, true);
+	async searchProperty<Property extends TextureProperty>(
+		nameOrID: string | number,
+		property: Property,
+	): Promise<PropertyToOutput<Property>> {
+		try {
+			return await this.textureRepo.searchProperty<Property>(nameOrID, property);
+		} catch {
+			throw new Error(`Failed to search property "${property}" on texture ${nameOrID}`);
+		}
 	}
 
-	getVersions(): Promise<string[]> {
-		return this.textureRepo.getVersions();
-	}
-
-	getVersionByEdition(edition: Edition): Promise<string[]> {
-		return this.textureRepo.getVersionByEdition(edition);
+	getURLById(id: number, pack: PackID, version: string): Promise<string> {
+		return this.textureRepo.getURLById(id, pack, version);
 	}
 
 	getEditions(): Promise<string[]> {
 		return this.textureRepo.getEditions();
-	}
-
-	getTags(): Promise<string[]> {
-		return this.textureRepo.getTags();
 	}
 
 	getResolutions(): Promise<number[]> {
@@ -73,34 +88,21 @@ export default class TextureService {
 		return this.textureRepo.getAnimated();
 	}
 
-	async getPropertyByNameOrId<Property extends TextureProperty>(
-		nameOrID: string | number,
-		property: Property,
-	): Promise<PropertyToOutput<Property>> {
-		try {
-			return await this.textureRepo.searchTexturePropertyByNameOrId<Property>(nameOrID, property);
-		} catch {
-			throw new Error(`Failed to search property "${property}" on texture ${nameOrID}`);
-		}
+	getTags(): Promise<string[]> {
+		return this.textureRepo.getTags();
 	}
 
-	// AlwaysID is a typescript hack to make sure the correct types are always returned
-	getByNameOrId<AlwaysID extends boolean>(
-		nameOrID: string | number,
-	): Promise<AlwaysID extends true ? Texture : Texture | Textures> {
-		return this.textureRepo.searchTextureByNameOrId<AlwaysID>(nameOrID);
+	getVersions(): Promise<string[]> {
+		return this.textureRepo.getVersions();
 	}
 
-	getURLById(id: number, pack: PackID, version: string): Promise<string> {
-		return this.textureRepo.getURLById(id, pack, version);
+	getVersionByEdition(edition: Edition): Promise<string[]> {
+		return this.textureRepo.getVersionByEdition(edition);
 	}
 
 	async mergeTextures(source: string, destination: string) {
 		// append the uses of the source texture to the uses of the destination texture
-		const { uses: usesToRemove, paths: pathsToRemove } = await this.getPropertyByNameOrId(
-			source,
-			"all",
-		);
+		const { uses: usesToRemove, paths: pathsToRemove } = await this.searchProperty(source, "all");
 
 		// no need to delete use properties because it gets overwritten later anyways
 		const usesToCreate: EntireUseToCreate[] = usesToRemove.map((use) => ({

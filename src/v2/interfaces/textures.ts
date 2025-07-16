@@ -62,27 +62,27 @@ export interface FirestormTexture extends Texture {
 }
 
 export interface TextureRepository {
-	editTexture(id: string, body: TextureCreationParam): Promise<Texture>;
 	getRaw(): Promise<Record<string, Texture>>;
-	getByNameIdAndTag(
-		tag: string | undefined,
-		search: string | undefined,
+	getById(id: string | number): Promise<FirestormTexture>;
+	search(
+		nameOrId: string | number | undefined,
+		tag?: string,
 		forcePartial?: boolean,
-	): Promise<Textures>;
-	getTextureById(id: number, property: TextureProperty): Promise<PropertyToOutput<TextureProperty>>;
-	getVersions(): Promise<string[]>;
+	): Promise<Texture | Textures>;
+	searchProperty<Property extends TextureProperty>(
+		nameOrID: string | number,
+		property: Property,
+		tag?: string,
+	): Promise<PropertyToOutput<Property>>;
+	getURLById(id: number, pack: PackID, version: string): Promise<string>;
 	getEditions(): Promise<string[]>;
 	getResolutions(): Promise<number[]>;
 	getAnimated(): Promise<number[]>;
 	getTags(): Promise<string[]>;
+	getVersions(): Promise<string[]>;
 	getVersionByEdition(edition: Edition): Promise<string[]>;
-	searchTexturePropertyByNameOrId(
-		nameOrID: string | number,
-		property: TextureProperty,
-	): Promise<Textures | Texture | Paths | Uses | Contributions | MCMETA>;
-	searchTextureByNameOrId(nameOrID: string | number): Promise<Textures | Texture>;
-	getURLById(id: number, pack: PackID, version: string): Promise<string>;
 	createTexture(texture: TextureCreationParam): Promise<Texture>;
 	createTexturesBulk(textureArr: EntireTextureToCreate[]): Promise<Texture[]>;
+	editTexture(id: string, body: TextureCreationParam): Promise<Texture>;
 	deleteTexture(id: string): Promise<WriteConfirmation[]>;
 }

@@ -5,128 +5,102 @@ import {
 	TextureCreationParam,
 	TextureProperty,
 	Texture,
-	Textures,
 	TextureRepository,
 	PropertyToOutput,
+	FirestormTexture,
 } from "../interfaces";
 import { NotFoundError } from "../tools/errorTypes";
 import { textures, paths, uses, contributions, settings, packs } from "../firestorm";
 import versionSorter from "../tools/versionSorter";
 
 export default class TextureFirestormRepository implements TextureRepository {
-	public getRaw(): Promise<Record<string, Texture>> {
+	public getRaw(): Promise<Record<string, FirestormTexture>> {
 		return textures.readRaw();
 	}
 
-	async getByNameIdAndTag(
-		tag: string | undefined,
-		search: string | undefined,
+	async getById(id: string | number) {
+		return textures.get(id);
+	}
+
+	async search(
+		nameOrId: string | number | undefined,
+		tag?: string,
 		forcePartial = false,
-	): Promise<Textures> {
-		// * none, read raw
-		if (tag === undefined && search === undefined) return Object.values(await this.getRaw());
-
-		// * number id: get + includes tag?
-		const numberID = search !== undefined ? Number(search) : NaN;
-		if (!Number.isNaN(numberID)) {
-			const tex = await textures.get(numberID).catch(() => {});
-			if (!tex) return [];
-
-			if (tag === undefined || tex.tags.includes(tag)) return [tex];
-
-			return [];
+	): Promise<FirestormTexture | FirestormTexture[]> {
+		// no name, get all textures with tag
+		if (!nameOrId) {
+			if (tag) return textures.search([{ field: "tags", criteria: "array-contains", value: tag }]);
+			// no specified tag or name, just get everything
+			return Object.values(await this.getRaw());
 		}
 
-		// tag or string search
-		const criterias: SearchOption<Texture>[] = [];
+		// unique id: get + filter if tag
+		const intID = Number(nameOrId);
+		if (!Number.isNaN(intID)) {
+			if (intID < 0) throw new TypeError("Texture IDs must be integers greater than 0.");
+			const tex = await textures.get(intID).catch<null>(() => null);
+			if (!tex) return null;
 
-		if (tag !== undefined) {
-			criterias.push({
-				field: "tags",
-				criteria: "array-contains",
-				value: tag,
-			});
+			if (tag === undefined || tex.tags.includes(tag)) return tex;
+			return null;
 		}
 
-		// with search
-		let partial = forcePartial;
-		if (search !== undefined) {
-			partial = search.startsWith("_") || search.endsWith("_") || forcePartial;
+		const name = nameOrId.toString();
 
-			criterias.push({
-				field: "name",
-				criteria: partial ? "includes" : "==",
-				value: search,
-				ignoreCase: true,
-			});
-		}
-
-		const results: Textures = await textures.search(criterias);
-		if (results.length && search === undefined && !partial) return results;
-
-		// fallback string search criteria to include if empty results
-		criterias[criterias.length - 1].criteria = "includes";
-
-		return textures.search(criterias);
-	}
-
-	public async getURLById(id: number, pack: PackID, version: string) {
-		const tex = await textures.get(id);
-		return tex.url(pack, version);
-	}
-
-	// AlwaysID is a typescript hack to make sure the correct types are always returned
-	public async searchTextureByNameOrId<AlwaysID extends boolean>(
-		nameOrID: string | number,
-	): Promise<AlwaysID extends true ? Texture : Texture | Textures> {
-		// todo: fix the horrible as any type shenanigans everywhere
-		const intID = Number(nameOrID);
-
-		if (!Number.isNaN(intID)) return textures.get(intID);
-		const name = nameOrID.toString();
+		// now we know that there must be a valid string name to search
 
 		/**
-		 * TEXTURE SEARCH ALGORITHM
+		 * TEXTURE NAME SEARCH ALGORITHM
 		 * - if starts/ends with "_", partial search => include mode
 		 * - if not, the name is considered as full  => exact match mode
 		 * - if no results for exact (and search is long enough), switch to include
 		 */
-		if (name.startsWith("_") || name.endsWith("_")) {
+
+		const tagCriteria: SearchOption<Texture> = {
+			field: "tags",
+			criteria: "array-contains",
+			value: tag,
+		};
+
+		// trick to reuse search code regardless of whether a tag is specified or not
+		const tagSearchOption = tag ? [tagCriteria] : [];
+
+		if (forcePartial || name.startsWith("_") || name.endsWith("_")) {
 			return textures.search([
 				{ field: "name", criteria: "includes", value: name, ignoreCase: true },
-			]) as any;
+				...tagSearchOption,
+			]);
 		}
 
-		return textures
-			.search([{ field: "name", criteria: "==", value: name, ignoreCase: true }])
-			.then((exactMatches) => {
-				// return whatever we have if short name
-				if (name.length < 3 || exactMatches.length) return exactMatches;
-				// partial search if no exact results found
-				return textures.search([
-					{ field: "name", criteria: "includes", value: name, ignoreCase: true },
-				]) as any;
-			});
+		const exactMatches = await textures.search([
+			{ field: "name", criteria: "==", value: name, ignoreCase: true },
+			...tagSearchOption,
+		]);
+
+		// return whatever we have if short name
+		if (name.length < 3 || exactMatches.length) return exactMatches;
+		// partial search if no exact results found
+		return textures.search([
+			{ field: "name", criteria: "includes", value: name, ignoreCase: true },
+			...tagSearchOption,
+		]);
 	}
 
-	public async searchTexturePropertyByNameOrId<Property extends TextureProperty>(
+	public async searchProperty<Property extends TextureProperty>(
 		nameOrID: string | number,
 		property: Property,
+		tag?: string,
 	): Promise<PropertyToOutput<Property>> {
-		const results = await this.searchTextureByNameOrId(nameOrID);
+		// all the horrible type shenanigans are now more or less isolated to this function only
+		const results = await this.search(nameOrID, tag);
 		if (property === null) return results as any;
 		if (Array.isArray(results)) return Promise.all(results.map((res) => res[property as string]()));
 		return results[property as string]();
 	}
 
-	public async getTextureById<Property extends TextureProperty>(
-		id: number,
-		property: Property,
-	): Promise<PropertyToOutput<Property>> {
-		if (Number.isNaN(id) || id < 0) throw new Error("Texture IDs must be integers greater than 0.");
-		const t = await textures.get(id);
-		if (property === null) return t as any;
-		return t[property as string]();
+	public async getURLById(id: number, pack: PackID, version: string): Promise<string> {
+		const tex = await textures.get(id);
+		return tex.url(pack, version);
 	}
 
 	public async getEditions(): Promise<string[]> {
@@ -148,7 +122,7 @@ export default class TextureFirestormRepository implements TextureRepository {
 			},
 		]);
 		const filteredUses = await uses.searchKeys(filteredPaths.map((p) => p.use));
-		return filteredUses.map((u) => u.texture);
+		return Array.from(new Set(filteredUses.map((u) => u.texture)));
 	}
 
 	public async getTags(): Promise<string[]> {
@@ -166,18 +140,27 @@ export default class TextureFirestormRepository implements TextureRepository {
 
 	public async getVersionByEdition(edition: Edition): Promise<string[]> {
 		const versions: Record<Edition, string[]> = await settings.get("versions");
-		if (!versions[edition]) throw new NotFoundError("edition not found");
+		if (!versions[edition])
+			throw new NotFoundError(
+				`Edition ${edition} not found. Available editions: ${Object.keys(versions).join(", ")}`,
+			);
 		return versions[edition];
 	}
 
 	public async createTexture(texture: TextureCreationParam): Promise<Texture> {
 		const id = await textures.add(texture);
-		return this.searchTextureByNameOrId<true>(id);
+		return textures.get(id);
 	}
 
 	public async createTexturesBulk(textureArr: TextureCreationParam[]): Promise<Texture[]> {
 		const ids = await textures.addBulk(textureArr);
 		return textures.searchKeys(ids);
+	}
+
+	public async editTexture(id: string, body: TextureCreationParam): Promise<Texture> {
+		const unmapped = { id, ...body };
+		await textures.set(id, unmapped);
+		return textures.get(id);
 	}
 
 	public async deleteTexture(id: string): Promise<WriteConfirmation[]> {
@@ -186,18 +169,11 @@ export default class TextureFirestormRepository implements TextureRepository {
 		const foundPaths = await foundTexture.paths(foundUses);
 		const foundContributions = await foundTexture.contributions();
 
-		const promises: Promise<WriteConfirmation>[] = [];
-		promises.push(textures.remove(id));
-		promises.push(uses.removeBulk(foundUses.map((u) => u[ID_FIELD])));
-		promises.push(paths.removeBulk(foundPaths.map((p) => p[ID_FIELD])));
-		promises.push(contributions.removeBulk(foundContributions.map((c) => c[ID_FIELD])));
-
-		return Promise.all(promises);
-	}
-
-	public async editTexture(id: string, body: TextureCreationParam): Promise<Texture> {
-		const unmapped = { id, ...body };
-		await textures.set(id, unmapped);
-		return this.searchTextureByNameOrId<true>(id);
+		return Promise.all([
+			textures.remove(id),
+			uses.removeBulk(foundUses.map((u) => u[ID_FIELD])),
+			paths.removeBulk(foundPaths.map((p) => p[ID_FIELD])),
+			contributions.removeBulk(foundContributions.map((c) => c[ID_FIELD])),
+		]);
 	}
 }

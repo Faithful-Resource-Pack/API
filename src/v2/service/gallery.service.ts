@@ -9,7 +9,6 @@ import {
 	GalleryEdition,
 	Edition,
 	GalleryModalResult,
-	FirestormTexture,
 } from "../interfaces";
 import PackService from "./pack.service";
 import PathService from "./path.service";
@@ -66,7 +65,7 @@ export default class GalleryService {
 		 * texture -> texture found => uses -> uses found => paths -> paths found
 		 */
 
-		const texturesFound = await this.textureService.getByNameIdAndTag(tag, search);
+		const texturesFound = await this.textureService.search(search, tag);
 
 		if (texturesFound.length === 0) return [];
 		const ids = texturesFound.map((t) => Number(t.id));
@@ -163,15 +162,11 @@ export default class GalleryService {
 	public async searchModal(id: number, version: string): Promise<GalleryModalResult> {
 		const packs = await this.packService.getRaw();
 
-		const texture = (await this.textureService.getById(id, null)) as FirestormTexture;
-
-		// optimization by only getting these once for all urls
-		const uses = await texture.uses();
-		const paths = await texture.paths(uses);
+		const all = await this.textureService.searchProperty(id, "all");
 
 		const urls = Object.values(packs).reduce<Record<PackID, string>>((acc, pack) => {
 			try {
-				const url = urlFromTextureData(pack, version, uses, paths);
+				const url = urlFromTextureData(pack, version, all.uses, all.paths);
 				acc[pack.id] = url;
 			} catch {
 				acc[pack.id] = "";
@@ -179,10 +174,12 @@ export default class GalleryService {
 			return acc;
 		}, {});
 
-		const all = await this.textureService.getPropertyByNameOrId(id, "all");
-
 		return {
-			texture,
+			texture: {
+				id: all.id,
+				name: all.name,
+				tags: all.tags,
+			},
 			urls,
 			contributions: all.contributions,
 			uses: all.uses,
