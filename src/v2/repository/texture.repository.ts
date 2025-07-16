@@ -14,6 +14,10 @@ import { textures, paths, uses, contributions, settings, packs } from "../firest
 import versionSorter from "../tools/versionSorter";
 
 export default class TextureFirestormRepository implements TextureRepository {
+	public getRaw(): Promise<Record<string, Texture>> {
+		return textures.readRaw();
+	}
+
 	async getByNameIdAndTag(
 		tag: string | undefined,
 		search: string | undefined,
@@ -66,30 +70,19 @@ export default class TextureFirestormRepository implements TextureRepository {
 		return textures.search(criterias);
 	}
 
-	public getRaw(): Promise<Record<string, Texture>> {
-		return textures.readRaw();
-	}
-
 	public async getURLById(id: number, pack: PackID, version: string) {
 		const tex = await textures.get(id);
 		return tex.url(pack, version);
 	}
 
 	// AlwaysID is a typescript hack to make sure the correct types are always returned
-	public searchTextureByNameOrId<AlwaysID extends boolean>(
+	public async searchTextureByNameOrId<AlwaysID extends boolean>(
 		nameOrID: string | number,
 	): Promise<AlwaysID extends true ? Texture : Texture | Textures> {
-		return this.searchTexturePropertyByNameOrId<null>(nameOrID, null) as any;
-	}
-
-	public async searchTexturePropertyByNameOrId<Property extends TextureProperty>(
-		nameOrID: string | number,
-		property: Property,
-	): Promise<PropertyToOutput<Property>> {
 		// todo: fix the horrible as any type shenanigans everywhere
 		const intID = Number(nameOrID);
 
-		if (!Number.isNaN(intID)) return this.getTextureById(intID, property);
+		if (!Number.isNaN(intID)) return textures.get(intID);
 		const name = nameOrID.toString();
 
 		/**
@@ -99,11 +92,9 @@ export default class TextureFirestormRepository implements TextureRepository {
 		 * - if no results for exact (and search is long enough), switch to include
 		 */
 		if (name.startsWith("_") || name.endsWith("_")) {
-			const partialMatches = await textures.search([
+			return textures.search([
 				{ field: "name", criteria: "includes", value: name, ignoreCase: true },
-			]);
-			if (property === null) return partialMatches as any;
-			return Promise.all(partialMatches.map((t) => t[property as string]()));
+			]) as any;
 		}
 
 		return textures
@@ -114,12 +105,18 @@ export default class TextureFirestormRepository implements TextureRepository {
 				// partial search if no exact results found
 				return textures.search([
 					{ field: "name", criteria: "includes", value: name, ignoreCase: true },
-				]);
-			})
-			.then((includeMatches) => {
-				if (property === null) return includeMatches;
-				return Promise.all(includeMatches.map((t) => t[property as string]()));
+				]) as any;
 			});
+	}
+
+	public async searchTexturePropertyByNameOrId<Property extends TextureProperty>(
+		nameOrID: string | number,
+		property: Property,
+	): Promise<PropertyToOutput<Property>> {
+		const results = await this.searchTextureByNameOrId(nameOrID);
+		if (property === null) return results as any;
+		if (Array.isArray(results)) return Promise.all(results.map((res) => res[property as string]()));
+		return results[property as string]();
 	}
 
 	public async getTextureById<Property extends TextureProperty>(

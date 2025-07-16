@@ -16,21 +16,21 @@
 		"prettier": "prettier \"{,!(node_modules)/**/}*.{js,ts}\" --config .prettierrc --write"
 	},
 	"devDependencies": {
-		"@eslint/js": "^9.30.1",
+		"@eslint/js": "^9.31.0",
 		"@types/api-error-handler": "^1.0.36",
 		"@types/body-parser": "^1.19.6",
 		"@types/cors": "^2.8.19",
 		"@types/express": "^5.0.3",
 		"@types/multer": "^2.0.0",
-		"@types/node": "^24.0.10",
+		"@types/node": "^24.0.14",
 		"@types/response-time": "^2.3.9",
 		"@types/statuses": "^2.0.6",
 		"@types/swagger-ui-express": "^4.1.8",
-		"eslint": "^9.30.1",
+		"eslint": "^9.31.0",
 		"nodemon": "^3.1.10",
 		"prettier": "^3.6.2",
 		"ts-node": "^10.9.2",
-		"typescript-eslint": "^8.36.0"
+		"typescript-eslint": "^8.37.0"
 	},
 	"dependencies": {
 		"@tsoa/runtime": "^6.6.0",
@@ -39,8 +39,8 @@
 		"body-parser": "^2.2.0",
 		"cloudflare": "^4.4.1",
 		"cors": "^2.8.5",
-		"discord-api-types": "^0.38.15",
-		"dotenv": "^17.0.1",
+		"discord-api-types": "^0.38.16",
+		"dotenv": "^17.2.0",
 		"express": "^5.1.0",
 		"firestorm-db": "^1.13.0",
 		"form-data": "^4.0.3",
