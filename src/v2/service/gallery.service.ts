@@ -65,7 +65,7 @@ export default class GalleryService {
 		 * texture -> texture found => uses -> uses found => paths -> paths found
 		 */
 
-		const texturesFound = await this.textureService.search(search, tag);
+		const texturesFound = await this.textureService.search(search, tag, true);
 
 		if (texturesFound.length === 0) return [];
 		const ids = texturesFound.map((t) => Number(t.id));
