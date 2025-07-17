@@ -138,25 +138,19 @@ export default class GalleryService {
 
 		const urls = await this.urlsFromTextures(pack, version, ids, textureToUse, useToPath);
 
-		return texturesFiltered
-			.map((t, i) => {
-				const useID = textureToUse[t.id].id;
-				const pathID = useToPath[useID].id;
-				return {
-					textureID: t.id,
-					useID,
-					pathID,
-					name: String(t.name),
-					tags: t.tags,
-					mcmeta: animations[t.id] ?? null, // unused currently
-					url: urls[i],
-				};
-			})
-			.sort((a, b) => {
-				if (a.name < b.name) return -1;
-				if (a.name > b.name) return 1;
-				return 0;
-			});
+		return texturesFiltered.map((t, i) => {
+			const useID = textureToUse[t.id].id;
+			const pathID = useToPath[useID].id;
+			return {
+				textureID: t.id,
+				useID,
+				pathID,
+				name: String(t.name),
+				tags: t.tags,
+				mcmeta: animations[t.id] ?? null, // unused currently
+				url: urls[i],
+			};
+		});
 	}
 
 	public async searchModal(id: number, version: string): Promise<GalleryModalResult> {
