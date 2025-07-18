@@ -14,8 +14,6 @@ export interface GalleryResult {
 	url: string;
 }
 
-export type AcceptedRes = "16x" | "32x" | "64x";
-
 export type GalleryEdition = Edition | "all";
 
 export interface GalleryModalResult {
