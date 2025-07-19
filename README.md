@@ -31,3 +31,7 @@ pnpm install
 ```bash
 pnpm run dev
 ```
+
+## Database Reference
+
+This project is heavily developed around the self-hosted `firestorm-db` database. Check out its documentation at https://therolffr.github.io/firestorm-db/ for more information about available operations and making requests.
