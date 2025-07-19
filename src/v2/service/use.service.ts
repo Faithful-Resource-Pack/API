@@ -75,7 +75,7 @@ export default class UseService {
 	}
 
 	// used for editing an existing texture
-	async appendUse(textureID: string, use: EntireUseToCreate): Promise<void> {
+	async appendUse(textureID: string, use: EntireUseToCreate): Promise<[Use, Paths]> {
 		const lastCharCode = await this.repo.lastCharCode(textureID);
 		const nextLetter = String.fromCharCode(lastCharCode + 1);
 		const newUseID = `${textureID}${nextLetter}`;
@@ -88,8 +88,12 @@ export default class UseService {
 			texture: Number(textureID),
 		};
 
-		await this.createUse(useToCreate);
-		if (pathsWithUse.length) await this.pathService.createMultiplePaths(pathsWithUse);
+		return Promise.all([
+			this.createUse(useToCreate),
+			pathsWithUse.length
+				? this.pathService.createMultiplePaths(pathsWithUse)
+				: Promise.resolve([]),
+		]);
 	}
 
 	async generateAppendableUses(
@@ -125,9 +129,14 @@ export default class UseService {
 	}
 
 	// used when adding a new texture
-	async appendMultipleUses(textureID: string, uses: EntireUseToCreate[]): Promise<void> {
+	async appendMultipleUses(textureID: string, uses: EntireUseToCreate[]): Promise<[Uses, Paths]> {
 		const { pathsToCreate, usesToCreate } = await this.generateAppendableUses(textureID, uses);
-		await this.createMultipleUses(usesToCreate);
-		if (pathsToCreate.length) await this.pathService.createMultiplePaths(pathsToCreate);
+
+		return Promise.all([
+			this.createMultipleUses(usesToCreate),
+			pathsToCreate.length
+				? this.pathService.createMultiplePaths(pathsToCreate)
+				: Promise.resolve([]),
+		]);
 	}
 }

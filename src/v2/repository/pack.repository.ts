@@ -81,14 +81,19 @@ export default class PackFirestormRepository implements PackRepository {
 		return searched.filter((p) => !out.includes(p));
 	}
 
-	async renamePack(oldPack: PackID, newPack: string): Promise<void> {
+	async renamePack(
+		oldPack: PackID,
+		newPack: string,
+	): Promise<[WriteConfirmation, WriteConfirmation, CreationPackAll]> {
 		const data: CreationPackAll = await this.getById(oldPack);
 		data.id = newPack;
 		const submission = await this.submissionRepo.getById(oldPack).catch<null>(() => null);
 		if (submission) data.submission = submission;
-		this.remove(oldPack);
-		this.submissionRepo.remove(oldPack);
-		this.create(newPack, data);
+		return Promise.all([
+			this.remove(oldPack),
+			this.submissionRepo.remove(oldPack),
+			this.create(newPack, data),
+		]);
 	}
 
 	async create(packId: string, data: CreationPackAll): Promise<CreationPackAll> {

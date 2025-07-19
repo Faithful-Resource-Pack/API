@@ -415,7 +415,7 @@ export default class AddonService {
 		return this.fileService.getFileById(id);
 	}
 
-	public async remove(id: number): Promise<void> {
+	public async remove(id: number): Promise<WriteConfirmation[]> {
 		const parent: FileParent = {
 			type: "addons",
 			id: String(id),
@@ -431,22 +431,17 @@ export default class AddonService {
 		// remove addon
 		// remove addon links
 		// remove real files
-		const deletePromises = [
+		return Promise.all([
 			this.addonRepo.remove(id),
 			this.fileService.removeFilesByParent(parent),
 			...realFiles,
-		];
-
-		await Promise.allSettled(deletePromises);
+		]);
 	}
 
 	async review(id: number, review: AddonReview): Promise<void> {
 		const addon = await this.getAddon(id);
-
 		const before = addon.approval?.status || null;
-
 		addon.approval = review;
-
 		this.saveUpdate(id, addon, before);
 	}
 

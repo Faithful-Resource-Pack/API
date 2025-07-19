@@ -117,8 +117,10 @@ export default class TextureService {
 				}),
 		}));
 
-		await this.useService.appendMultipleUses(destination, usesToCreate);
-		await this.deleteTexture(source);
+		await Promise.all([
+			this.useService.appendMultipleUses(destination, usesToCreate),
+			this.deleteTexture(source),
+		]);
 	}
 
 	createTexture(texture: TextureCreationParam): Promise<Texture> {

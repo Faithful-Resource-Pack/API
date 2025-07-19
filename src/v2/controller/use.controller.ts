@@ -31,8 +31,13 @@ export class UseController extends Controller {
 	 */
 	@Post("{texture_id}")
 	@Security("discord", ["administrator"])
-	public appendUse(@Path() texture_id: string, @Body() body: EntireUseToCreate): Promise<void> {
-		return this.service.appendUse(texture_id, body);
+	public async appendUse(
+		@Path() texture_id: string,
+		@Body() body: EntireUseToCreate,
+	): Promise<{ use: Use; paths: Paths }> {
+		const [use, paths] = await this.service.appendUse(texture_id, body);
+		// return as object for easier usage
+		return { use, paths };
 	}
 
 	/**

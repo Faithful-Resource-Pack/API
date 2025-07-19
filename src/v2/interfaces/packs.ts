@@ -57,7 +57,10 @@ export interface PackRepository {
 	getWithSubmission(id: PackID): Promise<PackAll>;
 	getAllTags(): Promise<string[]>;
 	search(params: PackSearch): Promise<Packs>;
-	renamePack(oldPack: PackID, newPack: string): Promise<void>;
+	renamePack(
+		oldPack: PackID,
+		newPack: string,
+	): Promise<[WriteConfirmation, WriteConfirmation, CreationPackAll]>;
 	create(packId: string, packToCreate: CreationPackAll): Promise<CreationPackAll>;
 	update(packId: PackID, newPack: Pack): Promise<Pack>;
 	remove(packId: PackID): Promise<WriteConfirmation>;

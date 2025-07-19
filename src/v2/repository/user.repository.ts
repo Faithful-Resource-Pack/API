@@ -205,7 +205,7 @@ export default class UserFirestormRepository implements UserRepository {
 				{ addonsToTransfer: [], addonsToDelete: [] },
 			);
 
-		const proms = [users.remove(id)];
+		const proms: Promise<WriteConfirmation>[] = [users.remove(id)];
 		if (addonsToTransfer.length)
 			proms.push(
 				addons.editFieldBulk(

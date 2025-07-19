@@ -53,7 +53,7 @@ export class UserController extends Controller {
 	public setProfile(
 		@Body() body: UpdateUserProfile,
 		@Request() request: ExRequestWithAuth<string>,
-	): Promise<void> {
+	): Promise<User> {
 		return this.userService.setProfileById(request.user, body);
 	}
 

@@ -102,7 +102,7 @@ export default class UserService {
 		return this.repo.getProfileOrCreate(user);
 	}
 
-	public async setProfileById(id: string, body: UpdateUserProfile): Promise<void> {
+	public async setProfileById(id: string, body: UpdateUserProfile): Promise<User> {
 		const user = await this.getUserById(id);
 
 		const username = (body.username || "").trim();
@@ -114,7 +114,7 @@ export default class UserService {
 		user.media = body.media;
 		user.anonymous = body.anonymous;
 
-		await this.update(id, user);
+		return this.update(id, user);
 	}
 
 	public async setRoles(id: string, roles: string[]): Promise<User> {
