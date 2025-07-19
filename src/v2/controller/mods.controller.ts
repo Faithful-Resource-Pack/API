@@ -28,14 +28,14 @@ export class ModsController extends Controller {
 	public async getThumbnail(@Path() id: string, @Request() request: ExRequest): Promise<void> {
 		// if id is a number, it's a CurseForge ID
 		if (Number.isNaN(parseInt(id, 10))) {
-			request.res.sendStatus(404);
+			request.res?.sendStatus(404);
 			return;
 		}
 
 		const url = await cache.handle(`mods-thumbnail-${id}`, () =>
 			this.service.getThumbnail(parseInt(id, 10)),
 		);
-		request.res.redirect(url);
+		request.res?.redirect(url);
 	}
 
 	/**

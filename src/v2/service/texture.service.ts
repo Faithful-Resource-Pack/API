@@ -1,5 +1,5 @@
 import { ID_FIELD, WriteConfirmation } from "firestorm-db";
-import { PackID, Texture, Textures, EntireUseToCreate } from "../interfaces";
+import { PackID, Texture, Textures, EntireUseToCreate, CreationPath, Path } from "../interfaces";
 import {
 	Edition,
 	EntireTextureToCreate,
@@ -109,7 +109,8 @@ export default class TextureService {
 			...use,
 			paths: pathsToRemove
 				.filter((p) => p.use === use[ID_FIELD])
-				.map((path) => {
+				// typescript shenanigans to delete properties
+				.map((path: CreationPath & Partial<Path>) => {
 					delete path[ID_FIELD];
 					delete path.use;
 					return path;

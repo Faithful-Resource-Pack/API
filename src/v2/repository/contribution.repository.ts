@@ -19,16 +19,15 @@ export default class ContributionFirestormRepository implements ContributionsRep
 		return contributions.values({ field: "pack" });
 	}
 
-	async searchContributionsFrom(authors: string[], packs: string[]): Promise<Contributions> {
+	async searchContributionsFrom(authors: string[], packs?: string[]): Promise<Contributions> {
 		const options: SearchOption<Contribution>[] = authors.map((author) => ({
 			field: "authors",
 			criteria: "array-contains",
 			value: author,
 		}));
 
-		if (packs !== null) options.push({ field: "pack", criteria: "in", value: packs });
-		const res = await contributions.search(options);
-		return res.filter((c) => (packs === null ? true : packs.includes(c.pack)));
+		if (packs !== undefined) options.push({ field: "pack", criteria: "in", value: packs });
+		return contributions.search(options);
 	}
 
 	searchByIdAndPacks(
@@ -36,24 +35,26 @@ export default class ContributionFirestormRepository implements ContributionsRep
 		packs?: string[],
 		authors?: string[],
 	): Promise<Contributions> {
-		const options = [];
+		const options: SearchOption<Contribution>[] = [
+			{
+				field: "texture",
+				criteria: "in",
+				value: textureIDs,
+			},
+		];
+
 		if (authors) {
+			// no idea why specifying the type in .map is required but it is
 			options.push(
-				...authors.map((author) => ({
+				...authors.map<SearchOption<Contribution>>((a) => ({
 					field: "authors",
 					criteria: "array-contains",
-					value: author,
+					value: a,
 				})),
 			);
 		}
 
 		if (packs) options.push({ field: "pack", criteria: "in", value: packs });
-
-		options.push({
-			field: "texture",
-			criteria: "in",
-			value: textureIDs,
-		});
 
 		return contributions.search(options);
 	}
@@ -63,18 +64,19 @@ export default class ContributionFirestormRepository implements ContributionsRep
 		const contributionSelect = await contributions.select({ fields: ["authors"] });
 		const authors = Object.values(contributionSelect).flatMap((c) => c.authors);
 
-		const out: Record<string, ContributionsAuthor> = authors.reduce((acc, id) => {
-			if (!acc[id]) acc[id] = { id, contributions: 0 };
+		type PartialAuthor = Pick<ContributionsAuthor, "id" | "contributions">;
+		const out = authors.reduce<Record<string, PartialAuthor>>((acc, id) => {
+			acc[id] ||= { id, contributions: 0 };
 			acc[id].contributions++;
 			return acc;
 		}, {});
 
-		const userSelect = await users.select({ fields: ["id", "username", "uuid", "anonymous"] });
-		return Object.values(out).map((author) => {
+		const userSelect = await users.select({ fields: ["username", "uuid", "anonymous"] });
+		return Object.values(out).map((author: ContributionsAuthor) => {
 			const user = userSelect[author.id];
-			if (user) {
-				author.username = user.anonymous ? undefined : user.username;
-				author.uuid = user.anonymous ? undefined : user.uuid;
+			if (user && !user.anonymous) {
+				author.username = user.username;
+				author.uuid = user.uuid;
 			}
 
 			return author;
@@ -102,7 +104,7 @@ export default class ContributionFirestormRepository implements ContributionsRep
 
 	async getByDateRange(begin: string, ends: string): Promise<Contributions> {
 		// if ends > begin date : ------[B-----E]------
-		// elif begin > ends :    -----E]-------[B-----
+		// else if begin > ends :    -----E]-------[B-----
 
 		if (ends >= begin)
 			return contributions.search([
@@ -118,7 +120,7 @@ export default class ContributionFirestormRepository implements ContributionsRep
 				},
 			]);
 
-		const startContribution = await contributions.search([
+		const startContribs = await contributions.search([
 			{
 				field: "date",
 				criteria: ">=",
@@ -130,7 +132,7 @@ export default class ContributionFirestormRepository implements ContributionsRep
 				value: ends,
 			},
 		]);
-		const endsContribution = await contributions.search([
+		const endContribs = await contributions.search([
 			{
 				field: "date",
 				criteria: ">=",
@@ -142,6 +144,6 @@ export default class ContributionFirestormRepository implements ContributionsRep
 				value: Date.now(),
 			},
 		]);
-		return { ...startContribution, ...endsContribution };
+		return { ...startContribs, ...endContribs };
 	}
 }

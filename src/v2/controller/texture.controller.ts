@@ -168,7 +168,7 @@ export class TextureController extends Controller {
 		@Request() request: ExRequest,
 	): Promise<void> {
 		const url = await this.service.getURLById(parseInt(id, 10), pack, mc_version);
-		request.res.redirect(url);
+		request.res?.redirect(url);
 	}
 
 	/**

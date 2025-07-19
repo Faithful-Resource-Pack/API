@@ -15,7 +15,11 @@ const addonService = new AddonService();
 const postService = new PostService();
 
 const isSlug = (idOrSlug: string): boolean => !AddonStatusValues.includes(idOrSlug as any);
-function getRequestKey({ headers, query }: ExRequest, key: string, queryAllowed = false): string {
+function getRequestKey(
+	{ headers, query }: ExRequest,
+	key: string,
+	queryAllowed = false,
+): string | null {
 	if (!headers && !query) return null;
 	if (headers[key]) return headers[key] as string;
 	if (queryAllowed && query[key]) return query[key] as string;
@@ -26,10 +30,8 @@ function getRequestKey({ headers, query }: ExRequest, key: string, queryAllowed 
 export async function expressAuthentication(
 	request: ExRequest,
 	securityName: string,
-	scopes?: string[],
+	scopes: string[] = [],
 ): Promise<any> {
-	scopes ||= [];
-
 	// handle public add-ons/posts without a token (for website etc)
 	if ("id_or_slug" in request.params) {
 		if (scopes.includes("addon:approved")) {
@@ -53,15 +55,16 @@ export async function expressAuthentication(
 	const token = getRequestKey(request, securityName, securityName === "discord");
 
 	switch (securityName) {
-		case "bot":
+		case "bot": {
 			if (!token) throw new Error("Missing bot token in header");
 			if (token === process.env.BOT_PASSWORD) return "Valid bot password";
 			throw new Error("Password did not match");
-		case "cloudflare":
+		}
+		case "cloudflare": {
 			if (!token) throw new Error("Missing CloudFlare token in header");
 			if (token === process.env.CLOUDFLARE_PASSWORD) return "Valid CloudFlare password";
 			throw new Error("Password did not match");
-		// curly brackets used to fix scoping issues
+		}
 		case "discord": {
 			if (!token) throw new Error("Missing Discord token in header");
 
@@ -130,8 +133,9 @@ export async function expressAuthentication(
 			if (scopes.includes("addon:approved") && !("id_or_slug" in request.params)) return undefined;
 			throw new PermissionError();
 		}
-		default:
+		default: {
 			throw new NotFoundError("Invalid security name provided");
+		}
 	}
 }
 

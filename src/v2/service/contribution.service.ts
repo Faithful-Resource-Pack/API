@@ -92,7 +92,7 @@ export default class ContributionService {
 		return this.contributionRepo.getAuthors();
 	}
 
-	searchContributionsFrom(users: string[], packs: string[]): Promise<Contributions> {
+	searchContributionsFrom(users: string[], packs?: string[]): Promise<Contributions> {
 		return this.contributionRepo.searchContributionsFrom(users, packs);
 	}
 
@@ -110,7 +110,7 @@ export default class ContributionService {
 				params.users,
 			);
 		} else {
-			result = await this.searchContributionsFrom(params.users, params.packs);
+			result = await this.searchContributionsFrom(params.users || [], params.packs);
 		}
 
 		return result;

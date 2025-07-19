@@ -107,7 +107,7 @@ export class UserController extends Controller {
 	 */
 	@Get("role/{role}")
 	public getUsersFromRole(@Path() role: string): Promise<Users> {
-		return this.userService.getUsersFromRole(role, null);
+		return this.userService.getUsersFromRole(role);
 	}
 
 	/**

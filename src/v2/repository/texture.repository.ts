@@ -39,10 +39,10 @@ export default class TextureFirestormRepository implements TextureRepository {
 		if (!Number.isNaN(intID)) {
 			if (intID < 0) throw new TypeError("Texture IDs must be integers greater than 0.");
 			const tex = await textures.get(intID).catch<null>(() => null);
-			if (!tex) return null;
+			if (!tex) return [];
 
 			if (tag === undefined || tex.tags.includes(tag)) return tex;
-			return null;
+			return [];
 		}
 
 		const name = nameOrId.toString();

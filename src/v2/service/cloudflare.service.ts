@@ -13,7 +13,7 @@ export default class CloudflareService {
 		return res.result.map((e) => e.id);
 	}
 
-	public async purge(): Promise<CachePurgeResponse[]> {
+	public async purge(): Promise<(CachePurgeResponse | null)[]> {
 		const res = await this.cf.zones.list();
 		// permission needed: #cache_purge:edit
 

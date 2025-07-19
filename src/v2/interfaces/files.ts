@@ -11,15 +11,20 @@ export interface FileParent {
 }
 
 export type FileUse = "download" | "header" | "screenshot";
-export interface File {
-	id?: string; // file unique id
+
+export interface CreationFile {
 	name: string | null; // file name when uploaded
 	use: FileUse;
 	type: "url" | "b64";
 	parent: FileParent;
 	source: string; // file content/url (ex: 'database.faithfulpack.net/images/test.png')
 }
+
+export interface File extends CreationFile {
+	id: string; // file unique id
+}
 export type Files = File[];
+export type CreationFiles = CreationFile[];
 
 //! needs to be approved & finished by @TheRolfFR
 export type FileDataParam = Pick<File, "name" | "use" | "type">;

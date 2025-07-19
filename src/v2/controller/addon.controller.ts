@@ -71,7 +71,7 @@ export class AddonController extends Controller {
 	@Response<PermissionError>(403)
 	@Security("discord", ["addon:approved", "administrator"])
 	@Get("{id_or_slug}")
-	public async getAddon(@Path() id_or_slug: string | AddonStatus): Promise<Addon | Addons> {
+	public async getAddon(@Path() id_or_slug: string): Promise<Addon | Addons> {
 		if (AddonStatusValues.includes(id_or_slug as AddonStatus))
 			return this.service.getAddonsByStatus(id_or_slug as AddonStatus);
 		const [, addon] = await this.service.getAddonFromSlugOrId(id_or_slug);
@@ -95,7 +95,7 @@ export class AddonController extends Controller {
 		let headerFileURL = await this.service.getHeaderFileURL(addonID);
 		if (headerFileURL.startsWith("/")) headerFileURL = process.env.DB_IMAGE_ROOT + headerFileURL;
 
-		request.res.redirect(headerFileURL);
+		request.res?.redirect(headerFileURL);
 	}
 
 	/**
@@ -163,25 +163,23 @@ export class AddonController extends Controller {
 	public async getDownloads(@Path() id_or_slug: string): Promise<AddonDownload[]> {
 		const [addonID] = await this.service.getAddonFromSlugOrId(id_or_slug);
 		const files = await this.service.getFiles(addonID);
-		return Object.values(
-			files
-				.filter((f) => f.use === "download")
-				.map((file) => {
-					if (!file.source.startsWith("https://") && !file.source.startsWith("http://"))
-						file.source = `http://${file.source}`;
-					return file;
-				})
-				.reduce((acc, file) => {
-					if (acc[file.name] === undefined) {
-						acc[file.name] = {
-							key: file.name,
-							links: [],
-						};
-					}
-					acc[file.name].links.push(file.source);
-					return acc;
-				}, {}),
-		);
+		const downloads = files
+			.filter((f) => f.use === "download")
+			.map((file) => {
+				if (!file.source.startsWith("https://") && !file.source.startsWith("http://"))
+					file.source = `http://${file.source}`;
+				return file;
+			})
+			.reduce<Record<string, AddonDownload>>((acc, file) => {
+				const key = file.name || "Unknown Download";
+				acc[key] ||= {
+					key,
+					links: [],
+				};
+				acc[key].links.push(file.source);
+				return acc;
+			}, {});
+		return Object.values(downloads);
 	}
 
 	/**
@@ -201,7 +199,7 @@ export class AddonController extends Controller {
 	) {
 		const [addonID] = await this.service.getAddonFromSlugOrId(id_or_slug);
 		const screenshotURL = await this.service.getScreenshotURL(addonID, index);
-		request.res.redirect(screenshotURL);
+		request.res?.redirect(screenshotURL);
 	}
 
 	/**

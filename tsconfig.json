@@ -16,6 +16,7 @@
 		"skipLibCheck": true,
 		"declaration": true,
 		"allowJs": true,
+		"strictNullChecks": true,
 		"resolveJsonModule": true,
 		"baseUrl": "src",
 	},

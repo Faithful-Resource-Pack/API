@@ -79,7 +79,7 @@ export function formHandler(
 				req,
 				"discord",
 				swaggerDocOptions.security.discord,
-			).catch((err) => next(err));
+			).catch((err: unknown) => next(err));
 			next();
 		},
 		upload.single("file"),

@@ -14,5 +14,5 @@ export default tseslint.config(
 			// used for some aliased firestorm types
 			"@typescript-eslint/no-empty-object-type": "off",
 		},
-	}
+	},
 );

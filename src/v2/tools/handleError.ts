@@ -2,6 +2,11 @@ import { AxiosError } from "axios";
 import status from "statuses";
 import { APIError } from "./errorTypes";
 
+interface ModifiedError {
+	name: string;
+	message: string;
+}
+
 /**
  * Handle and log errors
  * @param err Error to handle
@@ -17,7 +22,7 @@ export default function handleError(err: any, route: string, method: string): AP
 		(err.response && err.response.data
 			? err.response.data.error || err.response.data.message
 			: err.message) || err;
-	const stack = process.env.VERBOSE && err.stack ? err.stack : "";
+	const stack = process.env.VERBOSE === "true" && err.stack ? err.stack : "";
 
 	let printed = false;
 	// silence post not found errors because they happen really frequently
@@ -49,10 +54,7 @@ export default function handleError(err: any, route: string, method: string): AP
 	const finalError = new APIError(name, code, message);
 
 	// modify error to give more context and details with data
-	let modified: {
-		name: string;
-		message: string;
-	};
+	let modified: ModifiedError | undefined;
 
 	if (err?.response?.data !== undefined) {
 		modified = {

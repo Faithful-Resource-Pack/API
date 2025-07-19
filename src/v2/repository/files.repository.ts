@@ -1,18 +1,26 @@
 import firestorm, { ID_FIELD, WriteConfirmation } from "firestorm-db";
 import FormData from "form-data";
 import { files } from "../firestorm";
-import { File, FileParent, FileRepository, Files, FileUse } from "../interfaces/files";
+import {
+	CreationFile,
+	CreationFiles,
+	File,
+	FileParent,
+	FileRepository,
+	Files,
+	FileUse,
+} from "../interfaces/files";
 
 export class FileFirestormRepository implements FileRepository {
 	getRaw(): Promise<Record<string, File>> {
 		return files.readRaw();
 	}
 
-	addFiles(fileList: Files): Promise<string[]> {
+	addFiles(fileList: CreationFiles): Promise<string[]> {
 		return files.addBulk(fileList);
 	}
 
-	addFile(file: File): Promise<string> {
+	addFile(file: CreationFile): Promise<string> {
 		return files.add(file);
 	}
 

@@ -13,7 +13,7 @@ export class CloudflareController extends Controller {
 	 */
 	@Get("purge")
 	@Security("cloudflare")
-	public purge(): Promise<CachePurgeResponse[]> {
+	public purge(): Promise<(CachePurgeResponse | null)[]> {
 		return this.service.purge();
 	}
 

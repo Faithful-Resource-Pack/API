@@ -1,12 +1,16 @@
 import { WriteConfirmation } from "firestorm-db";
 import { FileFirestormRepository } from "../repository/files.repository";
-import { FileParent, FileUse, File, Files } from "../interfaces/files";
+import { FileParent, FileUse, File, Files, CreationFile, CreationFiles } from "../interfaces/files";
 
 export default class FileService {
 	private readonly repo = new FileFirestormRepository();
 
 	public removeFileByPath(path: string): Promise<WriteConfirmation> {
 		return this.repo.removeFileByPath(path);
+	}
+
+	public getFileById(id: string) {
+		return this.repo.getFileById(id);
 	}
 
 	public removeFilesByParentAndUse(parent: FileParent, use: FileUse): Promise<WriteConfirmation> {
@@ -17,11 +21,11 @@ export default class FileService {
 		return this.repo.removeFilesByParent(parent);
 	}
 
-	public addFile(file: File): Promise<string> {
+	public addFile(file: CreationFile): Promise<string> {
 		return this.repo.addFile(file);
 	}
 
-	public addFiles(files: Files): Promise<string[]> {
+	public addFiles(files: CreationFiles): Promise<string[]> {
 		return this.repo.addFiles(files);
 	}
 

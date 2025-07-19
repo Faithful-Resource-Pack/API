@@ -22,7 +22,7 @@ export class AuthController extends Controller {
 		params.append("scope", "identify");
 		params.append("redirect_uri", redirectURI);
 
-		request.res.redirect(`https://discord.com/api/oauth2/authorize?${params.toString()}`);
+		request.res?.redirect(`https://discord.com/api/oauth2/authorize?${params.toString()}`);
 	}
 
 	/**
@@ -36,7 +36,7 @@ export class AuthController extends Controller {
 		@Query() code?: string,
 	) {
 		// when you press cancel on the discord screen
-		if (!code) return request.res.redirect(this.service.targetToURL(target));
+		if (!code) return request.res?.redirect(this.service.targetToURL(target));
 
 		const discordParams = new URLSearchParams();
 		discordParams.append("client_id", process.env.DISCORD_CLIENT_ID);
@@ -54,7 +54,7 @@ export class AuthController extends Controller {
 		const json = (await tokenResponse.json()) as RESTPostOAuth2AccessTokenResult;
 
 		if ("error" in json) {
-			request.res.status(500).json(json).end();
+			request.res?.status(500).json(json).end();
 			return;
 		}
 
@@ -62,7 +62,7 @@ export class AuthController extends Controller {
 		targetParams.append("access_token", json.access_token);
 		targetParams.append("refresh_token", json.refresh_token);
 		targetParams.append("expires_in", String(json.expires_in));
-		request.res.redirect(`${this.service.targetToURL(target)}?${targetParams.toString()}`);
+		request.res?.redirect(`${this.service.targetToURL(target)}?${targetParams.toString()}`);
 	}
 
 	/**
@@ -88,10 +88,10 @@ export class AuthController extends Controller {
 		const json = (await tokenResponse.json()) as RESTPostOAuth2AccessTokenResult;
 
 		if ("error" in json) {
-			request.res.status(500).json(json).end();
+			request.res?.status(500).json(json).end();
 			return;
 		}
 
-		request.res.json(json).end();
+		request.res?.json(json).end();
 	}
 }

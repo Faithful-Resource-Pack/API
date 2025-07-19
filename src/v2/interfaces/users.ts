@@ -31,9 +31,9 @@ export interface UserCreationParams {
 }
 
 export interface Username {
-	id: string;
-	username: string;
-	uuid: string;
+	id?: string;
+	username?: string;
+	uuid?: string | undefined;
 }
 
 export type Usernames = Username[];
@@ -41,8 +41,8 @@ export type Usernames = Username[];
 export interface UserProfile {
 	id?: string;
 	media?: Media[];
-	username: string | undefined;
-	uuid: string | undefined;
+	username?: string | undefined;
+	uuid?: string | undefined;
 }
 
 export interface UpdateUserProfile extends UserProfile {
@@ -50,7 +50,7 @@ export interface UpdateUserProfile extends UserProfile {
 }
 
 export interface User extends UserCreationParams {
-	id: string; // discord user id
+	id?: string; // discord user id
 	media?: Medias;
 }
 

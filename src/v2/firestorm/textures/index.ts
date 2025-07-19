@@ -40,18 +40,19 @@ export function urlFromTextureData(
 
 	const candidatePaths = texturePaths.filter((p) => p.use === foundUse.id);
 
-	let path: Path;
+	let path: Path | undefined;
 
 	if (version === "latest" || candidatePaths.length === 1) {
 		path = candidatePaths[0];
 		// if there's one path try to get the right version, otherwise take the first one
-		if (!path.versions.includes(version)) version = path.versions.sort(versionSorter).at(-1);
+		if (!path.versions.includes(version))
+			version = path.versions.sort(versionSorter).at(-1) || "unknown";
 	} else path = candidatePaths.find((p) => p.versions.includes(version));
 
 	if (!path) throw new NotFoundError(`No path found for version ${version}`);
 
 	// confirmed that edition exists already so we can safely destructure
-	const { org, repo } = pack.github[foundUse.edition];
+	const { org, repo } = pack.github[foundUse.edition] || {};
 	return `${baseURL}/${org}/${repo}/${version}/${path.name}`;
 }
 

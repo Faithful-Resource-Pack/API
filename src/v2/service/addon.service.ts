@@ -1,5 +1,5 @@
 import { URL } from "url";
-import { APIEmbedField } from "discord-api-types/v10";
+import { APIEmbed, APIEmbedField } from "discord-api-types/v10";
 import { WriteConfirmation } from "firestorm-db";
 import { User, UserProfile } from "../interfaces/users";
 import {
@@ -11,6 +11,8 @@ import {
 	File,
 	FileParent,
 	MulterFile,
+	CreationFile,
+	CreationFiles,
 } from "../interfaces";
 import { BadRequestError, NotFoundError } from "../tools/errorTypes";
 import UserService from "./user.service";
@@ -128,6 +130,7 @@ export default class AddonService {
 			.filter((a) => isAdmin || a.approval.status === AddonStatusApproved)
 			.reduce(
 				(acc, val) => {
+					if (!val.approval.status) return acc;
 					acc[val.approval.status]++;
 					val.options.tags.forEach((t) => {
 						acc.numbers[t] = (acc.numbers[t] || 0) + 1;
@@ -216,13 +219,13 @@ export default class AddonService {
 
 		// throw if already existing
 		const existingAddon = await this.getAddonBySlug(slugValue);
-		if (existingAddon)
-			throw new BadRequestError("The slug corresponding to this addon name already exists");
+		if (existingAddon) throw new BadRequestError(`Add-on slug /${slugValue} already exists`);
 
 		const { downloads } = body;
-		delete body.downloads;
 
-		const addonDataParams = body as AddonDataParam;
+		// typescript shenanigans to delete properties
+		const addonDataParams: AddonDataParam & Partial<AddonCreationParam> = body;
+		delete addonDataParams.downloads;
 
 		const addon: Addon = {
 			...addonDataParams,
@@ -238,7 +241,7 @@ export default class AddonService {
 		const addonCreated = await this.addonRepo.create(addon);
 
 		// one to many relationship
-		const files: Files = downloads.flatMap((d) =>
+		const files: CreationFiles = downloads.flatMap((d) =>
 			d.links.map((link) => ({
 				name: d.key,
 				use: "download",
@@ -277,9 +280,12 @@ export default class AddonService {
 			throw new BadRequestError("All authors must have a username");
 
 		const { downloads } = body;
-		delete body.downloads;
 
-		const files: Files = downloads.flatMap((d) =>
+		// typescript shenanigans to delete properties
+		const addonDataParams: AddonDataParam & Partial<AddonCreationParam> = body;
+		delete addonDataParams.downloads;
+
+		const files: CreationFiles = downloads.flatMap((d) =>
 			d.links.map((link) => ({
 				name: d.key,
 				use: "download",
@@ -291,11 +297,10 @@ export default class AddonService {
 
 		await this.fileService
 			.removeFilesByParentAndUse({ type: "addons", id: String(id) }, "download")
-			.catch((err) => {
+			.catch((err: string) => {
 				throw new BadRequestError(err);
 			});
 
-		const addonDataParams: AddonDataParam = body;
 		const savedAddon = await this.getAddon(id);
 		const before = savedAddon.approval.status;
 		const addon: Addon = {
@@ -347,7 +352,7 @@ export default class AddonService {
 		// upload file
 		await this.fileService.upload(uploadLocation, filename, buffer, true);
 
-		const newFile: File = {
+		const newFile: CreationFile = {
 			name: "header",
 			use: "header",
 			parent: {
@@ -360,9 +365,8 @@ export default class AddonService {
 
 		// add file to db
 		// returns file id
-		newFile.id = await this.fileService.addFile(newFile);
-
-		return newFile;
+		const id = await this.fileService.addFile(newFile);
+		return this.fileService.getFileById(id);
 	}
 
 	public async postScreenshot(
@@ -395,7 +399,7 @@ export default class AddonService {
 		// upload file
 		await this.fileService.upload(uploadLocation, filename, buffer, true);
 
-		const newFile: File = {
+		const newFile: CreationFile = {
 			name: `screen${newName}`,
 			use: "screenshot",
 			parent: {
@@ -407,9 +411,8 @@ export default class AddonService {
 		};
 
 		// add file to db
-		newFile.id = await this.fileService.addFile(newFile);
-
-		return newFile;
+		const id = await this.fileService.addFile(newFile);
+		return this.fileService.getFileById(id);
 	}
 
 	public async remove(id: number): Promise<void> {
@@ -481,7 +484,7 @@ export default class AddonService {
 	public async deleteHeader(idOrSlug: string): Promise<WriteConfirmation> {
 		const [addonID, addon] = await this.getAddonFromSlugOrId(idOrSlug);
 
-		const before = addon.approval?.status || null;
+		const before = addon.approval.status || null;
 
 		addon.approval = {
 			reason: null,
@@ -522,7 +525,7 @@ export default class AddonService {
 	private async saveUpdate(
 		id: number,
 		addon: Addon,
-		before: AddonStatus,
+		before: AddonStatus | null,
 		notify = true,
 	): Promise<Addon> {
 		const a = await this.addonRepo.update(id, addon);
@@ -530,7 +533,7 @@ export default class AddonService {
 		return a;
 	}
 
-	private async notifyAddonChange(addon: Addon, before: AddonStatus): Promise<void> {
+	private async notifyAddonChange(addon: Addon, before: AddonStatus | null): Promise<void> {
 		const { status, author } = addon.approval;
 		// webhook not set up or status hasn't changed
 		if (!process.env.WEBHOOK_URL || before === status) return;
@@ -543,7 +546,7 @@ export default class AddonService {
 		} else {
 			let username = "an unknown user";
 			if (author) {
-				const user: User = await this.userService.getUserById(author).catch(() => undefined);
+				const user = await this.userService.getUserById(author).catch(() => null);
 				if (user) username = user.username;
 			}
 
@@ -551,16 +554,7 @@ export default class AddonService {
 			name = "Add-on Review";
 		}
 
-		let reason: APIEmbedField[];
-		if (status !== "approved")
-			reason = [
-				{
-					name: "Reason",
-					value: addon.approval.reason ?? "*No reason provided*",
-				},
-			];
-
-		discordEmbed({
+		const embed: APIEmbed = {
 			title,
 			url: `https://webapp.faithfulpack.net/review/addons?status=${status}&id=${addon.id}`,
 			author: {
@@ -568,8 +562,17 @@ export default class AddonService {
 				icon_url:
 					"https://raw.githubusercontent.com/Faithful-Resource-Pack/Branding/main/role_icons/contributor/add_on_maker.png",
 			},
-			fields: reason,
-		});
+		};
+
+		if (status !== "approved")
+			embed.fields = [
+				{
+					name: "Reason",
+					value: addon.approval.reason ?? "*No reason provided*",
+				},
+			];
+
+		discordEmbed(embed);
 	}
 
 	public async getAddonProperty(id: number, property: AddonProperty): Promise<Addon | Files> {

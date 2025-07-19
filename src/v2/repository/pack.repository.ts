@@ -68,14 +68,14 @@ export default class PackFirestormRepository implements PackRepository {
 
 		const out = (
 			await Promise.all(
-				searched.map<Promise<FirestormPack>>((pack) =>
+				searched.map<Promise<FirestormPack | null>>((pack) =>
 					pack
 						.submission()
 						.then(() => pack)
-						.catch(() => undefined),
+						.catch(() => null),
 				),
 			)
-		).filter((pack) => pack !== undefined);
+		).filter((pack) => pack !== null);
 
 		if (type === "submission") return out;
 		return searched.filter((p) => !out.includes(p));

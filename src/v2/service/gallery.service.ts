@@ -42,13 +42,13 @@ export default class GalleryService {
 				.filter((use) => use)
 				.map((use) => {
 					const path = useToPath[use.id].name;
+					const packGithub = github[use.edition];
 					// invalid urls get handled by the gallery itself
-					if (!github[use.edition]) return "";
-					const { org, repo } = github[use.edition];
+					if (!packGithub) return "";
 
 					// convert "latest" to actual latest version
 					const githubVersion = version === "latest" ? versions[use.edition][0] : version;
-					return `${baseURL}/${org}/${repo}/${githubVersion}/${path}`;
+					return `${baseURL}/${packGithub.org}/${packGithub.repo}/${githubVersion}/${path}`;
 				})
 		);
 	}

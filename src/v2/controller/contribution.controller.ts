@@ -75,7 +75,7 @@ export class ContributionController extends Controller {
 		@Query() search?: string,
 	): Promise<Contributions> {
 		return this.service.search({
-			packs: packs && packs !== "all" ? packs.split("-") : null,
+			packs: packs && packs !== "all" ? packs.split("-") : undefined,
 			users: users ? users.split("-") : [],
 			search,
 		});
@@ -97,7 +97,7 @@ export class ContributionController extends Controller {
 	 */
 	@Get("search/{users}/{packs}")
 	public searchContributionsFrom(users: string, packs: string): Promise<Contributions> {
-		if (packs === "all") return this.service.searchContributionsFrom(users.split("-"), null);
+		if (packs === "all") return this.service.searchContributionsFrom(users.split("-"));
 		return this.service.searchContributionsFrom(users.split("-"), packs.split("-"));
 	}
 

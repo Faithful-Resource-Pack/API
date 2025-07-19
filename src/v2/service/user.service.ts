@@ -110,7 +110,7 @@ export default class UserService {
 
 		user.username = username;
 
-		user.uuid = body.uuid;
+		user.uuid = body.uuid || "";
 		user.media = body.media;
 		user.anonymous = body.anonymous;
 

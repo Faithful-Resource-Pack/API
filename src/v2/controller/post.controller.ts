@@ -81,7 +81,7 @@ export class PostController extends Controller {
 		const { header_img } = await this.service.getById(id);
 		if (!header_img) throw new NotFoundError("Post header image not found");
 
-		request.res.redirect(302, header_img);
+		request.res?.redirect(302, header_img);
 	}
 
 	/**

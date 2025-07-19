@@ -28,6 +28,6 @@ export class ModpacksController extends Controller {
 			this.service.getThumbnail(parseInt(id, 10)),
 		);
 
-		request.res.redirect(url);
+		request.res?.redirect(url);
 	}
 }

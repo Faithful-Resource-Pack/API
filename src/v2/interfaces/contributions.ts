@@ -15,8 +15,8 @@ export interface Contribution extends ContributionCreationParams {
 export type Contributions = Contribution[];
 export interface ContributionsAuthor {
 	id: string; // discord user id
-	username: string; // display name
-	uuid: string; // user Minecraft uuid
+	username?: string; // display name
+	uuid?: string; // user Minecraft uuid
 	contributions: number; // total contribution count
 }
 

@@ -1,5 +1,5 @@
 import { WriteConfirmation } from "firestorm-db";
-import { BadRequestError } from "../tools/errorTypes";
+import { BadRequestError, NotFoundError } from "../tools/errorTypes";
 import UseService from "./use.service";
 import { InputPath, Path, PathNewVersionParam, Paths } from "../interfaces";
 import PathFirestormRepository from "../repository/path.repository";
@@ -85,6 +85,8 @@ export default class PathService {
 		const allVersions: Record<string, string[]> = await settings.get("versions");
 		const edition = Object.entries(allVersions).find((v) => v[1].includes(version))?.[0];
 
+		if (!edition) throw new NotFoundError(`Matching edition not found for version ${version}`);
+
 		return Promise.all([
 			settings.editField({
 				id: "versions",
@@ -102,6 +104,7 @@ export default class PathService {
 	): Promise<[WriteConfirmation, WriteConfirmation]> {
 		const allVersions: Record<string, string[]> = await settings.get("versions");
 		const edition = Object.entries(allVersions).find((v) => v[1].includes(oldVersion))?.[0];
+		if (!edition) throw new NotFoundError(`Matching edition not found for version ${oldVersion}`);
 
 		return Promise.all([
 			settings.editField({

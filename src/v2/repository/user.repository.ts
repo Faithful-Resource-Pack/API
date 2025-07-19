@@ -1,4 +1,4 @@
-import { ID_FIELD, WriteConfirmation } from "firestorm-db";
+import { ID_FIELD, SearchOption, WriteConfirmation } from "firestorm-db";
 import { AxiosError } from "axios";
 import { APIUser } from "discord-api-types/v10";
 import { users, contributions, addons } from "../firestorm";
@@ -42,19 +42,18 @@ export default class UserFirestormRepository implements UserRepository {
 
 	async getNames(): Promise<Usernames> {
 		const fields = await users.select({ fields: ["id", "username", "uuid", "anonymous"] });
-		return Object.values(fields).map((el) => ({
-			id: el.id,
-			username: el.anonymous ? undefined : el.username,
-			uuid: el.anonymous ? undefined : el.uuid,
-		}));
+		return Object.values(fields).map(({ id, username, uuid, anonymous }) => {
+			if (anonymous) return { id };
+			return { id, username, uuid };
+		});
 	}
 
 	async getUserById(id: string): Promise<User> {
 		try {
 			const user = await users.get(id);
 			return mapUser(user);
-		} catch (err) {
-			if (err.isAxiosError && err.response?.status === 404) {
+		} catch (err: unknown) {
+			if (err instanceof AxiosError && err.response?.status === 404) {
 				// prettier error message
 				const formattedError = new NotFoundError("User not found");
 				throw formattedError;
@@ -68,9 +67,9 @@ export default class UserFirestormRepository implements UserRepository {
 		let user: User;
 		try {
 			user = await users.get(id);
-		} catch (err) {
+		} catch (err: unknown) {
 			// create if failed with 404
-			if (err instanceof AxiosError && err.response.status === 404) {
+			if (err instanceof AxiosError && err.response?.status === 404) {
 				const empty: User = {
 					id,
 					anonymous: false,
@@ -104,7 +103,7 @@ export default class UserFirestormRepository implements UserRepository {
 
 	async getUsersFromRole(role: string, username?: string): Promise<Users> {
 		if (role === "all" && !username) return Object.values(await users.readRaw());
-		const options = [];
+		const options: SearchOption<User>[] = [];
 
 		if (role !== "all")
 			options.push({
@@ -231,12 +230,9 @@ export default class UserFirestormRepository implements UserRepository {
 
 	async getUserProfiles(searchedUsers: string[]): Promise<UserProfile[]> {
 		const u = await users.searchKeys(searchedUsers);
-		return u.map((el) => ({
-			id: el.id,
-			username: el.anonymous ? undefined : el.username,
-			// ensure anonymous stays anonymous
-			uuid: el.anonymous ? undefined : el.uuid || undefined,
-			media: el.anonymous ? undefined : el.media || [],
-		}));
+		return u.map(({ id, anonymous, username, uuid, media }) => {
+			if (anonymous) return { id };
+			return { id, username, uuid, media };
+		});
 	}
 }
