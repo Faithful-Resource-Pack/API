@@ -1,7 +1,7 @@
 import { URL } from "url";
-import { APIEmbed, APIEmbedField } from "discord-api-types/v10";
+import { APIEmbed } from "discord-api-types/v10";
 import { WriteConfirmation } from "firestorm-db";
-import { User, UserProfile } from "../interfaces/users";
+import { UserProfile } from "../interfaces/users";
 import {
 	Addons,
 	Addon,
