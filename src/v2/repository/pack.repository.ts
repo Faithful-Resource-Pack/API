@@ -97,7 +97,7 @@ export default class PackFirestormRepository implements PackRepository {
 	}
 
 	async create(packId: string, data: CreationPackAll): Promise<CreationPackAll> {
-		const out = {} as CreationPackAll;
+		const out: Partial<CreationPackAll> = {};
 		if (data.submission) {
 			// submission is stored separately so we split it from the main payload
 			const submissionData = { id: packId, ...data.submission };

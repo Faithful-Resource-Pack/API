@@ -22,7 +22,7 @@ export default class UserService {
 	}
 
 	public async getStats(): Promise<UserStats> {
-		const allRoles = [] as string[];
+		const allRoles: string[] = [];
 		const users = await this.getRaw();
 		return Object.values(users).reduce<UserStats>(
 			(acc, user) => {
