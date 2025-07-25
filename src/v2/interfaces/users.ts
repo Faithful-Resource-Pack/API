@@ -4,21 +4,7 @@ import { Contributions } from "./contributions";
 import { Addons } from "./addons";
 
 export interface Media {
-	type:
-		| "CurseForge"
-		| "GitHub"
-		| "Modrinth"
-		| "Patreon"
-		| "Paypal"
-		| "Planet Minecraft"
-		| "PSN"
-		| "Reddit"
-		| "Steam"
-		| "Twitter"
-		| "Website"
-		| "Xbox"
-		| "YouTube"
-		| "Other";
+	type: string;
 	link: string;
 }
 export type Medias = Media[];
