@@ -17,18 +17,12 @@ import {
 import { Request as ExRequest } from "express";
 import { WriteConfirmation } from "firestorm-db";
 import {
-	Contributions,
-	Paths,
 	Texture,
 	Textures,
-	Uses,
 	Edition,
 	PackID,
 	TextureCreationParam,
-	MCMETA,
 	TextureProperty,
-	TextureAll,
-	TexturesAll,
 	EntireTextureToCreate,
 	AnyTextureProperty,
 } from "../interfaces";

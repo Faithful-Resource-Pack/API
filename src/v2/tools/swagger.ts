@@ -176,9 +176,11 @@ export default function formatSwaggerDoc(app: Application, path: string) {
 	// manual things
 	const adc = new AddonChangeController();
 	const screenDelete = swaggerDoc.paths["/addons/{id_or_slug}/screenshots/{index}"];
-	const headerDelete = swaggerDoc.paths["/addons/{id_or_slug}/header"].delete;
 	delete swaggerDoc.paths["/addons/{id_or_slug}/screenshots/{index}"];
+
+	const headerDelete = swaggerDoc.paths["/addons/{id_or_slug}/header"].delete;
 	delete swaggerDoc.paths["/addons/{id_or_slug}/header"].delete;
+
 	swaggerDoc = formHandler(app, "/v2/addons/:id_or_slug/header", adc, adc.postHeader, swaggerDoc, {
 		prefix: "/v2",
 		operationId: "PostHeader",
