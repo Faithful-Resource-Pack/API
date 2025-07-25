@@ -36,6 +36,14 @@ export interface EntireTextureToCreate extends TextureCreationParam {
 
 export type Edition = "java" | "bedrock";
 export type TextureProperty = null | "uses" | "paths" | "contributions" | "mcmeta" | "all";
+export type AnyTextureProperty =
+	| Textures
+	| Texture
+	| Paths
+	| Uses
+	| Contributions
+	| MCMETA
+	| TextureAll;
 
 // average typescript experience
 export type PropertyToOutput<T extends TextureProperty> = T extends null

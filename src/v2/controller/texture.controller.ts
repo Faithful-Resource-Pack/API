@@ -30,6 +30,7 @@ import {
 	TextureAll,
 	TexturesAll,
 	EntireTextureToCreate,
+	AnyTextureProperty,
 } from "../interfaces";
 import TextureService from "../service/texture.service";
 import { NotFoundError } from "../tools/errorTypes";
@@ -132,16 +133,7 @@ export class TextureController extends Controller {
 	public getTextureProperty(
 		@Path() id_or_name: string | number,
 		@Path() property: TextureProperty,
-	): Promise<
-		| Textures
-		| Texture
-		| Paths
-		| Uses
-		| Contributions
-		| MCMETA
-		| TextureAll
-		| (MCMETA | Textures | Texture | Paths | Uses | Contributions | TexturesAll)[]
-	> {
+	): Promise<AnyTextureProperty | AnyTextureProperty[]> {
 		if (typeof id_or_name === "string" && id_or_name.includes(",")) {
 			const idArray = id_or_name.split(",");
 			return Promise.allSettled(
