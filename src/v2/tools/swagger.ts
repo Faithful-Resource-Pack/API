@@ -64,11 +64,11 @@ interface SwaggerDocOptions {
 	description: string;
 }
 
-export function formHandler(
+export function formHandler<T>(
 	app: Application,
 	url: string,
 	controller: Controller,
-	method: (this: Controller, param: unknown, file: MulterFile, req: ExRequest) => any,
+	method: (this: Controller, param: unknown, file: MulterFile, req: ExRequest) => T,
 	swaggerDoc: Swagger.Spec3,
 	swaggerDocOptions: SwaggerDocOptions,
 ): Swagger.Spec3 {
@@ -87,7 +87,7 @@ export function formHandler(
 			try {
 				const firstParam = Object.keys(req.params)[0];
 				// bind method to controller object
-				const promise = method.call(controller, req.params[firstParam], req.file, req);
+				const promise: T = method.call(controller, req.params[firstParam], req.file, req);
 				promiseHandler(controller, promise, res, 200, next);
 			} catch (error: unknown) {
 				next(error);

@@ -25,7 +25,7 @@ export default class UseService {
 	private readonly repo = new UseFirestormRepository();
 
 	async getPathUseByIdOrName(idOrName: string): Promise<Paths> {
-		const use = await this.getUseByIdOrName<true>(idOrName);
+		const use = await this.getUseById(idOrName);
 		return this.pathService.getPathByUseId(use.id);
 	}
 
@@ -33,10 +33,12 @@ export default class UseService {
 		return this.repo.getRaw();
 	}
 
-	getUseByIdOrName<AlwaysID extends boolean = false>(
-		idOrName: string,
-	): Promise<AlwaysID extends true ? Use : Use | Uses> {
-		return this.repo.getUseByIdOrName(idOrName) as any;
+	getUseById(id: number | string): Promise<Use> {
+		return this.repo.getUseById(id);
+	}
+
+	getUseByIdOrName(idOrName: string): Promise<Use | Uses> {
+		return this.repo.getUseByIdOrName(idOrName);
 	}
 
 	async doesUseExist(idOrName: string): Promise<boolean> {

@@ -29,9 +29,10 @@ export interface FirestormUse extends Use {
 }
 
 export interface UseRepository {
-	getUsesByIdsAndEdition(idArr: number[], edition: GalleryEdition): Promise<Uses>;
 	getRaw(): Promise<Record<string, Use>>;
+	getUseById(id: string | number): Promise<Use>;
 	getUseByIdOrName(idOrName: string): Promise<Uses | Use>;
+	getUsesByIdsAndEdition(idArr: number[], edition: GalleryEdition): Promise<Uses>;
 	lastCharCode(textureID: string): Promise<number>;
 	set(use: Use): Promise<Use>;
 	setMultiple(uses: Uses): Promise<Uses>;

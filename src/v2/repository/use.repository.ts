@@ -3,6 +3,32 @@ import { GalleryEdition, Use, UseRepository, Uses } from "../interfaces";
 import { paths, uses } from "../firestorm";
 
 export default class UseFirestormRepository implements UseRepository {
+	getRaw(): Promise<Record<string, Use>> {
+		return uses.readRaw();
+	}
+
+	getUseById(id: string | number): Promise<Use> {
+		return uses.get(id);
+	}
+
+	async getUseByIdOrName(idOrName: string): Promise<Uses | Use> {
+		try {
+			// ! must use return await for try/catch to work properly
+			// https://stackoverflow.com/a/42750371/20327257
+			return await this.getUseById(idOrName);
+		} catch {
+			const out = await uses.search([
+				{
+					field: "name",
+					criteria: "includes",
+					value: idOrName,
+					ignoreCase: true,
+				},
+			]);
+			return out.filter((use) => use.name !== null);
+		}
+	}
+
 	getUsesByIdsAndEdition(idArr: number[], edition: GalleryEdition): Promise<Uses> {
 		const search: SearchOption<Use>[] = [
 			{
@@ -18,28 +44,6 @@ export default class UseFirestormRepository implements UseRepository {
 				value: edition,
 			});
 		return uses.search(search);
-	}
-
-	getRaw(): Promise<Record<string, Use>> {
-		return uses.readRaw();
-	}
-
-	async getUseByIdOrName(idOrName: string): Promise<Uses | Use> {
-		try {
-			// ! must use return await for try/catch to work properly
-			// https://stackoverflow.com/a/42750371/20327257
-			return await uses.get(idOrName);
-		} catch {
-			const out = await uses.search([
-				{
-					field: "name",
-					criteria: "includes",
-					value: idOrName,
-					ignoreCase: true,
-				},
-			]);
-			return out.filter((use) => use.name !== null);
-		}
 	}
 
 	async lastCharCode(textureID: string): Promise<number> {
