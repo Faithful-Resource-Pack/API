@@ -33,7 +33,7 @@ import { ExRequestWithAuth } from "../tools/authentication";
 @Route("users")
 @Tags("Users")
 export class UserController extends Controller {
-	private readonly userService = new UserService();
+	private readonly service = new UserService();
 
 	/**
 	 * Get user information using authentication parameters
@@ -41,7 +41,7 @@ export class UserController extends Controller {
 	@Get("profile")
 	@Security("discord", [])
 	public getProfile(@Request() request: ExRequestWithAuth<string>): Promise<User> {
-		return this.userService.getUserById(request.user);
+		return this.service.getUserById(request.user);
 	}
 
 	/**
@@ -54,7 +54,7 @@ export class UserController extends Controller {
 		@Body() body: UpdateUserProfile,
 		@Request() request: ExRequestWithAuth<string>,
 	): Promise<User> {
-		return this.userService.setProfileById(request.user, body);
+		return this.service.setProfileById(request.user, body);
 	}
 
 	/**
@@ -63,7 +63,7 @@ export class UserController extends Controller {
 	@Get("newprofile")
 	@Security("discord", ["account:create"])
 	public createProfile(@Request() request: ExRequestWithAuth<APIUser>): Promise<User> {
-		return this.userService.getProfileOrCreate(request.user);
+		return this.service.getProfileOrCreate(request.user);
 	}
 
 	/**
@@ -73,7 +73,7 @@ export class UserController extends Controller {
 	@Security("discord", ["administrator"])
 	@Security("bot")
 	public getRaw(): Promise<Record<string, User>> {
-		return this.userService.getRaw();
+		return this.service.getRaw();
 	}
 
 	/**
@@ -82,7 +82,7 @@ export class UserController extends Controller {
 	@Response<NotAvailableError>(408)
 	@Get("stats")
 	public getStats(): Promise<UserStats> {
-		return cache.handle("user-stats", () => this.userService.getStats());
+		return cache.handle("user-stats", () => this.service.getStats());
 	}
 
 	/**
@@ -90,7 +90,7 @@ export class UserController extends Controller {
 	 */
 	@Get("names")
 	public getNames(): Promise<Usernames> {
-		return this.userService.getNames();
+		return this.service.getNames();
 	}
 
 	/**
@@ -98,7 +98,7 @@ export class UserController extends Controller {
 	 */
 	@Get("roles")
 	public getRoles(): Promise<string[]> {
-		return this.userService.getRoles();
+		return this.service.getRoles();
 	}
 
 	/**
@@ -107,7 +107,7 @@ export class UserController extends Controller {
 	 */
 	@Get("role/{role}")
 	public getUsersFromRole(@Path() role: string): Promise<Users> {
-		return this.userService.getUsersFromRole(role);
+		return this.service.getUsersFromRole(role);
 	}
 
 	/**
@@ -120,7 +120,7 @@ export class UserController extends Controller {
 		@Path() role: string,
 		@Path() username: string,
 	): Promise<Users> {
-		return this.userService.getUsersFromRole(role, username);
+		return this.service.getUsersFromRole(role, username);
 	}
 
 	/**
@@ -131,12 +131,12 @@ export class UserController extends Controller {
 	public getUser(@Path() id_or_username: string): Promise<User | Users> {
 		if (typeof id_or_username === "string" && id_or_username.includes(",")) {
 			const idArray = id_or_username.split(",");
-			return Promise.allSettled(idArray.map((id) => this.userService.getUsersByNameOrId(id))).then(
+			return Promise.allSettled(idArray.map((id) => this.service.getUsersByNameOrId(id))).then(
 				(res) => res.filter((p) => p.status === "fulfilled").flatMap((p) => p.value),
 			);
 		}
 
-		return this.userService.getUsersByNameOrId(id_or_username);
+		return this.service.getUsersByNameOrId(id_or_username);
 	}
 
 	/**
@@ -145,7 +145,7 @@ export class UserController extends Controller {
 	 */
 	@Get("{id}/contributions")
 	public getContributions(@Path() id: string): Promise<Contributions> {
-		return this.userService.getContributions(id);
+		return this.service.getContributions(id);
 	}
 
 	/**
@@ -154,7 +154,7 @@ export class UserController extends Controller {
 	 */
 	@Get("{id}/name")
 	public getName(@Path() id: string): Promise<Username> {
-		return this.userService.getNameById(id);
+		return this.service.getNameById(id);
 	}
 
 	/**
@@ -163,7 +163,7 @@ export class UserController extends Controller {
 	 */
 	@Get("{id}/addons/approved")
 	public getAddons(@Path() id: string): Promise<Addons> {
-		return this.userService.getAddons(id);
+		return this.service.getAddons(id);
 	}
 
 	/**
@@ -184,7 +184,7 @@ export class UserController extends Controller {
 				throw new BadRequestError("Addon author must include the authored user");
 		}
 
-		return this.userService.getAllAddons(id);
+		return this.service.getAllAddons(id);
 	}
 
 	@Put("change/{old_id}/{new_id}")
@@ -194,7 +194,7 @@ export class UserController extends Controller {
 		@Path() old_id: string,
 		@Path() new_id: string,
 	): Promise<WriteConfirmation> {
-		return this.userService.changeUserID(old_id, new_id);
+		return this.service.changeUserID(old_id, new_id);
 	}
 
 	/**
@@ -205,7 +205,7 @@ export class UserController extends Controller {
 	@Security("discord", [])
 	@Security("bot")
 	public create(@Path() id: string, @Body() body: UserCreationParams): Promise<User> {
-		return this.userService.create(id, { ...body, id, media: [] });
+		return this.service.create(id, { ...body, id, media: [] });
 	}
 
 	/**
@@ -223,20 +223,20 @@ export class UserController extends Controller {
 	): Promise<User> {
 		// the security middleware adds a key user with anything inside when validated, see security middleware Promise return type
 		if (id !== request.user) {
-			const user = await this.userService.getUserById(id).catch(() => {});
+			const user = await this.service.getUserById(id).catch(() => {});
 
 			// admin can modify if they want
 			if (user && !user.roles.includes("Administrator"))
 				throw new ForbiddenError("Cannot set another user");
 		}
 
-		const user = await this.userService.getUserById(id).catch(() => {});
+		const user = await this.service.getUserById(id).catch(() => {});
 
 		const media = user ? user.media || [] : [];
 
 		// add properties
 		const sent: User = { ...body, id, media };
-		return this.userService.update(id, sent);
+		return this.service.update(id, sent);
 	}
 
 	/**
@@ -248,7 +248,7 @@ export class UserController extends Controller {
 	@Security("discord", ["administrator"])
 	@Security("bot")
 	public setRoles(@Path() id: string, @Body() roles: string[]): Promise<User> {
-		return this.userService.setRoles(id, roles);
+		return this.service.setRoles(id, roles);
 	}
 
 	/**
@@ -258,6 +258,6 @@ export class UserController extends Controller {
 	@Delete("{id}")
 	@Security("discord", ["account:delete", "administrator"])
 	public remove(@Path() id: string): Promise<WriteConfirmation[]> {
-		return this.userService.remove(id);
+		return this.service.remove(id);
 	}
 }
