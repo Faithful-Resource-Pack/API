@@ -25,6 +25,7 @@ import {
 	AddonStats,
 	AddonStatsAdmin,
 	AddonStatusApproved,
+	CreationAddon,
 } from "../interfaces/addons";
 import AddonFirestormRepository from "../repository/addon.repository";
 import { discordEmbed } from "../tools/discordEmbed";
@@ -61,7 +62,7 @@ export default class AddonService {
 		if (Number.isNaN(intID)) {
 			const addon = await this.getAddonBySlug(idOrSlug);
 			if (!addon) throw new NotFoundError(`Add-on ${idOrSlug} not found`);
-			return [addon.id as number, addon];
+			return [Number(addon.id), addon];
 		}
 
 		// else if id
@@ -227,7 +228,7 @@ export default class AddonService {
 		const addonDataParams: AddonDataParam & Partial<AddonCreationParam> = body;
 		delete addonDataParams.downloads;
 
-		const addon: Addon = {
+		const addon: CreationAddon = {
 			...addonDataParams,
 			last_updated: Date.now(),
 			slug: slugValue,

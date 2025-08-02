@@ -1,6 +1,6 @@
 import { WriteConfirmation } from "firestorm-db";
-import { addons } from "../firestorm";
-import { Files, AddonStatus, Addon, Addons, AddonRepository } from "../interfaces";
+import { addons, files } from "../firestorm";
+import { Files, AddonStatus, Addon, Addons, AddonRepository, CreationAddon } from "../interfaces";
 
 export default class AddonFirestormRepository implements AddonRepository {
 	getRaw(): Promise<Record<string, Addon>> {
@@ -11,9 +11,19 @@ export default class AddonFirestormRepository implements AddonRepository {
 		return addons.get(id);
 	}
 
-	async getFilesById(addonId: number): Promise<Files> {
-		const addon = await addons.get(addonId);
-		return addon.getFiles();
+	async getFilesById(addonId: string | number): Promise<Files> {
+		return files.search([
+			{
+				field: "parent.id",
+				criteria: "==",
+				value: addonId,
+			},
+			{
+				field: "parent.type",
+				criteria: "==",
+				value: "addons",
+			},
+		]);
 	}
 
 	getAddonByStatus(status: AddonStatus): Promise<Addons> {
@@ -26,7 +36,7 @@ export default class AddonFirestormRepository implements AddonRepository {
 		]);
 	}
 
-	async getAddonBySlug(slug: string): Promise<Addon> {
+	async getAddonBySlug(slug: string): Promise<Addon | undefined> {
 		const results = await addons.search([
 			{
 				criteria: "==",
@@ -37,16 +47,16 @@ export default class AddonFirestormRepository implements AddonRepository {
 		return results[0];
 	}
 
-	async create(addon: Addon): Promise<Addon> {
-		await addons.add(addon);
-		return this.getAddonBySlug(addon.slug);
+	async create(addon: CreationAddon): Promise<Addon> {
+		const id = await addons.add(addon);
+		return addons.get(id);
 	}
 
-	remove(id: number): Promise<WriteConfirmation> {
-		return addons.remove(String(id));
+	remove(id: string | number): Promise<WriteConfirmation> {
+		return addons.remove(id);
 	}
 
-	async update(id: number, addon: Addon): Promise<Addon> {
+	async update(id: string | number, addon: Addon): Promise<Addon> {
 		await addons.set(id, addon);
 		return addons.get(id);
 	}

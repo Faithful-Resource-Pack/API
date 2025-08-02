@@ -24,8 +24,7 @@ export interface AddonReview extends AddonReviewBody {
 	author: null | string; // approval/deny author -> Discord ID
 }
 
-export interface Addon {
-	id?: number | string;
+export interface CreationAddon {
 	name: string; // addon name (> 5 && < 30)
 	slug: string; // used in link (ex: 'www.faithfulpack.net/addons/Faithful3D')
 	description: string; // addon description (> 256 && < 4096)
@@ -38,6 +37,11 @@ export interface Addon {
 	last_updated?: number;
 	approval: AddonReview;
 }
+
+export interface Addon extends CreationAddon {
+	id: string;
+}
+
 export type Addons = Addon[];
 
 export type AddonDataParam = Pick<
@@ -82,8 +86,8 @@ export interface AddonRepository {
 	getAddonById(id: number): Promise<Addon>;
 	getAddonBySlug(slug: string): Promise<Addon | undefined>;
 	getAddonByStatus(status: AddonStatus): Promise<Addons>;
-	getFilesById(addonId: number): Promise<Files>;
+	getFilesById(addonId: string | number): Promise<Files>;
 	create(addon: Addon): Promise<Addon>;
-	remove(id: number): Promise<WriteConfirmation>;
-	update(id: number, addon: Addon): Promise<Addon>;
+	remove(id: string | number): Promise<WriteConfirmation>;
+	update(id: string | number, addon: Addon): Promise<Addon>;
 }
