@@ -75,8 +75,6 @@ export interface AddonStatsAdmin extends AddonStats {
 }
 
 export interface FirestormAddon extends Addon {
-	// guaranteed to return from collection
-	id: string;
 	getFiles(): Promise<Files>;
 	all(): Promise<AddonAll>;
 }

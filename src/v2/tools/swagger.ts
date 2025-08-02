@@ -2,7 +2,7 @@ import { Controller, Swagger } from "tsoa";
 import multer from "multer";
 import { Application, NextFunction, Response as ExResponse, Request as ExRequest } from "express";
 import { readFileSync } from "fs";
-import { MulterFile } from "v2/interfaces";
+import { MulterFile } from "../interfaces";
 import { AddonChangeController } from "../controller/addonChange.controller";
 import { expressAuthentication, ExRequestWithAuth } from "./authentication";
 import { BadRequestError } from "./errorTypes";
@@ -195,7 +195,7 @@ export default function formatSwaggerDoc(app: Application, path: string) {
 		app,
 		"/v2/addons/:id_or_slug/screenshots",
 		adc,
-		adc.addonAddScreenshot,
+		adc.addScreenshot,
 		swaggerDoc,
 		{
 			prefix: "/v2",

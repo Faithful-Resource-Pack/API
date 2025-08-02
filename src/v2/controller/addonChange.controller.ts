@@ -27,11 +27,13 @@ import UserService from "../service/user.service";
 import AddonService from "../service/addon.service";
 import * as cache from "../tools/cache";
 import { ExRequestWithAuth } from "../tools/authentication";
+import AddonFileService from "../service/addonFiles.service";
 
 @Route("addons")
 @Tags("Add-on Submissions")
 export class AddonChangeController extends Controller {
 	private readonly service = new AddonService();
+	private readonly fileService = new AddonFileService();
 
 	/**
 	 * Create an add-on
@@ -124,7 +126,7 @@ export class AddonChangeController extends Controller {
 	 * @param file File to post
 	 */
 	public postHeader(id_or_slug: string, file: MulterFile): Promise<File | void> {
-		return this.service.postHeader(id_or_slug, file.originalname, file);
+		return this.fileService.postHeader(id_or_slug, file.originalname, file);
 	}
 
 	/**
@@ -132,8 +134,8 @@ export class AddonChangeController extends Controller {
 	 * @param id_or_slug Add-on to add screenshot to
 	 * @param file File to post
 	 */
-	public addonAddScreenshot(id_or_slug: string, file: MulterFile): Promise<File | void> {
-		return this.service.postScreenshot(id_or_slug, file.originalname, file);
+	public addScreenshot(id_or_slug: string, file: MulterFile): Promise<File | void> {
+		return this.fileService.postScreenshot(id_or_slug, file.originalname, file);
 	}
 
 	/**
@@ -148,8 +150,8 @@ export class AddonChangeController extends Controller {
 	public addonDeleteScreenshot(
 		@Path() id_or_slug: string,
 		@Path() index_or_slug: number | string,
-	): Promise<WriteConfirmation> {
-		return this.service.deleteScreenshot(id_or_slug, index_or_slug);
+	): Promise<WriteConfirmation[]> {
+		return this.fileService.deleteScreenshot(id_or_slug, index_or_slug);
 	}
 
 	/**
@@ -161,7 +163,7 @@ export class AddonChangeController extends Controller {
 	@Delete("{id_or_slug}/header/")
 	@SuccessResponse(204)
 	@Security("discord", ["addon:own", "administrator"])
-	public addonDeleteHeader(@Path() id_or_slug: string): Promise<WriteConfirmation> {
-		return this.service.deleteHeader(id_or_slug);
+	public addonDeleteHeader(@Path() id_or_slug: string): Promise<WriteConfirmation[]> {
+		return this.fileService.deleteHeader(id_or_slug);
 	}
 }

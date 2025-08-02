@@ -13,6 +13,10 @@ export default class FileService {
 		return this.repo.getFileById(id);
 	}
 
+	public getFilesByParent(id: FileParent) {
+		return this.repo.getFilesByParent(id);
+	}
+
 	public removeFilesByParentAndUse(parent: FileParent, use: FileUse): Promise<WriteConfirmation> {
 		return this.repo.removeFilesByParentAndUse(parent, use);
 	}

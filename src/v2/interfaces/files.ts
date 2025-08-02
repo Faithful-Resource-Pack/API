@@ -7,7 +7,7 @@ export type MulterFile = Express.Multer.File;
 
 export interface FileParent {
 	type: string; // collection name (addon, post...)
-	id: string; // id of the parent
+	id: string | number; // id of the parent
 }
 
 export type FileUse = "download" | "header" | "screenshot";
