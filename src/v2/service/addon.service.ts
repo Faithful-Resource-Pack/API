@@ -251,7 +251,7 @@ export default class AddonService {
 			})),
 		);
 
-		await Promise.all(files.map((file) => this.fileService.addFile(file)));
+		await this.fileService.addFiles(files);
 		// wait for all files to be added
 
 		await this.notifyAddonChange(addonCreated, null).catch(console.error);
