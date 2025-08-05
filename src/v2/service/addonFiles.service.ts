@@ -126,7 +126,7 @@ export default class AddonFileService {
 
 		// find precise screen, by id else by index
 		const foundScreen = screens.find((s) => s.id && s.id === String(indexOrSlug));
-		const screen: File = foundScreen || screens[indexOrSlug];
+		const screen = foundScreen || screens[Number(indexOrSlug)];
 		if (screen === undefined) throw new NotFoundError("Screenshot not found");
 
 		let { source } = screen;

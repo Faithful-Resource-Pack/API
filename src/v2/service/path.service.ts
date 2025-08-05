@@ -32,10 +32,9 @@ export default class PathService {
 	): Promise<Record<string, Path>> {
 		// return object for faster lookup
 		const paths = await this.repo.getPathsByUseIdsAndVersion(useIDs, version);
-		return paths.reduce((acc, cur) => {
-			// return after first path found (usually the most important one is first)
-			if (acc[cur.use]) return acc;
-			acc[cur.use] = cur;
+		return paths.reduce<Record<string, Path>>((acc, cur) => {
+			// only take first path
+			acc[cur.use] ??= cur;
 			return acc;
 		}, {});
 	}

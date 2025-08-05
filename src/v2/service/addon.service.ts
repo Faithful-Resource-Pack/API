@@ -309,13 +309,13 @@ export default class AddonService {
 		return results;
 	}
 
-	public async remove(id: number): Promise<WriteConfirmation[]> {
+	public async remove(id: string | number): Promise<WriteConfirmation[]> {
 		const parent: FileParent = {
 			type: "addons",
 			id: String(id),
 		};
 
-		const files = await this.getFiles(id);
+		const files = await this.getFiles(Number(id));
 
 		const realFiles = files
 			.filter((f) => ["header", "screenshot"].includes(f.use))

@@ -35,7 +35,7 @@ export async function read<T>(key: string, duration = 86400000): Promise<CacheDa
 	if (NO_CACHE) throw new Error("Cache disabled");
 
 	const content = await readFile(keyToPath(key), { encoding: "utf8" });
-	const json: Record<number, T> = JSON.parse(content);
+	const json: Record<string | number, T> = JSON.parse(content);
 	const timestampStr = Object.keys(json)[0];
 	const timestamp = Number(timestampStr);
 	return {
@@ -69,7 +69,7 @@ export async function purge(pattern?: string | RegExp): Promise<void[]> {
  */
 export function write<T>(key: string, value: T): Promise<void> {
 	// this probably isn't the best way to store data but it works
-	const json = {};
+	const json: Record<string | number, T> = {};
 	json[Date.now()] = value;
 	return writeFile(keyToPath(key), JSON.stringify(json));
 }

@@ -26,7 +26,7 @@ export default class SubmissionFirestormRepository implements SubmissionReposito
 		}));
 
 		const fullPack = await Promise.all(fullPackPromises);
-		return fullPack.reduce((acc, cur) => {
+		return fullPack.reduce<Record<PackID, PackAll>>((acc, cur) => {
 			acc[cur.id] = cur;
 			return acc;
 		}, {});
