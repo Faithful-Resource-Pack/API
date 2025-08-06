@@ -74,7 +74,6 @@ export default class AddonFileService {
 		const { buffer } = multerFile;
 
 		const [addonID, addon] = await this.addonService.getAddonFromSlugOrId(idOrSlug);
-		const { slug } = addon;
 
 		const before = addon.approval?.status || null;
 
@@ -82,7 +81,7 @@ export default class AddonFileService {
 		const newName = Date.now().toString(36) + Math.random().toString(36).slice(2);
 
 		const extension = filename.split(".").pop();
-		const uploadLocation = `/images/addons/${slug}/${newName}.${extension}`;
+		const uploadLocation = `/images/addons/${addon.slug}/${newName}.${extension}`;
 
 		// reput pending addon
 		addon.approval = {
@@ -112,6 +111,23 @@ export default class AddonFileService {
 		return this.fileService.getFileById(id);
 	}
 
+	private async deleteFile(file: File): Promise<[WriteConfirmation, WriteConfirmation]> {
+		let { id, source } = file;
+		// delete eventual url beginning
+		try {
+			source = new URL(source).pathname;
+		} catch {
+			// don't worry it's not important, you tried
+		}
+
+		return Promise.all([
+			// remove file from file service
+			this.fileService.removeFileById(id),
+			// remove actual file
+			this.fileService.remove(source),
+		]);
+	}
+
 	public async deleteScreenshot(
 		idOrSlug: string,
 		indexOrSlug: number | string,
@@ -128,22 +144,7 @@ export default class AddonFileService {
 		const foundScreen = screens.find((s) => s.id && s.id === String(indexOrSlug));
 		const screen = foundScreen || screens[Number(indexOrSlug)];
 		if (screen === undefined) throw new NotFoundError("Screenshot not found");
-
-		let { source } = screen;
-
-		// delete eventual url beginning
-		try {
-			source = new URL(source).pathname;
-		} catch {
-			// don't worry it's not important, you tried
-		}
-
-		return Promise.all([
-			// remove file from file service
-			this.fileService.removeFileById(screen.id),
-			// remove actual file
-			this.fileService.remove(source),
-		]);
+		return this.deleteFile(screen);
 	}
 
 	public async deleteHeader(idOrSlug: string): Promise<[WriteConfirmation, WriteConfirmation]> {
@@ -164,15 +165,6 @@ export default class AddonFileService {
 
 		if (header === undefined) throw new NotFoundError("Header not found");
 
-		let { source } = header;
-
-		// delete eventual url beginning
-		try {
-			source = new URL(source).pathname;
-		} catch {
-			// don't worry it's not important, you tried
-		}
-
 		// reput pending addon
 		addon.approval = {
 			status: "denied",
@@ -181,12 +173,6 @@ export default class AddonFileService {
 		};
 
 		await this.addonService.saveUpdate(addonID, addon, before, false);
-
-		return Promise.all([
-			// remove file from file service
-			this.fileService.removeFileById(header.id),
-			// remove actual file
-			this.fileService.remove(source),
-		]);
+		return this.deleteFile(header);
 	}
 }
