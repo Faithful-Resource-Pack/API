@@ -112,17 +112,19 @@ export default class AddonFileService {
 	}
 
 	private async deleteFile(file: File): Promise<[WriteConfirmation, WriteConfirmation]> {
-		let { id, source } = file;
-		// delete eventual url beginning
+		// I really wish there was a ternary operator for error handling lol
+		let source: string;
 		try {
-			source = new URL(source).pathname;
+			// remove beginning
+			source = new URL(file.source).pathname;
 		} catch {
 			// don't worry it's not important, you tried
+			source = file.source;
 		}
 
 		return Promise.all([
 			// remove file from file service
-			this.fileService.removeFileById(id),
+			this.fileService.removeFileById(file.id),
 			// remove actual file
 			this.fileService.remove(source),
 		]);
