@@ -36,7 +36,7 @@ export interface UpdateUserProfile extends UserProfile {
 }
 
 export interface User extends UserCreationParams {
-	id?: string; // discord user id
+	id: string; // discord user id
 	media?: Medias;
 }
 

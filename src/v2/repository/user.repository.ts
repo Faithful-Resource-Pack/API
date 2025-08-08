@@ -16,7 +16,7 @@ import {
 import { NotFoundError } from "../tools/errorTypes";
 import AddonService from "../service/addon.service";
 
-const mapUser = (user: Partial<User>): User => ({
+const mapUser = (user: Partial<User> & { id: string }): User => ({
 	// falsy checking
 	id: user.id,
 	username: user.username || "",
