@@ -10,7 +10,7 @@ export default class SettingsService {
 
 	async get(keys: string[]): Promise<any> {
 		const raw = await this.raw();
-		return keys.reduce((acc: Record<string, any>, cur) => acc[cur], raw);
+		return keys.reduce<Record<string, any>>((acc, cur) => acc[cur], raw);
 	}
 
 	update(body: Record<string, any>): Promise<WriteConfirmation> {
