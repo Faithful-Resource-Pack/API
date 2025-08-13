@@ -30,7 +30,7 @@
 		"nodemon": "^3.1.10",
 		"prettier": "^3.6.2",
 		"ts-node": "^10.9.2",
-		"typescript-eslint": "^8.39.0"
+		"typescript-eslint": "^8.39.1"
 	},
 	"dependencies": {
 		"@tsoa/runtime": "^6.6.0",
@@ -39,7 +39,7 @@
 		"body-parser": "^2.2.0",
 		"cloudflare": "^4.5.0",
 		"cors": "^2.8.5",
-		"discord-api-types": "^0.38.18",
+		"discord-api-types": "^0.38.19",
 		"dotenv": "^17.2.1",
 		"express": "^5.1.0",
 		"firestorm-db": "^1.13.0",

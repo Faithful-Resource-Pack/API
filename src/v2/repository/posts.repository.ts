@@ -17,6 +17,11 @@ export default class PostFirestormRepository implements WebsitePostRepository {
 		]);
 	}
 
+	async getAvailable(): Promise<string[]> {
+		const approved = await this.getApproved();
+		return approved.map((post) => post.permalink);
+	}
+
 	getById(id: number): Promise<WebsitePost> {
 		return posts.get(id);
 	}

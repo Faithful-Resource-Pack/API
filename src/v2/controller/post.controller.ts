@@ -56,6 +56,17 @@ export class PostController extends Controller {
 		return this.service.getTopPosts(count);
 	}
 
+	@Get("approved")
+	public getApprovedPosts(): Promise<WebsitePosts> {
+		return this.service.getApprovedPosts();
+	}
+
+	@Get("available")
+	public getAvailablePosts(): Promise<string[]> {
+		// cache posts because this endpoint gets fetched a lot
+		return cache.handle("available-posts", () => this.service.getAvailablePosts());
+	}
+
 	/**
 	 * Get any post by ID, status, or permalink (needs to be authenticated for non-approved post)
 	 * Note: slugs with slashes need to be escaped (/ -> %2F)
@@ -65,8 +76,7 @@ export class PostController extends Controller {
 	@Response<NotFoundError>(404)
 	@Security("discord", ["post:approved", "administrator"])
 	@Get("{id_or_slug}")
-	public getPostByPermalink(@Path() id_or_slug: string): Promise<WebsitePost | WebsitePosts> {
-		if (id_or_slug === "approved") return this.service.getApprovedPosts();
+	public getPostByPermalink(@Path() id_or_slug: string): Promise<WebsitePost> {
 		return this.service.getByIdOrPermalink(id_or_slug);
 	}
 

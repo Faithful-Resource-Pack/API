@@ -8,13 +8,14 @@ import {
 } from "../interfaces";
 import { NotFoundError } from "../tools/errorTypes";
 import PostFirestormRepository from "../repository/posts.repository";
+import * as cache from "../tools/cache";
 
 export default class PostService {
-	private readonly postRepo = new PostFirestormRepository();
+	private readonly repo = new PostFirestormRepository();
 
 	async getByPermalink(permalink: string): Promise<WebsitePost> {
 		try {
-			return await this.postRepo.getByPermalink(permalink);
+			return await this.repo.getByPermalink(permalink);
 		} catch {
 			// rethrow with our own information
 			throw new NotFoundError("Post not found");
@@ -36,12 +37,12 @@ export default class PostService {
 	}
 
 	getRaw(): Promise<Record<string, WebsitePost>> {
-		return this.postRepo.getRaw();
+		return this.repo.getRaw();
 	}
 
 	async getById(id: number): Promise<WebsitePost> {
 		try {
-			return await this.postRepo.getById(id);
+			return await this.repo.getById(id);
 		} catch {
 			// rethrow with our own information
 			throw new NotFoundError("Post not found");
@@ -49,7 +50,11 @@ export default class PostService {
 	}
 
 	getApprovedPosts(): Promise<WebsitePosts> {
-		return this.postRepo.getApproved();
+		return this.repo.getApproved();
+	}
+
+	getAvailablePosts(): Promise<string[]> {
+		return this.repo.getAvailable();
 	}
 
 	async getTopPosts(count: number): Promise<WebsitePosts> {
@@ -68,15 +73,23 @@ export default class PostService {
 		return post.changelog || null;
 	}
 
-	create(post: CreateWebsitePost): Promise<WebsitePost> {
-		return this.postRepo.create(post);
+	// must always invalidate cache after create/update/delete (prevents phantom posts)
+
+	async create(post: CreateWebsitePost): Promise<WebsitePost> {
+		const created = await this.repo.create(post);
+		await cache.purge("available-posts");
+		return created;
 	}
 
-	update(id: number, post: CreateWebsitePost): Promise<WebsitePost> {
-		return this.postRepo.update(id, post);
+	async update(id: number, post: CreateWebsitePost): Promise<WebsitePost> {
+		const updated = await this.repo.update(id, post);
+		await cache.purge("available-posts");
+		return updated;
 	}
 
-	remove(id: number): Promise<WriteConfirmation> {
-		return this.postRepo.remove(id);
+	async remove(id: number): Promise<WriteConfirmation> {
+		const removed = await this.repo.remove(id);
+		await cache.purge("available-posts");
+		return removed;
 	}
 }
