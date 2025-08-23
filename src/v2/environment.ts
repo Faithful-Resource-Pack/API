@@ -3,42 +3,42 @@
 declare global {
 	namespace NodeJS {
 		interface ProcessEnv {
-			PORT: string;
-			DEV: string;
-			VERBOSE: string;
+			readonly PORT: string;
+			readonly DEV: string;
+			readonly VERBOSE: string;
 
-			FIRESTORM_URL: string;
-			FIRESTORM_TOKEN: string;
-			DB_IMAGE_ROOT: string;
+			readonly FIRESTORM_URL: string;
+			readonly FIRESTORM_TOKEN: string;
+			readonly DB_IMAGE_ROOT: string;
 
 			// disable cache for dev
-			NO_CACHE: string;
+			readonly NO_CACHE: string;
 
 			/**
 			 * INTEGRATIONS
 			 */
 
 			// cloudflare
-			CLOUDFLARE_KEY: string;
-			CLOUDFLARE_PASSWORD: string;
+			readonly CLOUDFLARE_KEY: string;
+			readonly CLOUDFLARE_PASSWORD: string;
 
 			// curseforge
-			CURSEFORGE_API_KEY: string;
+			readonly CURSEFORGE_API_KEY: string;
 
 			// discord
-			BOT_PASSWORD: string;
-			WEBHOOK_URL?: string;
+			readonly BOT_PASSWORD: string;
+			readonly WEBHOOK_URL?: string;
 
 			/**
 			 * AUTH PROVIDERS
 			 */
 
 			// needs parsing as json
-			AUTH_URLS: string;
+			readonly AUTH_URLS: string;
 
 			// discord
-			DISCORD_CLIENT_ID: string;
-			DISCORD_CLIENT_SECRET: string;
+			readonly DISCORD_CLIENT_ID: string;
+			readonly DISCORD_CLIENT_SECRET: string;
 		}
 	}
 }
