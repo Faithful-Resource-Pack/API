@@ -22,7 +22,7 @@
 		"@types/cors": "^2.8.19",
 		"@types/express": "^5.0.3",
 		"@types/multer": "^2.0.0",
-		"@types/node": "^24.6.2",
+		"@types/node": "^24.7.2",
 		"@types/response-time": "^2.3.9",
 		"@types/statuses": "^2.0.6",
 		"@types/swagger-ui-express": "^4.1.8",
@@ -30,7 +30,7 @@
 		"nodemon": "^3.1.10",
 		"prettier": "^3.6.2",
 		"ts-node": "^10.9.2",
-		"typescript-eslint": "^8.45.0"
+		"typescript-eslint": "^8.46.0"
 	},
 	"dependencies": {
 		"@tsoa/runtime": "^6.6.0",
@@ -39,7 +39,7 @@
 		"body-parser": "^2.2.0",
 		"cloudflare": "^5.2.0",
 		"cors": "^2.8.5",
-		"discord-api-types": "^0.38.28",
+		"discord-api-types": "^0.38.29",
 		"dotenv": "^17.2.3",
 		"express": "^5.1.0",
 		"firestorm-db": "^1.13.0",

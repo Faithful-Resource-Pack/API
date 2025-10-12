@@ -24,7 +24,7 @@ export class SettingsController extends Controller {
 	 */
 	@SuccessResponse(200)
 	@Get("raw")
-	public getRaw(): Promise<Record<string, any>> {
+	public getRaw(): Promise<Record<string, unknown>> {
 		return this.settingsService.raw();
 	}
 
@@ -35,7 +35,7 @@ export class SettingsController extends Controller {
 	@SuccessResponse(200)
 	@Response<NotFoundError>(404)
 	@Get("{path}")
-	public async get(@Path() path: string): Promise<any> {
+	public async get(@Path() path: string): Promise<unknown> {
 		const splitPath = path.split(".");
 
 		const response = await this.settingsService.get(splitPath);
@@ -51,7 +51,7 @@ export class SettingsController extends Controller {
 	@Response<PermissionError>(403)
 	@Post("/raw")
 	@Security("discord", ["administrator", "developer"])
-	public update(@Body() body: Record<string, any>): Promise<WriteConfirmation> {
+	public update(@Body() body: Record<string, unknown>): Promise<WriteConfirmation> {
 		return this.settingsService.update(body);
 	}
 }
