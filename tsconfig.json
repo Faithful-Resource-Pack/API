@@ -5,7 +5,6 @@
 			"ESNext"
 		],
 		"module": "CommonJS",
-		"moduleResolution": "node",
 		"target": "ESNext",
 		"outDir": "dist",
 		"sourceMap": true,
@@ -18,7 +17,6 @@
 		"allowJs": true,
 		"strictNullChecks": true,
 		"resolveJsonModule": true,
-		"baseUrl": "src",
 	},
 	"exclude": [
 		"node_modules"

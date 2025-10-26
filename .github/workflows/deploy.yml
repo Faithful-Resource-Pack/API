@@ -22,5 +22,5 @@ jobs:
           git stash
           git pull
           pnpm install
-          pnpm run build
+          pnpm build
           pm2 restart "API"
