@@ -11,6 +11,7 @@ import apiErrorHandler from "api-error-handler";
 import { RegisterRoutes } from "../build/routes";
 import formatSwaggerDoc from "./v2/tools/swagger";
 import handleError from "./v2/tools/handleError";
+import { GalleryController } from "./v2/controller/gallery.controller";
 
 const NO_CACHE = process.env.NO_CACHE === "true";
 const PORT = process.env.PORT || 8000;
@@ -51,6 +52,9 @@ app.all("/v1/*route", (_req, res) => {
 		message: "API v1 has been discontinued. Please switch to API v2 for all new endpoints.",
 	});
 });
+
+// purge gallery cache on start (good to prevent huge numbers of cache files sitting there)
+if (!NO_CACHE) new GalleryController().purgeCache();
 
 // start v2 api
 RegisterRoutes(app);
