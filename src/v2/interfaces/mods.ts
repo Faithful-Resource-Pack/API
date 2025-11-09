@@ -14,10 +14,3 @@ export interface Mod {
 export type Mods = Mod[];
 
 export interface FirestormMod extends Mod {}
-
-export interface ModsRepository {
-	getRaw(): Promise<Record<string, Mod>>;
-	getThumbnail(id: number): Promise<string>;
-	getCurseForgeName(id: number): Promise<string>;
-	getNameInDatabase(id: string): Promise<string>;
-}

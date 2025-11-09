@@ -3,136 +3,117 @@ import {
 	Contribution,
 	ContributionCreationParams,
 	Contributions,
-	ContributionsRepository,
 	ContributionsAuthors,
 	PackID,
 	ContributionsAuthor,
 } from "../interfaces";
 import { contributions, users } from "../firestorm";
 
-export default class ContributionFirestormRepository implements ContributionsRepository {
-	getContributionById(id: string): Promise<Contribution> {
-		return contributions.get(id);
+export function getContributionById(id: string): Promise<Contribution> {
+	return contributions.get(id);
+}
+
+export function getPacks(): Promise<PackID[]> {
+	return contributions.values({ field: "pack" });
+}
+
+export async function searchContributionsFrom(
+	authors: string[],
+	packs?: string[],
+): Promise<Contributions> {
+	const options: SearchOption<Contribution>[] = authors.map((author) => ({
+		field: "authors",
+		criteria: "array-contains",
+		value: author,
+	}));
+
+	if (packs !== undefined) options.push({ field: "pack", criteria: "in", value: packs });
+	return contributions.search(options);
+}
+
+export function searchByIdAndPacks(
+	textureIDs: string[],
+	packs?: string[],
+	authors?: string[],
+): Promise<Contributions> {
+	const options: SearchOption<Contribution>[] = [
+		{
+			field: "texture",
+			criteria: "in",
+			value: textureIDs,
+		},
+	];
+
+	if (authors) {
+		// no idea why specifying the type in .map is required but it is
+		options.push(
+			...authors.map<SearchOption<Contribution>>((a) => ({
+				field: "authors",
+				criteria: "array-contains",
+				value: a,
+			})),
+		);
 	}
 
-	getPacks(): Promise<PackID[]> {
-		return contributions.values({ field: "pack" });
-	}
+	if (packs) options.push({ field: "pack", criteria: "in", value: packs });
 
-	async searchContributionsFrom(authors: string[], packs?: string[]): Promise<Contributions> {
-		const options: SearchOption<Contribution>[] = authors.map((author) => ({
-			field: "authors",
-			criteria: "array-contains",
-			value: author,
-		}));
+	return contributions.search(options);
+}
 
-		if (packs !== undefined) options.push({ field: "pack", criteria: "in", value: packs });
-		return contributions.search(options);
-	}
+export async function getAuthors(): Promise<ContributionsAuthors> {
+	// don't use values because we need duplicates
+	const contributionSelect = await contributions.select({ fields: ["authors"] });
+	const authors = Object.values(contributionSelect).flatMap((c) => c.authors);
 
-	searchByIdAndPacks(
-		textureIDs: string[],
-		packs?: string[],
-		authors?: string[],
-	): Promise<Contributions> {
-		const options: SearchOption<Contribution>[] = [
-			{
-				field: "texture",
-				criteria: "in",
-				value: textureIDs,
-			},
-		];
+	type PartialAuthor = Pick<ContributionsAuthor, "id" | "contributions">;
+	const out = authors.reduce<Record<string, PartialAuthor>>((acc, id) => {
+		acc[id] ||= { id, contributions: 0 };
+		acc[id].contributions++;
+		return acc;
+	}, {});
 
-		if (authors) {
-			// no idea why specifying the type in .map is required but it is
-			options.push(
-				...authors.map<SearchOption<Contribution>>((a) => ({
-					field: "authors",
-					criteria: "array-contains",
-					value: a,
-				})),
-			);
+	const userSelect = await users.select({ fields: ["username", "uuid", "anonymous"] });
+	return Object.values(out).map((author: ContributionsAuthor) => {
+		const user = userSelect[author.id];
+		if (user && !user.anonymous) {
+			author.username = user.username;
+			author.uuid = user.uuid;
 		}
 
-		if (packs) options.push({ field: "pack", criteria: "in", value: packs });
+		return author;
+	});
+}
 
-		return contributions.search(options);
-	}
+export async function addContribution(params: ContributionCreationParams): Promise<Contribution> {
+	const id = await contributions.add(params);
+	return contributions.get(id);
+}
 
-	async getAuthors(): Promise<ContributionsAuthors> {
-		// don't use values because we need duplicates
-		const contributionSelect = await contributions.select({ fields: ["authors"] });
-		const authors = Object.values(contributionSelect).flatMap((c) => c.authors);
+export async function addContributions(
+	params: ContributionCreationParams[],
+): Promise<Contributions> {
+	const ids = await contributions.addBulk(params);
+	return Promise.all(ids.map((id) => contributions.get(id)));
+}
 
-		type PartialAuthor = Pick<ContributionsAuthor, "id" | "contributions">;
-		const out = authors.reduce<Record<string, PartialAuthor>>((acc, id) => {
-			acc[id] ||= { id, contributions: 0 };
-			acc[id].contributions++;
-			return acc;
-		}, {});
+export async function updateContribution(
+	id: string,
+	params: ContributionCreationParams,
+): Promise<Contribution> {
+	await contributions.set(id, params);
+	return contributions.get(id);
+}
 
-		const userSelect = await users.select({ fields: ["username", "uuid", "anonymous"] });
-		return Object.values(out).map((author: ContributionsAuthor) => {
-			const user = userSelect[author.id];
-			if (user && !user.anonymous) {
-				author.username = user.username;
-				author.uuid = user.uuid;
-			}
+export function deleteContribution(id: string): Promise<WriteConfirmation> {
+	return contributions.remove(id);
+}
 
-			return author;
-		});
-	}
+export async function getByDateRange(begin: string, ends: string): Promise<Contributions> {
+	// if ends > begin date : ------[B-----E]------
+	// else if begin > ends :    -----E]-------[B-----
 
-	async addContribution(params: ContributionCreationParams): Promise<Contribution> {
-		const id = await contributions.add(params);
-		return contributions.get(id);
-	}
-
-	async addContributions(params: ContributionCreationParams[]): Promise<Contributions> {
-		const ids = await contributions.addBulk(params);
-		return Promise.all(ids.map((id) => contributions.get(id)));
-	}
-
-	async updateContribution(id: string, params: ContributionCreationParams): Promise<Contribution> {
-		await contributions.set(id, params);
-		return contributions.get(id);
-	}
-
-	deleteContribution(id: string): Promise<WriteConfirmation> {
-		return contributions.remove(id);
-	}
-
-	async getByDateRange(begin: string, ends: string): Promise<Contributions> {
-		// if ends > begin date : ------[B-----E]------
-		// else if begin > ends :    -----E]-------[B-----
-
-		if (ends >= begin)
-			return contributions.search([
-				{
-					field: "date",
-					criteria: ">=",
-					value: begin,
-				},
-				{
-					field: "date",
-					criteria: "<=",
-					value: ends,
-				},
-			]);
-
-		const startContribs = await contributions.search([
-			{
-				field: "date",
-				criteria: ">=",
-				value: "0",
-			},
-			{
-				field: "date",
-				criteria: "<=",
-				value: ends,
-			},
-		]);
-		const endContribs = await contributions.search([
+	if (ends >= begin)
+		return contributions.search([
 			{
 				field: "date",
 				criteria: ">=",
@@ -141,9 +122,33 @@ export default class ContributionFirestormRepository implements ContributionsRep
 			{
 				field: "date",
 				criteria: "<=",
-				value: Date.now(),
+				value: ends,
 			},
 		]);
-		return { ...startContribs, ...endContribs };
-	}
+
+	const startContribs = await contributions.search([
+		{
+			field: "date",
+			criteria: ">=",
+			value: "0",
+		},
+		{
+			field: "date",
+			criteria: "<=",
+			value: ends,
+		},
+	]);
+	const endContribs = await contributions.search([
+		{
+			field: "date",
+			criteria: ">=",
+			value: begin,
+		},
+		{
+			field: "date",
+			criteria: "<=",
+			value: Date.now(),
+		},
+	]);
+	return { ...startContribs, ...endContribs };
 }

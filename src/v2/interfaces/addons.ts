@@ -78,14 +78,3 @@ export interface FirestormAddon extends Addon {
 	getFiles(): Promise<Files>;
 	all(): Promise<AddonAll>;
 }
-
-export interface AddonRepository {
-	getRaw(): Promise<Record<string, Addon>>;
-	getAddonById(id: number): Promise<Addon>;
-	getAddonBySlug(slug: string): Promise<Addon | undefined>;
-	getAddonByStatus(status: AddonStatus): Promise<Addons>;
-	getFilesById(addonId: string | number): Promise<Files>;
-	create(addon: Addon): Promise<Addon>;
-	remove(id: string | number): Promise<WriteConfirmation>;
-	update(id: string | number, addon: Addon): Promise<Addon>;
-}

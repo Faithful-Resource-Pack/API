@@ -1,13 +1,13 @@
 import { WriteConfirmation } from "firestorm-db";
 import { Submission, CreationSubmission, PackID, PackAll } from "../interfaces";
-import SubmissionFirestormRepository from "../repository/submission.repository";
+import * as SubmissionFirestormRepository from "../repository/submission.repository";
 import { BadRequestError } from "../tools/errorTypes";
 import PackService from "./pack.service";
 
 export default class SubmissionService {
 	private readonly packService = new PackService();
 
-	private readonly repo = new SubmissionFirestormRepository();
+	private readonly repo = SubmissionFirestormRepository;
 
 	public getRaw(): Promise<Record<string, Submission>> {
 		return this.repo.getRaw();

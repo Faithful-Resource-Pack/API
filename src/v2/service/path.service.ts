@@ -2,7 +2,7 @@ import { WriteConfirmation } from "firestorm-db";
 import { BadRequestError, NotFoundError } from "../tools/errorTypes";
 import UseService from "./use.service";
 import { InputPath, Path, PathNewVersionParam, Paths } from "../interfaces";
-import PathFirestormRepository from "../repository/path.repository";
+import * as PathFirestormRepository from "../repository/path.repository";
 import TextureService from "./texture.service";
 import { settings } from "../firestorm";
 import versionSorter from "../tools/versionSorter";
@@ -16,7 +16,7 @@ export default class PathService {
 		else this.useService = new UseService(this);
 	}
 
-	private readonly repo = new PathFirestormRepository();
+	private readonly repo = PathFirestormRepository;
 
 	getRaw(): Promise<Record<string, Path>> {
 		return this.repo.getRaw();

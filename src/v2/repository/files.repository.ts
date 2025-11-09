@@ -1,87 +1,80 @@
 import firestorm, { ID_FIELD, WriteConfirmation } from "firestorm-db";
 import FormData from "form-data";
 import { files } from "../firestorm";
-import {
-	CreationFile,
-	CreationFiles,
-	File,
-	FileParent,
-	FileRepository,
-	Files,
-	FileUse,
-} from "../interfaces/files";
+import { CreationFile, CreationFiles, File, FileParent, Files, FileUse } from "../interfaces/files";
 
-export class FileFirestormRepository implements FileRepository {
-	getRaw(): Promise<Record<string, File>> {
-		return files.readRaw();
-	}
+export function getRaw(): Promise<Record<string, File>> {
+	return files.readRaw();
+}
 
-	addFiles(fileList: CreationFiles): Promise<string[]> {
-		return files.addBulk(fileList);
-	}
+export function addFiles(fileList: CreationFiles): Promise<string[]> {
+	return files.addBulk(fileList);
+}
 
-	addFile(file: CreationFile): Promise<string> {
-		return files.add(file);
-	}
+export function addFile(file: CreationFile): Promise<string> {
+	return files.add(file);
+}
 
-	getFileById(id: string): Promise<File> {
-		return files.get(id);
-	}
+export function getFileById(id: string): Promise<File> {
+	return files.get(id);
+}
 
-	getFilesByParent(parent: FileParent): Promise<Files> {
-		return files.search([
-			{
-				field: "parent.id",
-				criteria: "==",
-				value: String(parent.id),
-			},
-			{
-				field: "parent.type",
-				criteria: "==",
-				value: parent.type,
-			},
-		]);
-	}
+export function getFilesByParent(parent: FileParent): Promise<Files> {
+	return files.search([
+		{
+			field: "parent.id",
+			criteria: "==",
+			value: String(parent.id),
+		},
+		{
+			field: "parent.type",
+			criteria: "==",
+			value: parent.type,
+		},
+	]);
+}
 
-	async setFileById(id: string, file: File): Promise<File> {
-		await files.set(id, file);
-		return this.getFileById(id);
-	}
+export async function setFileById(id: string, file: File): Promise<File> {
+	await files.set(id, file);
+	return getFileById(id);
+}
 
-	removeFileById(id: string): Promise<WriteConfirmation> {
-		return files.remove(id);
-	}
+export function removeFileById(id: string): Promise<WriteConfirmation> {
+	return files.remove(id);
+}
 
-	async removeFilesByParent(parent: FileParent): Promise<WriteConfirmation> {
-		const foundFiles = await this.getFilesByParent(parent);
-		return files.removeBulk(foundFiles.map((f) => f[ID_FIELD]));
-	}
+export async function removeFilesByParent(parent: FileParent): Promise<WriteConfirmation> {
+	const foundFiles = await getFilesByParent(parent);
+	return files.removeBulk(foundFiles.map((f) => f[ID_FIELD]));
+}
 
-	async removeFilesByParentAndUse(parent: FileParent, use: FileUse): Promise<WriteConfirmation> {
-		const foundFiles = await this.getFilesByParent(parent);
-		const ids = foundFiles.filter((f) => f.use === use).map((f) => f[ID_FIELD]);
-		return files.removeBulk(ids);
-	}
+export async function removeFilesByParentAndUse(
+	parent: FileParent,
+	use: FileUse,
+): Promise<WriteConfirmation> {
+	const foundFiles = await getFilesByParent(parent);
+	const ids = foundFiles.filter((f) => f.use === use).map((f) => f[ID_FIELD]);
+	return files.removeBulk(ids);
+}
 
-	removeFileByPath(path: string): Promise<WriteConfirmation> {
-		return this.remove(path);
-	}
+export function removeFileByPath(path: string): Promise<WriteConfirmation> {
+	return remove(path);
+}
 
-	upload(
-		path: string,
-		filename: string,
-		buffer: Buffer,
-		overwrite: boolean,
-	): Promise<WriteConfirmation> {
-		const form = new FormData();
-		form.append("path", path);
-		form.append("file", buffer, filename);
-		form.append("overwrite", String(overwrite === true));
+export function upload(
+	path: string,
+	filename: string,
+	buffer: Buffer,
+	overwrite: boolean,
+): Promise<WriteConfirmation> {
+	const form = new FormData();
+	form.append("path", path);
+	form.append("file", buffer, filename);
+	form.append("overwrite", String(overwrite === true));
 
-		return firestorm.files.upload(form);
-	}
+	return firestorm.files.upload(form);
+}
 
-	remove(path: string): Promise<WriteConfirmation> {
-		return firestorm.files.delete(path);
-	}
+export function remove(path: string): Promise<WriteConfirmation> {
+	return firestorm.files.delete(path);
 }

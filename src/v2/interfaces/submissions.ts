@@ -27,12 +27,3 @@ export interface Submission extends CreationSubmission {
 export type Submissions = Submission[];
 
 export interface FirestormSubmission extends Submission {}
-
-export interface SubmissionRepository {
-	getRaw(): Promise<Record<string, Submission>>;
-	getEveryPack(): Promise<Record<PackID, PackAll>>;
-	getById(id: PackID): Promise<Submission>;
-	create(packId: PackID, packToCreate: Submission): Promise<Submission>;
-	update(packId: PackID, newPack: Submission): Promise<Submission>;
-	remove(packId: PackID): Promise<WriteConfirmation>;
-}

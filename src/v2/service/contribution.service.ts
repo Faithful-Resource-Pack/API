@@ -10,12 +10,12 @@ import {
 	PackPercentile,
 	PackRecord,
 } from "../interfaces/contributions";
-import ContributionFirestormRepository from "../repository/contribution.repository";
+import * as ContributionFirestormRepository from "../repository/contribution.repository";
 import { lastDay, lastMonth, lastWeek, startOfDay } from "../tools/utils";
 import TextureService from "./texture.service";
 
 export default class ContributionService {
-	private readonly contributionRepo = new ContributionFirestormRepository();
+	private readonly contributionRepo = ContributionFirestormRepository;
 
 	private readonly textureService = new TextureService();
 

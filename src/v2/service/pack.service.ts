@@ -1,10 +1,10 @@
 import { ID_FIELD, WriteConfirmation } from "firestorm-db";
 import { contributions } from "../firestorm";
 import { Pack, Packs, PackID, PackSearch, CreationPackAll, PackAll } from "../interfaces";
-import PackFirestormRepository from "../repository/pack.repository";
+import * as PackFirestormRepository from "../repository/pack.repository";
 
 export default class PackService {
-	private readonly repo = new PackFirestormRepository();
+	private readonly repo = PackFirestormRepository;
 
 	public getRaw(): Promise<Record<string, Pack>> {
 		return this.repo.getRaw();

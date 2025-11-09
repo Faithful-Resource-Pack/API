@@ -50,18 +50,3 @@ export type Packs = Pack[];
 export interface FirestormPack extends Pack {
 	submission(): Promise<Submission>;
 }
-
-export interface PackRepository {
-	getRaw(): Promise<Record<string, Pack>>;
-	getById(id: PackID): Promise<Pack>;
-	getWithSubmission(id: PackID): Promise<PackAll>;
-	getAllTags(): Promise<string[]>;
-	search(params: PackSearch): Promise<Packs>;
-	renamePack(
-		oldPack: PackID,
-		newPack: string,
-	): Promise<[WriteConfirmation, WriteConfirmation, CreationPackAll]>;
-	create(packId: string, packToCreate: CreationPackAll): Promise<CreationPackAll>;
-	update(packId: PackID, newPack: Pack): Promise<Pack>;
-	remove(packId: PackID): Promise<WriteConfirmation>;
-}

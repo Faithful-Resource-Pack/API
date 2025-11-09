@@ -31,23 +31,3 @@ export type FileDataParam = Pick<File, "name" | "use" | "type">;
 export interface FileCreationParam extends FileDataParam {}
 
 export interface FirestormFile extends File {}
-
-export interface FileRepository {
-	getRaw(): Promise<Record<string, File>>;
-	addFile(file: File): Promise<string>;
-	addFiles(files: Files): Promise<string[]>;
-	getFileById(id: string): Promise<File>;
-	getFilesByParent(parent: FileParent): Promise<Files>;
-	setFileById(id: string, file: File): Promise<File>;
-	removeFileById(id: string): Promise<WriteConfirmation>;
-	removeFilesByParent(parent: FileParent): Promise<WriteConfirmation>;
-	removeFilesByParentAndUse(parent: FileParent, use: FileUse): Promise<WriteConfirmation>;
-	removeFileByPath(path: string): Promise<WriteConfirmation>;
-	upload(
-		path: string,
-		filename: string,
-		buffer: Buffer,
-		overwrite: boolean,
-	): Promise<WriteConfirmation>;
-	remove(path: string): Promise<WriteConfirmation>;
-}

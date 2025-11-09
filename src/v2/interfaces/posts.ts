@@ -29,14 +29,3 @@ export interface WebsitePost extends CreateWebsitePost {
 export type WebsitePosts = WebsitePost[];
 
 export interface FirestormPost extends WebsitePost {}
-
-export interface WebsitePostRepository {
-	getRaw(): Promise<Record<string, WebsitePost>>;
-	getApproved(): Promise<WebsitePost[]>;
-	getAvailable(): Promise<string[]>;
-	getById(id: number): Promise<WebsitePost>;
-	getByPermalink(permalink: string): Promise<WebsitePost>;
-	create(post: CreateWebsitePost): Promise<WebsitePost>;
-	update(id: number, post: CreateWebsitePost): Promise<WebsitePost>;
-	remove(id: number): Promise<WriteConfirmation>;
-}

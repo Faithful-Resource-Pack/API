@@ -54,19 +54,3 @@ export interface FirestormUser extends User {
 	addons(): Promise<Addons>;
 }
 
-export interface UserRepository {
-	getProfileOrCreate(discordUser: APIUser): Promise<User>;
-	getUserProfiles(authors: string[]): Promise<UserProfile[]>;
-	getNameById(id: string): Promise<Username>;
-	getRaw(): Promise<Record<string, User>>;
-	getNames(): Promise<Usernames>;
-	getUserById(id: string): Promise<User>;
-	getUsersByName(name: string): Promise<Users>;
-	getContributionsById(id: string): Promise<Contributions>;
-	getAddonsApprovedById(id: string): Promise<Addons>;
-	getAddonsById(id: string): Promise<Addons>;
-	update(id: string, user: User): Promise<User>;
-	remove(id: string): Promise<WriteConfirmation[]>;
-	getUsersFromRole(role: string, username?: string): Promise<Users>;
-	getRoles(): Promise<User["roles"]>;
-}

@@ -8,7 +8,7 @@ import {
 	InputPath,
 	GalleryEdition,
 } from "../interfaces";
-import UseFirestormRepository from "../repository/use.repository";
+import * as UseFirestormRepository from "../repository/use.repository";
 import { BadRequestError, NotFoundError } from "../tools/errorTypes";
 import PathService from "./path.service";
 
@@ -22,7 +22,7 @@ export default class UseService {
 		// this.textureService = TextureService.getInstance();
 	}
 
-	private readonly repo = new UseFirestormRepository();
+	private readonly repo = UseFirestormRepository;
 
 	async getPathUseByIdOrName(idOrName: string): Promise<Paths> {
 		const use = await this.getUseById(idOrName);

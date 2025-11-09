@@ -23,7 +23,7 @@ import {
 	AddonStatusApproved,
 	CreationAddon,
 } from "../interfaces/addons";
-import AddonFirestormRepository from "../repository/addon.repository";
+import * as AddonFirestormRepository from "../repository/addon.repository";
 import { discordEmbed } from "../tools/discordEmbed";
 
 // filter & keep only values that are in a-z & 0-9 & _ or -
@@ -39,7 +39,7 @@ export default class AddonService {
 	private readonly userService = new UserService();
 	private readonly fileService = new FileService();
 
-	private readonly addonRepo = new AddonFirestormRepository();
+	private readonly addonRepo = AddonFirestormRepository;
 
 	public async getIdFromPath(idOrSlug: string): Promise<[number, Addon | undefined]> {
 		const intID = Number(idOrSlug);

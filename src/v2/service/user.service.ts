@@ -11,11 +11,11 @@ import {
 	Username,
 	UpdateUserProfile,
 } from "../interfaces";
-import UserFirestormRepository from "../repository/user.repository";
+import * as UserFirestormRepository from "../repository/user.repository";
 import { BadRequestError } from "../tools/errorTypes";
 
 export default class UserService {
-	private readonly repo = new UserFirestormRepository();
+	private readonly repo = UserFirestormRepository;
 
 	public getRaw(): Promise<Record<string, User>> {
 		return this.repo.getRaw();

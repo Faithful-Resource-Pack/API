@@ -7,7 +7,6 @@ export * from "./modpacks";
 export * from "./mods";
 export * from "./paths";
 export * from "./posts";
-export * from "./settings";
 export * from "./textures";
 export * from "./users";
 export * from "./uses";

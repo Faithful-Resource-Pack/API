@@ -7,11 +7,11 @@ import {
 	WebsitePosts,
 } from "../interfaces";
 import { NotFoundError } from "../tools/errorTypes";
-import PostFirestormRepository from "../repository/posts.repository";
+import * as PostFirestormRepository from "../repository/posts.repository";
 import * as cache from "../tools/cache";
 
 export default class PostService {
-	private readonly repo = new PostFirestormRepository();
+	private readonly repo = PostFirestormRepository;
 
 	async getByPermalink(permalink: string): Promise<WebsitePost> {
 		try {

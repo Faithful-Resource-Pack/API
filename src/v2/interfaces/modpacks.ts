@@ -14,8 +14,3 @@ export interface Modpack {
 export type Modpacks = Modpack[];
 
 export interface FirestormModpack extends Modpack {}
-
-export interface ModpacksRepository {
-	getRaw(): Promise<Record<string, Modpack>>;
-	getThumbnail(id: number): Promise<string>;
-}

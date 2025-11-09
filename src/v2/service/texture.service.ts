@@ -8,12 +8,12 @@ import {
 	PropertyToOutput,
 	FirestormTexture,
 } from "../interfaces/textures";
-import TextureFirestormRepository from "../repository/texture.repository";
+import * as TextureFirestormRepository from "../repository/texture.repository";
 import PathService from "./path.service";
 import UseService from "./use.service";
 
 export default class TextureService {
-	private readonly textureRepo = new TextureFirestormRepository();
+	private readonly textureRepo = TextureFirestormRepository;
 
 	private readonly useService = new UseService();
 
