@@ -10,6 +10,7 @@ import {
 	Edition,
 	GalleryModalResult,
 } from "../interfaces";
+import { NotFoundError } from "../tools/errorTypes";
 import PackService from "./pack.service";
 import PathService from "./path.service";
 import TextureService from "./texture.service";
@@ -157,6 +158,10 @@ export default class GalleryService {
 		const packs = await this.packService.getRaw();
 
 		const all = await this.textureService.searchProperty(id, "all");
+
+		// if the id doesn't exist it returns an empty array
+		// todo: improve id support for texture searching for cases like this
+		if (Array.isArray(all)) throw new NotFoundError(`Texture ${id} not found`);
 
 		const urls = Object.values(packs).reduce<Record<PackID, string>>((acc, pack) => {
 			try {
