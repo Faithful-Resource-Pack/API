@@ -1,23 +1,20 @@
 import { Mod } from "../interfaces";
-import { mods } from "../firestorm";
-import * as ModsFirestormRepository from "../repository/mods.repository";
+import * as ModsRepo from "../repository/mods.repository";
 
 export default class ModsService {
-	private readonly modsRepo = ModsFirestormRepository;
-
 	getRaw(): Promise<Record<string, Mod>> {
-		return mods.readRaw();
+		return ModsRepo.getRaw();
 	}
 
 	getThumbnail(id: number): Promise<string> {
-		return this.modsRepo.getThumbnail(id);
+		return ModsRepo.getThumbnail(id);
 	}
 
 	getCurseForgeName(id: number): Promise<string> {
-		return this.modsRepo.getCurseForgeName(id);
+		return ModsRepo.getCurseForgeName(id);
 	}
 
 	getNameInDatabase(id: string): Promise<string> {
-		return this.modsRepo.getNameInDatabase(id);
+		return ModsRepo.getNameInDatabase(id);
 	}
 }

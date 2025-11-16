@@ -1,5 +1,3 @@
-import { WriteConfirmation } from "firestorm-db";
-
 export interface PostDownload {
 	// for some reason index signatures work but records don't (???)
 	[category: string]: Record<string, string> | string;

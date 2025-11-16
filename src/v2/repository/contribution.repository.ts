@@ -9,6 +9,10 @@ import {
 } from "../interfaces";
 import { contributions, users } from "../firestorm";
 
+export function getRaw(): Promise<Record<string, Contribution>> {
+	return contributions.readRaw();
+}
+
 export function getContributionById(id: string): Promise<Contribution> {
 	return contributions.get(id);
 }

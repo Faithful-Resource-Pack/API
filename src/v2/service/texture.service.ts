@@ -8,13 +8,11 @@ import {
 	PropertyToOutput,
 	FirestormTexture,
 } from "../interfaces/textures";
-import * as TextureFirestormRepository from "../repository/texture.repository";
+import * as TextureRepo from "../repository/texture.repository";
 import PathService from "./path.service";
 import UseService from "./use.service";
 
 export default class TextureService {
-	private readonly textureRepo = TextureFirestormRepository;
-
 	private readonly useService = new UseService();
 
 	private readonly pathService = new PathService();
@@ -31,15 +29,15 @@ export default class TextureService {
 	}
 
 	getRaw(): Promise<Record<string, Texture>> {
-		return this.textureRepo.getRaw();
+		return TextureRepo.getRaw();
 	}
 
 	getById(id: string | number) {
-		return this.textureRepo.getById(id);
+		return TextureRepo.getById(id);
 	}
 
 	getByNameOrId(nameOrID: string | number): Promise<FirestormTexture | FirestormTexture[]> {
-		return this.textureRepo.search(nameOrID);
+		return TextureRepo.search(nameOrID);
 	}
 
 	async getPropertyById<Property extends TextureProperty>(
@@ -48,7 +46,7 @@ export default class TextureService {
 	): Promise<PropertyToOutput<Property>> {
 		// even though it uses the name endpoint it's still pretty fast
 		// since it returns early if it finds an numeric id
-		return this.textureRepo.searchProperty(id, property);
+		return TextureRepo.searchProperty(id, property);
 	}
 
 	// used on webapp texture page + gallery
@@ -57,7 +55,7 @@ export default class TextureService {
 		tag: string | undefined,
 		partial = false,
 	): Promise<Textures> {
-		const results = await this.textureRepo.search(search, tag, partial);
+		const results = await TextureRepo.search(search, tag, partial);
 		return Array.isArray(results) ? results : [results];
 	}
 
@@ -66,38 +64,38 @@ export default class TextureService {
 		property: Property,
 	): Promise<PropertyToOutput<Property>> {
 		try {
-			return await this.textureRepo.searchProperty<Property>(nameOrID, property);
+			return await TextureRepo.searchProperty<Property>(nameOrID, property);
 		} catch {
 			throw new Error(`Failed to search property "${property}" on texture ${nameOrID}`);
 		}
 	}
 
 	getURLById(id: number, pack: PackID, version: string): Promise<string> {
-		return this.textureRepo.getURLById(id, pack, version);
+		return TextureRepo.getURLById(id, pack, version);
 	}
 
 	getEditions(): Promise<string[]> {
-		return this.textureRepo.getEditions();
+		return TextureRepo.getEditions();
 	}
 
 	getResolutions(): Promise<number[]> {
-		return this.textureRepo.getResolutions();
+		return TextureRepo.getResolutions();
 	}
 
 	getAnimated(): Promise<number[]> {
-		return this.textureRepo.getAnimated();
+		return TextureRepo.getAnimated();
 	}
 
 	getTags(): Promise<string[]> {
-		return this.textureRepo.getTags();
+		return TextureRepo.getTags();
 	}
 
 	getVersions(): Promise<string[]> {
-		return this.textureRepo.getVersions();
+		return TextureRepo.getVersions();
 	}
 
 	getVersionByEdition(edition: Edition): Promise<string[]> {
-		return this.textureRepo.getVersionByEdition(edition);
+		return TextureRepo.getVersionByEdition(edition);
 	}
 
 	async mergeTextures(source: string, destination: string) {
@@ -124,12 +122,12 @@ export default class TextureService {
 	}
 
 	createTexture(texture: TextureCreationParam): Promise<Texture> {
-		return this.textureRepo.createTexture(texture);
+		return TextureRepo.createTexture(texture);
 	}
 
 	async createEntireTextures(body: EntireTextureToCreate[]): Promise<Textures> {
 		// must do this before anything else to prevent id collisions
-		const createdTextures = await this.textureRepo.createTexturesBulk(
+		const createdTextures = await TextureRepo.createTexturesBulk(
 			body.map((tex) => ({ name: tex.name, tags: tex.tags })),
 		);
 
@@ -152,10 +150,10 @@ export default class TextureService {
 
 	async editTexture(id: string, body: TextureCreationParam): Promise<Texture> {
 		await this.getByNameOrId(id);
-		return this.textureRepo.editTexture(id, body);
+		return TextureRepo.editTexture(id, body);
 	}
 
 	deleteTexture(id: string): Promise<WriteConfirmation[]> {
-		return this.textureRepo.deleteTexture(id);
+		return TextureRepo.deleteTexture(id);
 	}
 }

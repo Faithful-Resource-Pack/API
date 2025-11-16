@@ -1,4 +1,3 @@
-import { WriteConfirmation } from "firestorm-db";
 import { PackID } from "./packs";
 
 export interface ContributionCreationParams {

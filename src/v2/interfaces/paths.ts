@@ -1,4 +1,3 @@
-import { WriteConfirmation } from "firestorm-db";
 import { Edition } from "./textures";
 
 export interface CreationPath {

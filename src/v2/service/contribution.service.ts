@@ -1,5 +1,4 @@
 import { WriteConfirmation } from "firestorm-db";
-import { contributions } from "../firestorm";
 import { Contribution, Contributions, PackID } from "../interfaces";
 import {
 	ContributionCreationParams,
@@ -10,17 +9,15 @@ import {
 	PackPercentile,
 	PackRecord,
 } from "../interfaces/contributions";
-import * as ContributionFirestormRepository from "../repository/contribution.repository";
+import * as ContributionRepo from "../repository/contribution.repository";
 import { lastDay, lastMonth, lastWeek, startOfDay } from "../tools/utils";
 import TextureService from "./texture.service";
 
 export default class ContributionService {
-	private readonly contributionRepo = ContributionFirestormRepository;
-
 	private readonly textureService = new TextureService();
 
 	getRaw(): Promise<Record<string, Contribution>> {
-		return contributions.readRaw();
+		return ContributionRepo.getRaw();
 	}
 
 	async getStats(): Promise<ContributionStats> {
@@ -85,15 +82,15 @@ export default class ContributionService {
 	}
 
 	getPacks(): Promise<PackID[]> {
-		return this.contributionRepo.getPacks();
+		return ContributionRepo.getPacks();
 	}
 
 	getAuthors(): Promise<ContributionsAuthors> {
-		return this.contributionRepo.getAuthors();
+		return ContributionRepo.getAuthors();
 	}
 
 	searchContributionsFrom(users: string[], packs?: string[]): Promise<Contributions> {
-		return this.contributionRepo.searchContributionsFrom(users, packs);
+		return ContributionRepo.searchContributionsFrom(users, packs);
 	}
 
 	async search(params: ContributionSearch): Promise<Contributions> {
@@ -104,11 +101,7 @@ export default class ContributionService {
 
 			const textureIDs = res.map((t) => t.id);
 
-			result = await this.contributionRepo.searchByIdAndPacks(
-				textureIDs,
-				params.packs,
-				params.users,
-			);
+			result = await ContributionRepo.searchByIdAndPacks(textureIDs, params.packs, params.users);
 		} else {
 			result = await this.searchContributionsFrom(params.users || [], params.packs);
 		}
@@ -117,26 +110,26 @@ export default class ContributionService {
 	}
 
 	getById(id: string): Promise<Contribution> {
-		return this.contributionRepo.getContributionById(id);
+		return ContributionRepo.getContributionById(id);
 	}
 
 	addContribution(params: ContributionCreationParams): Promise<Contribution> {
-		return this.contributionRepo.addContribution(params);
+		return ContributionRepo.addContribution(params);
 	}
 
 	addContributions(params: ContributionCreationParams[]): Promise<Contributions> {
-		return this.contributionRepo.addContributions(params);
+		return ContributionRepo.addContributions(params);
 	}
 
 	deleteContribution(id: string): Promise<WriteConfirmation> {
-		return this.contributionRepo.deleteContribution(id);
+		return ContributionRepo.deleteContribution(id);
 	}
 
 	updateContribution(id: string, params: ContributionCreationParams): Promise<Contribution> {
-		return this.contributionRepo.updateContribution(id, params);
+		return ContributionRepo.updateContribution(id, params);
 	}
 
 	getByDateRange(begin: string, ends: string): Promise<Contributions> {
-		return this.contributionRepo.getByDateRange(begin, ends);
+		return ContributionRepo.getByDateRange(begin, ends);
 	}
 }

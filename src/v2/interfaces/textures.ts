@@ -1,4 +1,3 @@
-import { WriteConfirmation } from "firestorm-db";
 import { EntireUseToCreate, FirestormUse, Uses } from "./uses";
 import { FirestormPath, Paths } from "./paths";
 import { Contributions, FirestormContribution } from "./contributions";

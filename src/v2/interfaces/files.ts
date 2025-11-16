@@ -1,4 +1,4 @@
-import { WriteConfirmation } from "firestorm-db";
+// DO NOT REMOVE THIS IMPORT (vscode shows it as unused for some reason)
 import { Express } from "express";
 
 // multer monkey patches express's types and eslint really doesn't like that

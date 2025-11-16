@@ -12,6 +12,8 @@ import { NotFoundError } from "../tools/errorTypes";
 import { textures, paths, uses, contributions, settings, packs } from "../firestorm";
 import versionSorter from "../tools/versionSorter";
 
+export const PARTIAL_TEXTURE_SEARCH_MIN_LENGTH = 3;
+
 export function getRaw(): Promise<Record<string, FirestormTexture>> {
 	return textures.readRaw();
 }
@@ -35,17 +37,13 @@ export async function search(
 	// unique id: get + filter if tag
 	const intID = Number(nameOrId);
 	if (!Number.isNaN(intID)) {
-		if (intID < 0) throw new TypeError("Texture IDs must be integers greater than 0.");
 		const tex = await textures.get(intID).catch<null>(() => null);
-		if (!tex) return [];
-
-		if (tag === undefined || tex.tags.includes(tag)) return tex;
-		return [];
+		if (tex !== null && (tag === undefined || tex.tags.includes(tag))) return tex;
 	}
 
 	const name = nameOrId.toString();
 
-	// now we know that there must be a valid string name to search
+	// now we know that there must be a valid(ish) string name to search
 
 	/**
 	 * TEXTURE NAME SEARCH ALGORITHM
@@ -76,7 +74,7 @@ export async function search(
 	]);
 
 	// return whatever we have if short name
-	if (name.length < 3 || exactMatches.length) return exactMatches;
+	if (name.length < PARTIAL_TEXTURE_SEARCH_MIN_LENGTH || exactMatches.length) return exactMatches;
 	// partial search if no exact results found
 	return textures.search([
 		{ field: "name", criteria: "includes", value: name, ignoreCase: true },

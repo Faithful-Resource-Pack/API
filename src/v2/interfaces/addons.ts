@@ -1,4 +1,3 @@
-import { WriteConfirmation } from "firestorm-db";
 import { Files } from "./files";
 
 export interface AddonDownload {

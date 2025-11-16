@@ -10,9 +10,7 @@ import {
 	FirestormPack,
 } from "../interfaces";
 import { contributions, packs } from "../firestorm";
-import * as SubmissionFirestormRepository from "./submission.repository";
-
-const submissionRepo = SubmissionFirestormRepository;
+import * as SubmissionRepo from "./submission.repository";
 
 export function getRaw(): Promise<Record<string, Pack>> {
 	return packs.readRaw();
@@ -24,7 +22,7 @@ export function getById(id: string): Promise<Pack> {
 
 export async function getWithSubmission(id: PackID): Promise<PackAll> {
 	const pack = await packs.get(id);
-	const submission = await submissionRepo.getById(id).catch<null>(() => null);
+	const submission = await SubmissionRepo.getById(id).catch<null>(() => null);
 	return { ...pack, submission: submission || {} };
 }
 
@@ -85,9 +83,9 @@ export async function renamePack(
 ): Promise<[WriteConfirmation, WriteConfirmation, CreationPackAll]> {
 	const data: CreationPackAll = await getById(oldPack);
 	data.id = newPack;
-	const submission = await submissionRepo.getById(oldPack).catch<null>(() => null);
+	const submission = await SubmissionRepo.getById(oldPack).catch<null>(() => null);
 	if (submission) data.submission = submission;
-	return Promise.all([remove(oldPack), submissionRepo.remove(oldPack), create(newPack, data)]);
+	return Promise.all([remove(oldPack), SubmissionRepo.remove(oldPack), create(newPack, data)]);
 }
 
 export async function create(packId: string, data: CreationPackAll): Promise<CreationPackAll> {
@@ -96,7 +94,7 @@ export async function create(packId: string, data: CreationPackAll): Promise<Cre
 		// submission is stored separately so we split it from the main payload
 		const submissionData = { id: packId, ...data.submission };
 		delete data.submission;
-		const submission = await submissionRepo.create(packId, submissionData);
+		const submission = await SubmissionRepo.create(packId, submissionData);
 		out.submission = submission;
 	}
 
@@ -111,7 +109,7 @@ export async function update(packId: PackID, newPack: CreationPack): Promise<Pac
 
 export async function remove(packId: PackID): Promise<WriteConfirmation> {
 	// try removing submission data if exists too
-	submissionRepo.remove(packId).catch(() => {});
+	SubmissionRepo.remove(packId).catch(() => {});
 
 	// remove associated contributions
 	const contribs = await contributions.search([

@@ -1,33 +1,31 @@
 import { ID_FIELD, WriteConfirmation } from "firestorm-db";
 import { contributions } from "../firestorm";
 import { Pack, Packs, PackID, PackSearch, CreationPackAll, PackAll } from "../interfaces";
-import * as PackFirestormRepository from "../repository/pack.repository";
+import * as PackRepo from "../repository/pack.repository";
 
 export default class PackService {
-	private readonly repo = PackFirestormRepository;
-
 	public getRaw(): Promise<Record<string, Pack>> {
-		return this.repo.getRaw();
+		return PackRepo.getRaw();
 	}
 
 	public getById(id: PackID): Promise<Pack> {
-		return this.repo.getById(id);
+		return PackRepo.getById(id);
 	}
 
 	public search(params: PackSearch): Promise<Packs> {
-		return this.repo.search(params);
+		return PackRepo.search(params);
 	}
 
 	public getWithSubmission(id: PackID): Promise<PackAll> {
-		return this.repo.getWithSubmission(id);
+		return PackRepo.getWithSubmission(id);
 	}
 
 	public getAllTags(): Promise<string[]> {
-		return this.repo.getAllTags();
+		return PackRepo.getAllTags();
 	}
 
 	public async renamePack(oldPack: PackID, newPack: string): Promise<WriteConfirmation> {
-		this.repo.renamePack(oldPack, newPack);
+		PackRepo.renamePack(oldPack, newPack);
 
 		const r = await contributions.readRaw();
 		const old = Object.values(r);
@@ -49,14 +47,14 @@ export default class PackService {
 
 	public create(body: CreationPackAll): Promise<CreationPackAll> {
 		if (!body.id) body.id = this.serializeDisplayName(body.name);
-		return this.repo.create(body.id, body);
+		return PackRepo.create(body.id, body);
 	}
 
 	public update(id: PackID, pack: Pack): Promise<Pack> {
-		return this.repo.update(id, pack);
+		return PackRepo.update(id, pack);
 	}
 
 	public remove(id: PackID): Promise<WriteConfirmation> {
-		return this.repo.remove(id);
+		return PackRepo.remove(id);
 	}
 }

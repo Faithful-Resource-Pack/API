@@ -1,4 +1,3 @@
-import { WriteConfirmation } from "firestorm-db";
 import { FirstCreationSubmission, Submission } from "./submissions";
 import { Edition } from "./textures";
 

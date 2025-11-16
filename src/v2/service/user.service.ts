@@ -11,14 +11,12 @@ import {
 	Username,
 	UpdateUserProfile,
 } from "../interfaces";
-import * as UserFirestormRepository from "../repository/user.repository";
+import * as UserRepo from "../repository/user.repository";
 import { BadRequestError } from "../tools/errorTypes";
 
 export default class UserService {
-	private readonly repo = UserFirestormRepository;
-
 	public getRaw(): Promise<Record<string, User>> {
-		return this.repo.getRaw();
+		return UserRepo.getRaw();
 	}
 
 	public async getStats(): Promise<UserStats> {
@@ -46,19 +44,19 @@ export default class UserService {
 	}
 
 	public getNames(): Promise<Usernames> {
-		return this.repo.getNames();
+		return UserRepo.getNames();
 	}
 
 	public getNameById(id: string): Promise<Username> {
-		return this.repo.getNameById(id);
+		return UserRepo.getNameById(id);
 	}
 
 	public getRoles(): Promise<string[]> {
-		return this.repo.getRoles();
+		return UserRepo.getRoles();
 	}
 
 	public getUsersFromRole(role: string, username?: string): Promise<Users> {
-		return this.repo.getUsersFromRole(role, username);
+		return UserRepo.getUsersFromRole(role, username);
 	}
 
 	public getUsersByNameOrId(idOrUsername: string): Promise<User | Users> {
@@ -71,35 +69,35 @@ export default class UserService {
 	}
 
 	public getUserById(id: string): Promise<User> {
-		return this.repo.getUserById(id);
+		return UserRepo.getUserById(id);
 	}
 
 	public getUsersByName(username: string): Promise<Users> {
-		return this.repo.getUsersByName(username);
+		return UserRepo.getUsersByName(username);
 	}
 
 	public getContributions(id: string): Promise<Contributions> {
-		return this.repo.getContributionsById(id);
+		return UserRepo.getContributionsById(id);
 	}
 
 	public getUserProfiles(users: string[]): Promise<UserProfile[]> {
-		return this.repo.getUserProfiles(users);
+		return UserRepo.getUserProfiles(users);
 	}
 
 	public getAddons(id: string): Promise<Addons> {
-		return this.repo.getAddonsApprovedById(id);
+		return UserRepo.getAddonsApprovedById(id);
 	}
 
 	public getAllAddons(id: string): Promise<Addons> {
-		return this.repo.getAddonsById(id);
+		return UserRepo.getAddonsById(id);
 	}
 
 	public changeUserID(oldID: string, newID: string): Promise<WriteConfirmation> {
-		return this.repo.changeUserID(oldID, newID);
+		return UserRepo.changeUserID(oldID, newID);
 	}
 
 	public getProfileOrCreate(user: APIUser): Promise<User> {
-		return this.repo.getProfileOrCreate(user);
+		return UserRepo.getProfileOrCreate(user);
 	}
 
 	public async setProfileById(id: string, body: UpdateUserProfile): Promise<User> {
@@ -124,14 +122,14 @@ export default class UserService {
 	}
 
 	public create(id: string, user: User): Promise<User> {
-		return this.repo.update(id, user);
+		return UserRepo.update(id, user);
 	}
 
 	public update(id: string, user: User): Promise<User> {
-		return this.repo.update(id, user);
+		return UserRepo.update(id, user);
 	}
 
 	public remove(id: string): Promise<WriteConfirmation[]> {
-		return this.repo.remove(id);
+		return UserRepo.remove(id);
 	}
 }

@@ -1,5 +1,3 @@
-import { WriteConfirmation } from "firestorm-db";
-import { APIUser } from "discord-api-types/v10";
 import { Contributions } from "./contributions";
 import { Addons } from "./addons";
 
@@ -53,4 +51,3 @@ export interface FirestormUser extends User {
 	contributions(): Promise<Contributions>;
 	addons(): Promise<Addons>;
 }
-

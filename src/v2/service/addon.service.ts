@@ -23,7 +23,7 @@ import {
 	AddonStatusApproved,
 	CreationAddon,
 } from "../interfaces/addons";
-import * as AddonFirestormRepository from "../repository/addon.repository";
+import * as AddonRepo from "../repository/addon.repository";
 import { discordEmbed } from "../tools/discordEmbed";
 
 // filter & keep only values that are in a-z & 0-9 & _ or -
@@ -38,8 +38,6 @@ const toSlug = (value: string) =>
 export default class AddonService {
 	private readonly userService = new UserService();
 	private readonly fileService = new FileService();
-
-	private readonly addonRepo = AddonFirestormRepository;
 
 	public async getIdFromPath(idOrSlug: string): Promise<[number, Addon | undefined]> {
 		const intID = Number(idOrSlug);
@@ -73,12 +71,12 @@ export default class AddonService {
 	}
 
 	getRaw(): Promise<Record<string, Addon>> {
-		return this.addonRepo.getRaw();
+		return AddonRepo.getRaw();
 	}
 
 	async getAddon(id: number): Promise<Addon> {
 		if (Number.isNaN(id) || id < 0) throw new Error("Add-on IDs are integers greater than 0");
-		return this.addonRepo.getAddonById(id);
+		return AddonRepo.getAddonById(id);
 	}
 
 	async getAddonAuthors(id: number): Promise<string[]> {
@@ -93,7 +91,7 @@ export default class AddonService {
 
 	async getFiles(id: number): Promise<Files> {
 		if (Number.isNaN(id) || id < 0) throw new Error("Add-on IDs are integers greater than 0");
-		return this.addonRepo.getFilesById(id);
+		return AddonRepo.getFilesById(id);
 	}
 
 	async getAll(id: number): Promise<AddonAll> {
@@ -173,11 +171,11 @@ export default class AddonService {
 	}
 
 	getAddonBySlug(slug: string): Promise<Addon | undefined> {
-		return this.addonRepo.getAddonBySlug(slug);
+		return AddonRepo.getAddonBySlug(slug);
 	}
 
 	getAddonsByStatus(status: AddonStatus): Promise<Addons> {
-		return this.addonRepo.getAddonByStatus(status);
+		return AddonRepo.getAddonByStatus(status);
 	}
 
 	async create(body: AddonCreationParam): Promise<Addon> {
@@ -225,7 +223,7 @@ export default class AddonService {
 			},
 		};
 
-		const addonCreated = await this.addonRepo.create(addon);
+		const addonCreated = await AddonRepo.create(addon);
 
 		// one to many relationship
 		const files: CreationFiles = downloads.flatMap((d) =>
@@ -326,7 +324,7 @@ export default class AddonService {
 		// remove addon links
 		// remove real files
 		return Promise.all([
-			this.addonRepo.remove(id),
+			AddonRepo.remove(id),
 			this.fileService.removeFilesByParent(parent),
 			...realFiles,
 		]);
@@ -345,7 +343,7 @@ export default class AddonService {
 		before: AddonStatus | null,
 		notify = true,
 	): Promise<Addon> {
-		const a = await this.addonRepo.update(id, addon);
+		const a = await AddonRepo.update(id, addon);
 		if (notify) await this.notifyAddonChange(a, before).catch(console.error);
 		return a;
 	}

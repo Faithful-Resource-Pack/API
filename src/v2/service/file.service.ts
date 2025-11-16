@@ -1,40 +1,38 @@
 import { WriteConfirmation } from "firestorm-db";
-import * as FileFirestormRepository from "../repository/files.repository";
+import * as FileRepo from "../repository/files.repository";
 import { FileParent, FileUse, File, CreationFile, CreationFiles } from "../interfaces/files";
 
 export default class FileService {
-	private readonly repo = FileFirestormRepository;
-
 	public removeFileByPath(path: string): Promise<WriteConfirmation> {
-		return this.repo.removeFileByPath(path);
+		return FileRepo.removeFileByPath(path);
 	}
 
 	public getFileById(id: string) {
-		return this.repo.getFileById(id);
+		return FileRepo.getFileById(id);
 	}
 
 	public getFilesByParent(id: FileParent) {
-		return this.repo.getFilesByParent(id);
+		return FileRepo.getFilesByParent(id);
 	}
 
 	public removeFilesByParentAndUse(parent: FileParent, use: FileUse): Promise<WriteConfirmation> {
-		return this.repo.removeFilesByParentAndUse(parent, use);
+		return FileRepo.removeFilesByParentAndUse(parent, use);
 	}
 
 	public removeFilesByParent(parent: FileParent): Promise<WriteConfirmation> {
-		return this.repo.removeFilesByParent(parent);
+		return FileRepo.removeFilesByParent(parent);
 	}
 
 	public addFile(file: CreationFile): Promise<string> {
-		return this.repo.addFile(file);
+		return FileRepo.addFile(file);
 	}
 
 	public addFiles(files: CreationFiles): Promise<string[]> {
-		return this.repo.addFiles(files);
+		return FileRepo.addFiles(files);
 	}
 
 	public removeFileById(id: string): Promise<WriteConfirmation> {
-		return this.repo.removeFileById(id);
+		return FileRepo.removeFileById(id);
 	}
 
 	public upload(
@@ -43,14 +41,14 @@ export default class FileService {
 		buffer: Buffer,
 		overwrite = false,
 	): Promise<WriteConfirmation> {
-		return this.repo.upload(path, filename, buffer, overwrite);
+		return FileRepo.upload(path, filename, buffer, overwrite);
 	}
 
 	public remove(path: string): Promise<WriteConfirmation> {
-		return this.repo.remove(path);
+		return FileRepo.remove(path);
 	}
 
 	public getRaw(): Promise<Record<string, File>> {
-		return this.repo.getRaw();
+		return FileRepo.getRaw();
 	}
 }

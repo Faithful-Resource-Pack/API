@@ -1,11 +1,9 @@
 import { WriteConfirmation } from "firestorm-db";
-import * as SettingsFirestormRepository from "../repository/settings.repository";
+import * as SettingsRepo from "../repository/settings.repository";
 
 export default class SettingsService {
-	private readonly repo = SettingsFirestormRepository;
-
 	raw(): Promise<Record<string, unknown>> {
-		return this.repo.getRaw();
+		return SettingsRepo.getRaw();
 	}
 
 	async get(keys: string[]): Promise<unknown> {
@@ -14,6 +12,6 @@ export default class SettingsService {
 	}
 
 	update(body: Record<string, unknown>): Promise<WriteConfirmation> {
-		return this.repo.update(body);
+		return SettingsRepo.update(body);
 	}
 }

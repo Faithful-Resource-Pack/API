@@ -2,7 +2,7 @@ import { WriteConfirmation } from "firestorm-db";
 import { BadRequestError, NotFoundError } from "../tools/errorTypes";
 import UseService from "./use.service";
 import { InputPath, Path, PathNewVersionParam, Paths } from "../interfaces";
-import * as PathFirestormRepository from "../repository/path.repository";
+import * as PathRepo from "../repository/path.repository";
 import TextureService from "./texture.service";
 import { settings } from "../firestorm";
 import versionSorter from "../tools/versionSorter";
@@ -16,14 +16,12 @@ export default class PathService {
 		else this.useService = new UseService(this);
 	}
 
-	private readonly repo = PathFirestormRepository;
-
 	getRaw(): Promise<Record<string, Path>> {
-		return this.repo.getRaw();
+		return PathRepo.getRaw();
 	}
 
 	getPathByUseId(useID: string): Promise<Paths> {
-		return this.repo.getPathUseById(useID);
+		return PathRepo.getPathUseById(useID);
 	}
 
 	async getPathsByUseIdsAndVersion(
@@ -31,7 +29,7 @@ export default class PathService {
 		version: string,
 	): Promise<Record<string, Path>> {
 		// return object for faster lookup
-		const paths = await this.repo.getPathsByUseIdsAndVersion(useIDs, version);
+		const paths = await PathRepo.getPathsByUseIdsAndVersion(useIDs, version);
 		return paths.reduce<Record<string, Path>>((acc, cur) => {
 			// only take first path
 			acc[cur.use] ??= cur;
@@ -42,22 +40,22 @@ export default class PathService {
 	async createPath(path: InputPath): Promise<Path> {
 		// verify use existence
 		await this.useService.getUseByIdOrName(path.use); // verify use existence
-		return this.repo.createPath(path);
+		return PathRepo.createPath(path);
 	}
 
 	createMultiplePaths(paths: InputPath[]): Promise<Paths> {
-		return this.repo.createPathBulk(paths);
+		return PathRepo.createPathBulk(paths);
 	}
 
 	getPathById(id: string): Promise<Path> {
-		return this.repo.getPathById(id);
+		return PathRepo.getPathById(id);
 	}
 
 	async updatePathById(id: string, path: Path): Promise<Path> {
 		if (id !== path.id) throw new BadRequestError("Updated ID is different from existing ID");
 
 		await this.useService.getUseByIdOrName(path.use); // verify use existence
-		return this.repo.updatePath(id, path);
+		return PathRepo.updatePath(id, path);
 	}
 
 	async addVersion(body: PathNewVersionParam): Promise<[WriteConfirmation, WriteConfirmation]> {
@@ -76,7 +74,7 @@ export default class PathService {
 				// equivalent of array_unshift (new versions go at start of list)
 				value: [0, 0, body.newVersion],
 			}),
-			this.repo.addNewVersionToVersion(body.version, body.newVersion),
+			PathRepo.addNewVersionToVersion(body.version, body.newVersion),
 		]);
 	}
 
@@ -93,7 +91,7 @@ export default class PathService {
 				operation: "set",
 				value: allVersions[edition].filter((v) => v !== version),
 			}),
-			this.repo.removeVersion(version),
+			PathRepo.removeVersion(version),
 		]);
 	}
 
@@ -117,15 +115,15 @@ export default class PathService {
 					// newest at top
 					.reverse(),
 			}),
-			this.repo.renameVersion(oldVersion, newVersion),
+			PathRepo.renameVersion(oldVersion, newVersion),
 		]);
 	}
 
 	removePathById(pathID: string): Promise<WriteConfirmation> {
-		return this.repo.removePathById(pathID);
+		return PathRepo.removePathById(pathID);
 	}
 
 	removePathByBulk(pathIDs: string[]): Promise<WriteConfirmation> {
-		return this.repo.removePathsByBulk(pathIDs);
+		return PathRepo.removePathsByBulk(pathIDs);
 	}
 }
