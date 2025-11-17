@@ -97,7 +97,7 @@ export async function addContributions(
 	params: ContributionCreationParams[],
 ): Promise<Contributions> {
 	const ids = await contributions.addBulk(params);
-	return Promise.all(ids.map((id) => contributions.get(id)));
+	return contributions.searchKeys(ids);
 }
 
 export async function updateContribution(
