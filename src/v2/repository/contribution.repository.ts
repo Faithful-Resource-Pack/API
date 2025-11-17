@@ -90,7 +90,7 @@ export default class ContributionFirestormRepository implements ContributionsRep
 
 	async addContributions(params: ContributionCreationParams[]): Promise<Contributions> {
 		const ids = await contributions.addBulk(params);
-		return Promise.all(ids.map((id) => contributions.get(id)));
+		return contributions.searchKeys(ids);
 	}
 
 	async updateContribution(id: string, params: ContributionCreationParams): Promise<Contribution> {
