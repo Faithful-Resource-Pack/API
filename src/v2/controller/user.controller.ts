@@ -163,7 +163,7 @@ export class UserController extends Controller {
 	 */
 	@Get("{id}/addons/approved")
 	public getAddons(@Path() id: string): Promise<Addons> {
-		return this.service.getAddons(id);
+		return this.service.getApprovedAddonsById(id);
 	}
 
 	/**
@@ -184,7 +184,7 @@ export class UserController extends Controller {
 				throw new BadRequestError("Addon author must include the authored user");
 		}
 
-		return this.service.getAllAddons(id);
+		return this.service.getAllAddonsById(id);
 	}
 
 	@Put("change/{old_id}/{new_id}")
@@ -205,7 +205,7 @@ export class UserController extends Controller {
 	@Security("discord", [])
 	@Security("bot")
 	public create(@Path() id: string, @Body() body: UserCreationParams): Promise<User> {
-		return this.service.create(id, { ...body, id, media: [] });
+		return this.service.update(id, { ...body, id, media: [] });
 	}
 
 	/**

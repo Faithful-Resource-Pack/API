@@ -11,8 +11,10 @@ import {
 	UserCreationParams,
 	Username,
 	UserProfile,
+	UserStats,
+	UpdateUserProfile,
 } from "../interfaces";
-import { NotFoundError } from "../tools/errorTypes";
+import { BadRequestError, NotFoundError } from "../tools/errorTypes";
 import AddonService from "../service/addon.service";
 
 const mapUser = (user: Partial<User> & { id: string }): User => ({
@@ -25,6 +27,10 @@ const mapUser = (user: Partial<User> & { id: string }): User => ({
 	anonymous: user.anonymous || false,
 });
 
+export function getRaw(): Promise<Record<string, User>> {
+	return users.readRaw();
+}
+
 export async function getNameById(id: string): Promise<Username> {
 	const res = await users.get(id);
 	return {
@@ -32,10 +38,6 @@ export async function getNameById(id: string): Promise<Username> {
 		username: res.anonymous ? undefined : res.username,
 		uuid: res.anonymous ? undefined : res.uuid,
 	};
-}
-
-export function getRaw(): Promise<Record<string, User>> {
-	return users.readRaw();
 }
 
 export async function getNames(): Promise<Usernames> {
@@ -58,6 +60,29 @@ export async function getUserById(id: string): Promise<User> {
 	}
 }
 
+export async function getUsersByName(name: string): Promise<Users> {
+	if (!name) throw new TypeError("A name must be provided");
+
+	const arr = await users.search([
+		{
+			field: "username",
+			criteria: name.length < 3 ? "==" : "includes",
+			value: name,
+			ignoreCase: true,
+		},
+	]);
+	return arr.map(mapUser);
+}
+
+export function getUsersByNameOrId(idOrUsername: string): Promise<User | Users> {
+	// can't parse discord ids directly into a number because precision can be lost
+	const str = idOrUsername.split("");
+	const int = str.map((s) => parseInt(s, 10));
+	const same = int.every((i, index) => i.toString() === str[index]);
+
+	return same ? getUserById(idOrUsername) : getUsersByName(idOrUsername);
+}
+
 export async function getProfileOrCreate(discordUser: APIUser): Promise<User> {
 	const { id, global_name } = discordUser;
 	try {
@@ -78,20 +103,6 @@ export async function getProfileOrCreate(discordUser: APIUser): Promise<User> {
 		await users.set(id, empty);
 		return getUserById(id);
 	}
-}
-
-export async function getUsersByName(name: string): Promise<Users> {
-	if (!name) throw new TypeError("A name must be provided");
-
-	const arr = await users.search([
-		{
-			field: "username",
-			criteria: name.length < 3 ? "==" : "includes",
-			value: name,
-			ignoreCase: true,
-		},
-	]);
-	return arr.map(mapUser);
 }
 
 export async function getUsersFromRole(role: string, username?: string): Promise<Users> {
@@ -159,19 +170,64 @@ export function getRoles(): Promise<string[]> {
 	return users.values({ field: "roles", flatten: true });
 }
 
+export async function setRoles(id: string, roles: string[]): Promise<User> {
+	const user = await getUserById(id);
+	user.roles = roles;
+	return update(id, user);
+}
+
 export async function getContributionsById(id: string): Promise<Contributions> {
 	const u = await users.get(id);
 	return u.contributions();
 }
 
-export async function getAddonsById(id: string): Promise<Addons> {
+export async function getAllAddonsById(id: string): Promise<Addons> {
 	const u = await users.get(id);
 	return u.addons();
 }
 
-export async function getAddonsApprovedById(id: string): Promise<Addons> {
-	const arr = await getAddonsById(id);
+export async function getApprovedAddonsById(id: string): Promise<Addons> {
+	const arr = await getAllAddonsById(id);
 	return arr.filter((el) => el.approval.status === "approved");
+}
+
+export async function getStats(): Promise<UserStats> {
+	const allRoles: string[] = [];
+	const users = await getRaw();
+	return Object.values(users).reduce<UserStats>(
+		(acc, user) => {
+			acc.total++;
+			if (user.anonymous) acc.total_anonymous++;
+
+			user.roles.forEach((role) => {
+				if (!allRoles.includes(role)) {
+					allRoles.push(role);
+					acc.total_roles++;
+
+					acc.total_per_roles[role] = 0;
+				}
+				acc.total_per_roles[role]++;
+			});
+
+			return acc;
+		},
+		{ total: 0, total_anonymous: 0, total_roles: 0, total_per_roles: {} },
+	);
+}
+
+export async function setProfileById(id: string, body: UpdateUserProfile): Promise<User> {
+	const user = await getUserById(id);
+
+	const username = (body.username || "").trim();
+	if (username.length === 0) throw new BadRequestError("Username cannot be empty");
+
+	user.username = username;
+
+	user.uuid = body.uuid || "";
+	user.media = body.media;
+	user.anonymous = body.anonymous;
+
+	return update(id, user);
 }
 
 export async function update(id: string, user: UserCreationParams): Promise<User> {
