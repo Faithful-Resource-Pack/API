@@ -53,44 +53,39 @@ export default class UserFirestormRepository implements UserRepository {
 			const user = await users.get(id);
 			return mapUser(user);
 		} catch (err: unknown) {
-			if (err instanceof AxiosError && err.response?.status === 404) {
-				// prettier error message
-				const formattedError = new NotFoundError("User not found");
-				throw formattedError;
-			}
+			// prettier error message
+			if (err instanceof AxiosError && err.response?.status === 404)
+				throw new NotFoundError("User not found");
 			throw err;
 		}
 	}
 
 	async getProfileOrCreate(discordUser: APIUser): Promise<User> {
 		const { id, global_name } = discordUser;
-		let user: User;
 		try {
-			user = await users.get(id);
+			return await this.getUserById(id);
 		} catch (err: unknown) {
-			// create if failed with 404
-			if (err instanceof AxiosError && err.response?.status === 404) {
-				const empty: User = {
-					id,
-					anonymous: false,
-					roles: [],
-					// use discord username as default username (can be changed later in webapp)
-					username: global_name || "",
-					uuid: "",
-					media: [],
-				};
-				await users.set(id, empty);
-				user = await users.get(id);
-				// non-get related error, throw
-			} else throw err;
+			// unrelated issue
+			if (!(err instanceof NotFoundError)) throw err;
+
+			const empty: User = {
+				id,
+				anonymous: false,
+				roles: [],
+				// use discord username as default username (can be changed later in webapp)
+				username: global_name || "",
+				uuid: "",
+				media: [],
+			};
+			await users.set(id, empty);
+			return this.getUserById(id);
 		}
-		return mapUser(user);
 	}
 
 	async getUsersByName(name: string): Promise<Users> {
-		if (!name) throw new Error("A name must be provided");
+		if (!name) throw new TypeError("A name must be provided");
 
-		const arr = await users.search([
+		const foundUsers = await users.search([
 			{
 				field: "username",
 				criteria: name.length < 3 ? "==" : "includes",
@@ -98,7 +93,7 @@ export default class UserFirestormRepository implements UserRepository {
 				ignoreCase: true,
 			},
 		]);
-		return arr.map(mapUser);
+		return foundUsers.map(mapUser);
 	}
 
 	async getUsersFromRole(role: string, username?: string): Promise<Users> {
