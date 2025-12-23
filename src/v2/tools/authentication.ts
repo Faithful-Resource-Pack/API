@@ -127,7 +127,7 @@ export async function expressAuthentication(
 
 			// otherwise throw permission error
 			console.error(
-				`PermissionError with ${discordID}: ${JSON.stringify(roles)}, ${JSON.stringify(scopes)} needed`,
+				`PermissionError with ${discordID}:\nFound: ${JSON.stringify(roles)}\nNeeded: ${JSON.stringify(scopes)}`,
 			);
 
 			if (scopes.includes("addon:approved") && !("id_or_slug" in request.params)) return undefined;
