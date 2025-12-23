@@ -7,6 +7,7 @@ import {
 	TextureProperty,
 	PropertyToOutput,
 	FirestormTexture,
+	TextureStats,
 } from "../interfaces/textures";
 import TextureFirestormRepository from "../repository/texture.repository";
 import PathService from "./path.service";
@@ -70,6 +71,31 @@ export default class TextureService {
 		} catch {
 			throw new Error(`Failed to search property "${property}" on texture ${nameOrID}`);
 		}
+	}
+
+	async getStats(): Promise<TextureStats> {
+		const raw = await this.getRaw();
+		const data = Object.values(raw);
+		const { byEditions, byTags } = data
+			.flatMap((texture) => texture.tags)
+			.reduce(
+				(acc, cur) => {
+					if (["Java", "Bedrock"].includes(cur)) {
+						acc.byEditions[cur] ||= 0;
+						++acc.byEditions[cur];
+					} else {
+						acc.byTags[cur] ||= 0;
+						++acc.byTags[cur];
+					}
+					return acc;
+				},
+				{ byEditions: {}, byTags: {} },
+			);
+		return {
+			total_textures: data.length,
+			textures_by_edition: byEditions,
+			textures_by_tags: byTags,
+		};
 	}
 
 	getURLById(id: number, pack: PackID, version: string): Promise<string> {

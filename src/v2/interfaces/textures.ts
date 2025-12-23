@@ -34,6 +34,12 @@ export interface EntireTextureToCreate extends TextureCreationParam {
 	uses: EntireUseToCreate[];
 }
 
+export interface TextureStats {
+	total_textures: number;
+	textures_by_edition: Partial<Record<Edition, number>>;
+	textures_by_tags: Record<string, number>;
+}
+
 export type Edition = "java" | "bedrock";
 export type TextureProperty = null | "uses" | "paths" | "contributions" | "mcmeta" | "all";
 export type AnyTextureProperty =

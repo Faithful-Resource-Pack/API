@@ -25,9 +25,11 @@ import {
 	TextureProperty,
 	EntireTextureToCreate,
 	AnyTextureProperty,
+	TextureStats,
 } from "../interfaces";
 import TextureService from "../service/texture.service";
-import { NotFoundError } from "../tools/errorTypes";
+import { NotAvailableError, NotFoundError } from "../tools/errorTypes";
+import * as cache from "../tools/cache";
 
 @Route("textures")
 @Tags("Textures")
@@ -40,6 +42,15 @@ export class TextureController extends Controller {
 	@Get("raw")
 	public getRaw(): Promise<Record<string, Texture>> {
 		return this.service.getRaw();
+	}
+
+	/**
+	 * Get all general contribution statistics
+	 */
+	@Response<NotAvailableError>(408)
+	@Get("stats")
+	public getStats(): Promise<TextureStats> {
+		return cache.handle("texture-stats", () => this.service.getStats());
 	}
 
 	/**
