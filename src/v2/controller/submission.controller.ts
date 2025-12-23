@@ -38,7 +38,7 @@ export class SubmissionController extends Controller {
 	 */
 	@Post("")
 	@Security("bot")
-	@Security("discord", ["administrator"])
+	@Security("discord", ["Administrator"])
 	public createPack(@Body() body: CreationSubmission): Promise<Submission> {
 		return this.service.create(body.id, body);
 	}
@@ -50,7 +50,7 @@ export class SubmissionController extends Controller {
 	 */
 	@Put("{id}")
 	@Security("bot")
-	@Security("discord", ["administrator"])
+	@Security("discord", ["Administrator"])
 	public update(@Path() id: PackID, @Body() body: Submission): Promise<Submission> {
 		return this.service.update(id, body);
 	}
@@ -61,7 +61,7 @@ export class SubmissionController extends Controller {
 	 */
 	@Delete("{id}")
 	@Security("bot")
-	@Security("discord", ["administrator"])
+	@Security("discord", ["Administrator"])
 	public remove(id: PackID): Promise<WriteConfirmation> {
 		return this.service.remove(id);
 	}

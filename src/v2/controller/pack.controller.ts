@@ -56,7 +56,7 @@ export class PackController extends Controller {
 	 */
 	@Put("rename/{old_pack}/{new_pack}")
 	@Security("bot")
-	@Security("discord", ["administrator"])
+	@Security("discord", ["Administrator"])
 	public renamePack(
 		@Path() old_pack: PackID,
 		@Path() new_pack: string,
@@ -79,7 +79,7 @@ export class PackController extends Controller {
 	 */
 	@Post("")
 	@Security("bot")
-	@Security("discord", ["administrator"])
+	@Security("discord", ["Administrator"])
 	public create(@Body() body: CreationPackAll): Promise<CreationPackAll> {
 		return this.service.create(body);
 	}
@@ -91,7 +91,7 @@ export class PackController extends Controller {
 	 */
 	@Put("{id}")
 	@Security("bot")
-	@Security("discord", ["administrator"])
+	@Security("discord", ["Administrator"])
 	public update(@Path() id: PackID, @Body() body: Pack): Promise<Pack> {
 		return this.service.update(id, body);
 	}
@@ -102,7 +102,7 @@ export class PackController extends Controller {
 	 */
 	@Delete("{id}")
 	@Security("bot")
-	@Security("discord", ["administrator"])
+	@Security("discord", ["Administrator"])
 	public remove(id: PackID): Promise<WriteConfirmation> {
 		return this.service.remove(id);
 	}

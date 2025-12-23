@@ -37,7 +37,7 @@ export class AddonController extends Controller {
 	 */
 	@Response<NotFoundError>(404)
 	@Response<PermissionError>(403)
-	@Security("discord", ["administrator"])
+	@Security("discord", ["Administrator", "Art Director Council"])
 	@Security("bot")
 	@Get("raw")
 	public getRaw(): Promise<Record<string, Addon>> {
@@ -58,7 +58,7 @@ export class AddonController extends Controller {
 	 */
 	@Response<NotFoundError>(404)
 	@Response<PermissionError>(403)
-	@Security("discord", ["administrator"])
+	@Security("discord", ["Administrator", "Art Director Council"])
 	@Get("stats-admin")
 	public getStatsAdmin(): Promise<AddonStatsAdmin> {
 		return cache.handle("addon-stats-admin", () => this.service.getStats(true));
@@ -69,7 +69,7 @@ export class AddonController extends Controller {
 	 * @param id_or_slug Requested add-on ID, slug, or status
 	 */
 	@Response<PermissionError>(403)
-	@Security("discord", ["addon:approved", "administrator"])
+	@Security("discord", ["addon:approved", "Administrator", "Art Director Council"])
 	@Get("{id_or_slug}")
 	public async getAddon(@Path() id_or_slug: string): Promise<Addon | Addons> {
 		if (AddonStatusValues.includes(id_or_slug as AddonStatus))
@@ -84,7 +84,7 @@ export class AddonController extends Controller {
 	 */
 	@Response<NotFoundError>(404)
 	@Response<PermissionError>(403)
-	@Security("discord", ["addon:approved", "administrator"])
+	@Security("discord", ["addon:approved", "Administrator", "Art Director Council"])
 	@Get("{id_or_slug}/header")
 	@SuccessResponse(302, "Redirect")
 	public async getHeaderFile(
@@ -104,7 +104,7 @@ export class AddonController extends Controller {
 	 */
 	@Response<NotFoundError>(404)
 	@Response<PermissionError>(403)
-	@Security("discord", ["addon:approved", "administrator"])
+	@Security("discord", ["addon:approved", "Administrator", "Art Director Council"])
 	@Get("{id_or_slug}/authors")
 	public getAddonAuthorsProfiles(@Path() id_or_slug: string): Promise<UserProfile[]> {
 		return this.service.getAddonAuthorsProfiles(id_or_slug);
@@ -115,7 +115,7 @@ export class AddonController extends Controller {
 	 */
 	@Response<NotFoundError>(404)
 	@Response<PermissionError>(403)
-	@Security("discord", ["addon:approved", "administrator"])
+	@Security("discord", ["addon:approved", "Administrator", "Art Director Council"])
 	@Get("{id_or_slug}/{property}")
 	public async getAddonPropertyById(
 		@Path() id_or_slug: string,
@@ -131,7 +131,7 @@ export class AddonController extends Controller {
 	 */
 	@Response<NotFoundError>(404)
 	@Response<PermissionError>(403)
-	@Security("discord", ["addon:approved", "administrator"])
+	@Security("discord", ["addon:approved", "Administrator", "Art Director Council"])
 	@Get("{id_or_slug}/files/screenshots")
 	public async getScreenshots(@Path() id_or_slug: string): Promise<string[]> {
 		const [addonID] = await this.service.getAddonFromSlugOrId(id_or_slug);
@@ -145,7 +145,7 @@ export class AddonController extends Controller {
 	 */
 	@Response<NotFoundError>(404)
 	@Response<PermissionError>(403)
-	@Security("discord", ["addon:own", "administrator"])
+	@Security("discord", ["addon:own", "Administrator", "Art Director Council"])
 	@Get("{id_or_slug}/files/screenshots-ids")
 	public async getScreenshotsIds(@Path() id_or_slug: string): Promise<string[]> {
 		const [addonID] = await this.service.getAddonFromSlugOrId(id_or_slug);
@@ -158,7 +158,7 @@ export class AddonController extends Controller {
 	 */
 	@Response<NotFoundError>(404)
 	@Response<PermissionError>(403)
-	@Security("discord", ["addon:approved", "administrator"])
+	@Security("discord", ["addon:approved", "Administrator", "Art Director Council"])
 	@Get("{id_or_slug}/files/downloads")
 	public async getDownloads(@Path() id_or_slug: string): Promise<AddonDownload[]> {
 		const [addonID] = await this.service.getAddonFromSlugOrId(id_or_slug);
@@ -189,7 +189,7 @@ export class AddonController extends Controller {
 	 */
 	@Response<NotFoundError>(404)
 	@Response<PermissionError>(403)
-	@Security("discord", ["addon:approved", "administrator"])
+	@Security("discord", ["addon:approved", "Administrator", "Art Director Council"])
 	@Get("{id_or_slug}/files/screenshots/{index}")
 	@SuccessResponse(302, "Redirect")
 	public async getScreenshot(
@@ -209,7 +209,7 @@ export class AddonController extends Controller {
 	 */
 	@Response<NotFoundError>(404)
 	@Response<PermissionError>(403)
-	@Security("discord", ["addon:approved", "administrator"])
+	@Security("discord", ["addon:approved", "Administrator", "Art Director Council"])
 	@Get("{id_or_slug}/files/header")
 	public async getHeaderURL(@Path() id_or_slug: string): Promise<string> {
 		const [addonID] = await this.service.getAddonFromSlugOrId(id_or_slug);

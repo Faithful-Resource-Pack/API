@@ -185,7 +185,7 @@ export default function formatSwaggerDoc(app: Application, path: string) {
 		prefix: "/v2",
 		operationId: "PostHeader",
 		security: {
-			discord: ["addon:own", "administrator"],
+			discord: ["addon:own", "Administrator"],
 		},
 		description: "Post header file for addon",
 	});
@@ -201,7 +201,7 @@ export default function formatSwaggerDoc(app: Application, path: string) {
 			prefix: "/v2",
 			operationId: "PostScreenshot",
 			security: {
-				discord: ["addon:own", "administrator"],
+				discord: ["addon:own", "Administrator"],
 			},
 			description: "Post screenshot file for addon",
 		},

@@ -21,7 +21,7 @@ export class UseController extends Controller {
 	 * @param body Texture use to create
 	 */
 	@Post("")
-	@Security("discord", ["administrator"])
+	@Security("discord", ["Administrator"])
 	public createUse(@Body() body: Use): Promise<Use> {
 		return this.service.createUse(body);
 	}
@@ -30,7 +30,7 @@ export class UseController extends Controller {
 	 * Append a use onto an existing texture
 	 */
 	@Post("{texture_id}")
-	@Security("discord", ["administrator"])
+	@Security("discord", ["Administrator"])
 	public async appendUse(
 		@Path() texture_id: string,
 		@Body() body: EntireUseToCreate,
@@ -63,7 +63,7 @@ export class UseController extends Controller {
 	 * @param id Use ID
 	 */
 	@Put("{id}")
-	@Security("discord", ["administrator"])
+	@Security("discord", ["Administrator"])
 	public changeUse(@Path() id: string, @Body() modifiedUse: CreationUse): Promise<Use> {
 		return this.service.updateUse(id, modifiedUse);
 	}
@@ -73,7 +73,7 @@ export class UseController extends Controller {
 	 * @param id Use ID
 	 */
 	@Delete("{id}")
-	@Security("discord", ["administrator"])
+	@Security("discord", ["Administrator"])
 	public deleteUse(@Path() id: string): Promise<WriteConfirmation[]> {
 		return this.service.removeUseById(id);
 	}

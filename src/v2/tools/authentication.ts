@@ -119,16 +119,13 @@ export async function expressAuthentication(
 			let roles: string[] = user?.roles || [];
 			if (!Array.isArray(roles)) roles = [];
 
-			roles = roles.map((e) => e.toLowerCase());
-			scopes = scopes.map((e) => e.toLowerCase());
-
 			// resolve if role matches
 			if (scopes.some((scope) => roles.includes(scope))) return discordID;
 
 			// otherwise throw permission error
-			console.error(
-				`PermissionError with ${discordID}:\nFound: ${JSON.stringify(roles)}\nNeeded: ${JSON.stringify(scopes)}`,
-			);
+			console.error(`[${new Date().toUTCString()}] ${request.method} ${request.path}`);
+			console.error(`PermissionError with ${discordID}:`);
+			console.error(`Found: ${JSON.stringify(roles)}\nNeeded: ${JSON.stringify(scopes)}`);
 
 			if (scopes.includes("addon:approved") && !("id_or_slug" in request.params)) return undefined;
 			throw new PermissionError();

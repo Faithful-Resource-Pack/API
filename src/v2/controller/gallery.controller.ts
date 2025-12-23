@@ -57,7 +57,7 @@ export class GalleryController extends Controller {
 	 */
 	@Get("cache/purge")
 	@Security("bot")
-	@Security("discord", ["administrator"])
+	@Security("discord", ["Administrator"])
 	public purgeCache(): Promise<void[]> {
 		return cache.purge(/gallery-.+/);
 	}

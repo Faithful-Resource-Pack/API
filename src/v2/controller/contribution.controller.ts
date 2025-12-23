@@ -134,7 +134,7 @@ export class ContributionController extends Controller {
 	 * @param body Contribution information
 	 */
 	@Post()
-	@Security("discord", ["administrator"])
+	@Security("discord", ["Administrator"])
 	@Security("bot")
 	public addContribution(
 		@Body() body: ContributionCreationParams | ContributionCreationParams[],
@@ -149,7 +149,7 @@ export class ContributionController extends Controller {
 	 * @param id Contribution ID
 	 */
 	@Delete("{id}")
-	@Security("discord", ["administrator"])
+	@Security("discord", ["Administrator"])
 	@Security("bot")
 	public deleteContribution(id: string): Promise<WriteConfirmation> {
 		return this.service.deleteContribution(id);
@@ -161,7 +161,7 @@ export class ContributionController extends Controller {
 	 * @param body New information
 	 */
 	@Put("{id}")
-	@Security("discord", ["administrator"])
+	@Security("discord", ["Administrator"])
 	@Security("bot")
 	public updateContribution(
 		id: string,

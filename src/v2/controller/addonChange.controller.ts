@@ -59,7 +59,7 @@ export class AddonChangeController extends Controller {
 	@Response<PermissionError>(403)
 	@Patch("{id_or_slug}")
 	@SuccessResponse(204)
-	@Security("discord", ["addon:own", "administrator"])
+	@Security("discord", ["addon:own", "Administrator", "Art Director Council"])
 	public async addonUpdate(
 		@Path() id_or_slug: string,
 		@Body() body: AddonUpdateParam,
@@ -71,7 +71,7 @@ export class AddonChangeController extends Controller {
 		if (!addon.authors.includes(request.user)) {
 			// check if admin
 			const user = await new UserService().getUserById(request.user);
-			if (!user.roles.includes("Administrator"))
+			if (!["Administrator", "Art Director Council"].some((role) => user.roles.includes(role)))
 				throw new BadRequestError("Addon author must include the authed user");
 		}
 
@@ -86,7 +86,7 @@ export class AddonChangeController extends Controller {
 	@Response<PermissionError>(403)
 	@Put("{id_or_slug}/review")
 	@SuccessResponse(204)
-	@Security("discord", ["Administrator", "Moderator"])
+	@Security("discord", ["Administrator", "Art Director Council"])
 	public async addonReview(
 		@Path() id_or_slug: string,
 		@Body() data: AddonReviewBody,
@@ -112,7 +112,7 @@ export class AddonChangeController extends Controller {
 	@Response<PermissionError>(403)
 	@Delete("{id_or_slug}")
 	@SuccessResponse(204)
-	@Security("discord", ["addon:own", "administrator"])
+	@Security("discord", ["addon:own", "Administrator", "Art Director Council"])
 	public async addonDelete(@Path() id_or_slug: string): Promise<WriteConfirmation[]> {
 		const [addonID] = await this.service.getIdFromPath(id_or_slug);
 		return this.service.remove(addonID);
@@ -146,7 +146,7 @@ export class AddonChangeController extends Controller {
 	@Response<PermissionError>(403)
 	@Delete("{id_or_slug}/screenshots/{index_or_slug}")
 	@SuccessResponse(204)
-	@Security("discord", ["addon:own", "administrator"])
+	@Security("discord", ["addon:own", "Administrator", "Art Director Council"])
 	public addonDeleteScreenshot(
 		@Path() id_or_slug: string,
 		@Path() index_or_slug: number | string,
@@ -162,7 +162,7 @@ export class AddonChangeController extends Controller {
 	@Response<PermissionError>(403)
 	@Delete("{id_or_slug}/header/")
 	@SuccessResponse(204)
-	@Security("discord", ["addon:own", "administrator"])
+	@Security("discord", ["addon:own", "Administrator", "Art Director Council"])
 	public addonDeleteHeader(@Path() id_or_slug: string): Promise<WriteConfirmation[]> {
 		return this.fileService.deleteHeader(id_or_slug);
 	}

@@ -175,7 +175,7 @@ export class TextureController extends Controller {
 	 */
 	@Put("merge/{source}/{destination}")
 	@Security("bot")
-	@Security("discord", ["administrator"])
+	@Security("discord", ["Administrator"])
 	public mergeTextures(@Path() source: string, @Path() destination: string): Promise<void> {
 		return this.service.mergeTextures(source, destination);
 	}
@@ -186,7 +186,7 @@ export class TextureController extends Controller {
 	 */
 	@Post("")
 	@Security("bot")
-	@Security("discord", ["administrator"])
+	@Security("discord", ["Administrator"])
 	public createTexture(@Body() body: TextureCreationParam): Promise<Texture> {
 		return this.service.createTexture(body);
 	}
@@ -197,7 +197,7 @@ export class TextureController extends Controller {
 	 */
 	@Post("multiple")
 	@Security("bot")
-	@Security("discord", ["administrator"])
+	@Security("discord", ["Administrator"])
 	public createMultipleTextures(@Body() body: EntireTextureToCreate[]): Promise<Textures> {
 		return this.service.createEntireTextures(body);
 	}
@@ -209,7 +209,7 @@ export class TextureController extends Controller {
 	 */
 	@Put("{id}")
 	@Security("bot")
-	@Security("discord", ["administrator"])
+	@Security("discord", ["Administrator"])
 	public editTexture(@Path() id: string, @Body() body: TextureCreationParam): Promise<Texture> {
 		return this.service.editTexture(id, body);
 	}
@@ -220,7 +220,7 @@ export class TextureController extends Controller {
 	 */
 	@Delete("{id}")
 	@Security("bot")
-	@Security("discord", ["administrator"])
+	@Security("discord", ["Administrator"])
 	public deleteTexture(id: string): Promise<WriteConfirmation[]> {
 		return this.service.deleteTexture(id);
 	}

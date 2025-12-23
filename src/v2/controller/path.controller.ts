@@ -33,7 +33,7 @@ export class PathsController extends Controller {
 	 */
 	@Post("")
 	@Security("bot")
-	@Security("discord", ["administrator"])
+	@Security("discord", ["Administrator"])
 	public createPath(@Body() body: InputPath): Promise<Path> {
 		return this.service.createPath(body);
 	}
@@ -44,7 +44,7 @@ export class PathsController extends Controller {
 	 */
 	@Post("versions/add")
 	@Security("bot")
-	@Security("discord", ["administrator"])
+	@Security("discord", ["Administrator"])
 	public addVersion(@Body() body: PathNewVersionParam): Promise<WriteConfirmation[]> {
 		// tsoa doesn't support tuples so we retype it as array (doesn't really matter)
 		return this.service.addVersion(body);
@@ -56,7 +56,7 @@ export class PathsController extends Controller {
 	 */
 	@Post("versions/remove")
 	@Security("bot")
-	@Security("discord", ["administrator"])
+	@Security("discord", ["Administrator"])
 	public removeVersion(@Body() body: PathRemoveVersionParam): Promise<WriteConfirmation[]> {
 		return this.service.removeVersion(body.version);
 	}
@@ -68,7 +68,7 @@ export class PathsController extends Controller {
 	 */
 	@Put("versions/rename/{old_version}/{new_version}")
 	@Security("bot")
-	@Security("discord", ["administrator"])
+	@Security("discord", ["Administrator"])
 	public renameVersion(
 		@URLPath() old_version: string,
 		@URLPath() new_version: string,
@@ -91,7 +91,7 @@ export class PathsController extends Controller {
 	 */
 	@Put("{id}")
 	@Security("bot")
-	@Security("discord", ["administrator"])
+	@Security("discord", ["Administrator"])
 	public updatePath(@URLPath() id: string, @Body() body: InputPath | Path): Promise<Path> {
 		return this.service.updatePathById(id, {
 			...body,
@@ -105,7 +105,7 @@ export class PathsController extends Controller {
 	 */
 	@Delete("{id}")
 	@Security("bot")
-	@Security("discord", ["administrator"])
+	@Security("discord", ["Administrator"])
 	public deletePath(@URLPath() id: string): Promise<WriteConfirmation> {
 		return this.service.removePathById(id);
 	}

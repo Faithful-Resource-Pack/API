@@ -70,7 +70,7 @@ export class UserController extends Controller {
 	 * Get all users in the collection
 	 */
 	@Get("raw")
-	@Security("discord", ["administrator"])
+	@Security("discord", ["Administrator"])
 	@Security("bot")
 	public getRaw(): Promise<Record<string, User>> {
 		return this.service.getRaw();
@@ -188,7 +188,7 @@ export class UserController extends Controller {
 	}
 
 	@Put("change/{old_id}/{new_id}")
-	@Security("discord", ["administrator"])
+	@Security("discord", ["Administrator"])
 	@Security("bot")
 	public async changeUserID(
 		@Path() old_id: string,
@@ -245,7 +245,7 @@ export class UserController extends Controller {
 	 * @param roles Role names (not IDs!)
 	 */
 	@Put("{id}/roles")
-	@Security("discord", ["administrator"])
+	@Security("discord", ["Administrator"])
 	@Security("bot")
 	public setRoles(@Path() id: string, @Body() roles: string[]): Promise<User> {
 		return this.service.setRoles(id, roles);
@@ -256,7 +256,7 @@ export class UserController extends Controller {
 	 * @param id User ID to be deleted
 	 */
 	@Delete("{id}")
-	@Security("discord", ["account:delete", "administrator"])
+	@Security("discord", ["account:delete", "Administrator"])
 	public remove(@Path() id: string): Promise<WriteConfirmation[]> {
 		return this.service.remove(id);
 	}

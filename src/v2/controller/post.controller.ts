@@ -39,7 +39,7 @@ export class PostController extends Controller {
 	 */
 	@Response<PermissionError>(403)
 	@Response<NotFoundError>(404)
-	@Security("discord", ["administrator"])
+	@Security("discord", ["Administrator"])
 	@Security("bot")
 	@Get("raw")
 	public getRaw(): Promise<Record<string, WebsitePost>> {
@@ -74,7 +74,7 @@ export class PostController extends Controller {
 	 * @example Slug "/faithful64x/B4"
 	 */
 	@Response<NotFoundError>(404)
-	@Security("discord", ["post:approved", "administrator"])
+	@Security("discord", ["post:approved", "Administrator"])
 	@Get("{id_or_slug}")
 	public getPostByPermalink(@Path() id_or_slug: string): Promise<WebsitePost> {
 		return this.service.getByIdOrPermalink(id_or_slug);
@@ -120,7 +120,7 @@ export class PostController extends Controller {
 	 */
 	@Response<BadRequestError>(400)
 	@Response<PermissionError>(403)
-	@Security("discord", ["administrator"])
+	@Security("discord", ["Administrator"])
 	@Post("")
 	public createPost(@Body() postToCreate: CreateWebsitePost): Promise<WebsitePost> {
 		// sanitize from the start
@@ -135,7 +135,7 @@ export class PostController extends Controller {
 	 */
 	@Response<BadRequestError>(400)
 	@Response<PermissionError>(403)
-	@Security("discord", ["administrator"])
+	@Security("discord", ["Administrator"])
 	@Put("{id}")
 	public updatePost(
 		@Path() id: number,
@@ -151,7 +151,7 @@ export class PostController extends Controller {
 	 */
 	@Response<BadRequestError>(400)
 	@Response<PermissionError>(403)
-	@Security("discord", ["administrator"])
+	@Security("discord", ["Administrator"])
 	@Delete("{id}")
 	public deletePost(@Path() id: number): Promise<WriteConfirmation> {
 		return this.service.remove(id);
