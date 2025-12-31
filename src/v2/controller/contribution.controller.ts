@@ -38,6 +38,14 @@ export class ContributionController extends Controller {
 	}
 
 	/**
+	 * Get all current contributions in the database (excludes replaced textures)
+	 */
+	@Get("current")
+	public getCurrent(): Promise<Contribution[]> {
+		return this.service.getCurrent();
+	}
+
+	/**
 	 * Get all general contribution statistics
 	 */
 	@Response<NotAvailableError>(408)

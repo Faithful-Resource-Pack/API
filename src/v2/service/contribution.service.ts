@@ -23,6 +23,26 @@ export default class ContributionService {
 		return contributions.readRaw();
 	}
 
+	async getCurrent(): Promise<Contributions> {
+		const raw = await this.getRaw();
+		const grouped = Object.values(
+			// https://github.com/microsoft/TypeScript/issues/61706
+			Object.groupBy(Object.values(raw), ({ pack }) => pack) as Record<string, Contribution[]>,
+		);
+
+		// remove duplicates within each pack and return the whole thing
+		return grouped.flatMap((packContribs) =>
+			Object.values(
+				packContribs.reduce<Record<string, Contribution>>((acc, cur) => {
+					const old = acc[cur.texture];
+					// new date wins
+					if (!old || old.date < cur.date) acc[cur.texture] = cur;
+					return acc;
+				}, {}),
+			),
+		);
+	}
+
 	async getStats(): Promise<ContributionStats> {
 		const cs = await this.getRaw();
 
