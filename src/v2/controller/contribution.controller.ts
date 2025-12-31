@@ -82,26 +82,6 @@ export class ContributionController extends Controller {
 	}
 
 	/**
-	 * Get contribution by ID (e.g. 61cdce61d3697)
-	 * @param id Contribution ID
-	 */
-	@Get("{id}")
-	public getContributionById(id: string): Promise<Contribution> {
-		return this.service.getById(id);
-	}
-
-	/**
-	 * Get contributions by user and pack
-	 * @param users List of user ids joined by '-'
-	 * @param packs List of resource packs joined by '-'
-	 */
-	@Get("search/{users}/{packs}")
-	public searchContributionsFrom(users: string, packs: string): Promise<Contributions> {
-		if (packs === "all") return this.service.searchContributionsFrom(users.split("-"));
-		return this.service.searchContributionsFrom(users.split("-"), packs.split("-"));
-	}
-
-	/**
 	 * Get all contributions between a given set of timestamps
 	 * @param begin Starting timestamp
 	 * @param ends Ending timestamp
@@ -127,6 +107,15 @@ export class ContributionController extends Controller {
 	@Get("before/{timestamp}")
 	public getContributionBefore(timestamp: string): Promise<Contributions> {
 		return this.service.getByDateRange("0", timestamp);
+	}
+
+	/**
+	 * Get contribution by ID (e.g. 61cdce61d3697)
+	 * @param id Contribution ID
+	 */
+	@Get("{id}")
+	public getContributionById(id: string): Promise<Contribution> {
+		return this.service.getById(id);
 	}
 
 	/**
