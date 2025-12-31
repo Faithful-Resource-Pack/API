@@ -115,7 +115,7 @@ export class ContributionController extends Controller {
 	 * Get all contributions from a given date until now
 	 * @param timestamp Where to start counting
 	 */
-	@Get("from/{timestamp}")
+	@Get("after/{timestamp}")
 	public getContributionFrom(timestamp: string): Promise<Contributions> {
 		return this.service.getByDateRange(timestamp, Date.now().toString());
 	}
