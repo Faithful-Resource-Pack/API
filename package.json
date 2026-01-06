@@ -30,7 +30,7 @@
 		"nodemon": "^3.1.11",
 		"prettier": "^3.7.4",
 		"ts-node": "^10.9.2",
-		"typescript-eslint": "^8.50.1"
+		"typescript-eslint": "^8.52.0"
 	},
 	"dependencies": {
 		"@tsoa/runtime": "^6.6.0",
