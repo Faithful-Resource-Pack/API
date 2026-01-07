@@ -1,19 +1,13 @@
 import { APIEmbed } from "discord-api-types/v10";
 import { WriteConfirmation } from "firestorm-db";
-import { UserProfile } from "../interfaces/users";
 import {
-	Addons,
 	Addon,
 	AddonStatus,
 	AddonAll,
-	CreationFiles,
-	Files,
+	CreationFile,
+	File,
 	FileParent,
-} from "../interfaces";
-import { BadRequestError, NotFoundError } from "../tools/errorTypes";
-import UserService from "./user.service";
-import FileService from "./file.service";
-import {
+	UserProfile,
 	AddonCreationParam,
 	AddonDataParam,
 	AddonProperty,
@@ -22,7 +16,10 @@ import {
 	AddonStatsAdmin,
 	AddonStatusApproved,
 	CreationAddon,
-} from "../interfaces/addons";
+} from "../interfaces";
+import { BadRequestError, NotFoundError } from "../tools/errorTypes";
+import UserService from "./user.service";
+import FileService from "./file.service";
 import AddonFirestormRepository from "../repository/addon.repository";
 import { discordEmbed } from "../tools/discordEmbed";
 
@@ -91,7 +88,7 @@ export default class AddonService {
 		return this.userService.getUserProfiles(addon.authors);
 	}
 
-	async getFiles(id: number): Promise<Files> {
+	async getFiles(id: number): Promise<File[]> {
 		if (Number.isNaN(id) || id < 0) throw new Error("Add-on IDs are integers greater than 0");
 		return this.addonRepo.getFilesById(id);
 	}
@@ -128,7 +125,7 @@ export default class AddonService {
 			);
 	}
 
-	async getScreenshotsFiles(id: number): Promise<Files> {
+	async getScreenshotsFiles(id: number): Promise<File[]> {
 		const files = await this.getFiles(id);
 		return files.filter((f) => f.use === "screenshot");
 	}
@@ -176,7 +173,7 @@ export default class AddonService {
 		return this.addonRepo.getAddonBySlug(slug);
 	}
 
-	getAddonsByStatus(status: AddonStatus): Promise<Addons> {
+	getAddonsByStatus(status: AddonStatus): Promise<Addon[]> {
 		return this.addonRepo.getAddonByStatus(status);
 	}
 
@@ -228,7 +225,7 @@ export default class AddonService {
 		const addonCreated = await this.addonRepo.create(addon);
 
 		// one to many relationship
-		const files: CreationFiles = downloads.flatMap((d) =>
+		const files = downloads.flatMap<CreationFile>((d) =>
 			d.links.map((link) => ({
 				name: d.key,
 				use: "download",
@@ -272,7 +269,7 @@ export default class AddonService {
 		const addonDataParams: AddonDataParam & Partial<AddonCreationParam> = body;
 		delete addonDataParams.downloads;
 
-		const files: CreationFiles = downloads.flatMap((d) =>
+		const files = downloads.flatMap<CreationFile>((d) =>
 			d.links.map((link) => ({
 				name: d.key,
 				use: "download",
@@ -392,7 +389,7 @@ export default class AddonService {
 		discordEmbed(embed);
 	}
 
-	public async getAddonProperty(id: number, property: AddonProperty): Promise<Addon | Files> {
+	public async getAddonProperty(id: number, property: AddonProperty): Promise<Addon | File[]> {
 		switch (property) {
 			case "files": {
 				const foundFiles = await this.getFiles(id);

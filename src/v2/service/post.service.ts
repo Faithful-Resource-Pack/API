@@ -1,11 +1,5 @@
 import { WriteConfirmation } from "firestorm-db";
-import {
-	PostDownload,
-	PostChangelog,
-	WebsitePost,
-	CreateWebsitePost,
-	WebsitePosts,
-} from "../interfaces";
+import { PostDownload, PostChangelog, WebsitePost, CreateWebsitePost } from "../interfaces";
 import { NotFoundError } from "../tools/errorTypes";
 import PostFirestormRepository from "../repository/posts.repository";
 import * as cache from "../tools/cache";
@@ -49,7 +43,7 @@ export default class PostService {
 		}
 	}
 
-	getApprovedPosts(): Promise<WebsitePosts> {
+	getApprovedPosts(): Promise<WebsitePost[]> {
 		return this.repo.getApproved();
 	}
 
@@ -57,7 +51,7 @@ export default class PostService {
 		return this.repo.getAvailable();
 	}
 
-	async getTopPosts(count: number): Promise<WebsitePosts> {
+	async getTopPosts(count: number): Promise<WebsitePost[]> {
 		const allPosts = await this.getApprovedPosts();
 		const sorted = allPosts.sort((a, b) => +new Date(b.date) - +new Date(a.date));
 		return sorted.slice(0, count);

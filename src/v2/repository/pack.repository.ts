@@ -2,7 +2,6 @@ import { ID_FIELD, SearchOption, WriteConfirmation } from "firestorm-db";
 import {
 	PackRepository,
 	Pack,
-	Packs,
 	CreationPack,
 	PackAll,
 	PackID,
@@ -35,7 +34,7 @@ export default class PackFirestormRepository implements PackRepository {
 		return tags.sort();
 	}
 
-	async search(params: PackSearch): Promise<Packs> {
+	async search(params: PackSearch): Promise<Pack[]> {
 		const { tag, name, resolution, type } = params;
 		const options: SearchOption<Pack>[] = [];
 		if (name)

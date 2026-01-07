@@ -1,14 +1,12 @@
 import { WriteConfirmation } from "firestorm-db";
 import { APIUser } from "discord-api-types/v10";
 import {
-	Addons,
-	Contributions,
-	Usernames,
+	Addon,
+	Contribution,
 	User,
-	Users,
+	Username,
 	UserStats,
 	UserProfile,
-	Username,
 	UpdateUserProfile,
 } from "../interfaces";
 import UserFirestormRepository from "../repository/user.repository";
@@ -45,7 +43,7 @@ export default class UserService {
 		);
 	}
 
-	public getNames(): Promise<Usernames> {
+	public getNames(): Promise<Username[]> {
 		return this.repo.getNames();
 	}
 
@@ -57,11 +55,11 @@ export default class UserService {
 		return this.repo.getRoles();
 	}
 
-	public getUsersFromRole(role: string, username?: string): Promise<Users> {
+	public getUsersFromRole(role: string, username?: string): Promise<User[]> {
 		return this.repo.getUsersFromRole(role, username);
 	}
 
-	public getUsersByNameOrId(idOrUsername: string): Promise<User | Users> {
+	public getUsersByNameOrId(idOrUsername: string): Promise<User | User[]> {
 		// can't parse discord ids directly into a number because precision can be lost
 		const str = idOrUsername.split("");
 		const int = str.map((s) => parseInt(s, 10));
@@ -74,11 +72,11 @@ export default class UserService {
 		return this.repo.getUserById(id);
 	}
 
-	public getUsersByName(username: string): Promise<Users> {
+	public getUsersByName(username: string): Promise<User[]> {
 		return this.repo.getUsersByName(username);
 	}
 
-	public getContributions(id: string): Promise<Contributions> {
+	public getContributions(id: string): Promise<Contribution[]> {
 		return this.repo.getContributionsById(id);
 	}
 
@@ -86,11 +84,11 @@ export default class UserService {
 		return this.repo.getUserProfiles(users);
 	}
 
-	public getAddons(id: string): Promise<Addons> {
+	public getAddons(id: string): Promise<Addon[]> {
 		return this.repo.getAddonsApprovedById(id);
 	}
 
-	public getAllAddons(id: string): Promise<Addons> {
+	public getAllAddons(id: string): Promise<Addon[]> {
 		return this.repo.getAddonsById(id);
 	}
 

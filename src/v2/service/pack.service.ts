@@ -1,6 +1,6 @@
 import { ID_FIELD, WriteConfirmation } from "firestorm-db";
 import { contributions } from "../firestorm";
-import { Pack, Packs, PackID, PackSearch, CreationPackAll, PackAll } from "../interfaces";
+import { Pack, PackID, PackSearch, CreationPackAll, PackAll } from "../interfaces";
 import PackFirestormRepository from "../repository/pack.repository";
 
 export default class PackService {
@@ -14,7 +14,7 @@ export default class PackService {
 		return this.repo.getById(id);
 	}
 
-	public search(params: PackSearch): Promise<Packs> {
+	public search(params: PackSearch): Promise<Pack[]> {
 		return this.repo.search(params);
 	}
 

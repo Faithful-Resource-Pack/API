@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Path, Post, Put, Query, Route, Security, Tags } from "tsoa";
 import { WriteConfirmation } from "firestorm-db";
 import PackService from "../service/pack.service";
-import { PackID, CreationPackAll, Pack, PackAll, PackType, Packs } from "../interfaces";
+import { PackID, CreationPackAll, Pack, PackAll, PackType } from "../interfaces";
 
 @Route("packs")
 @Tags("Packs")
@@ -36,7 +36,7 @@ export class PackController extends Controller {
 		@Query() name?: string,
 		@Query() resolution?: number,
 		@Query() type?: PackType,
-	): Promise<Packs> {
+	): Promise<Pack[]> {
 		return this.service.search({ tag, name, resolution, type });
 	}
 

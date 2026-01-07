@@ -1,6 +1,17 @@
-import { Body, Controller, Delete, Get, Path, Post, Put, Route, Security, Tags } from "tsoa";
+import {
+	Body,
+	Controller,
+	Delete,
+	Get,
+	Path as URLPath,
+	Post,
+	Put,
+	Route,
+	Security,
+	Tags,
+} from "tsoa";
 import { WriteConfirmation } from "firestorm-db";
-import { Use, Uses, Paths, CreationUse, EntireUseToCreate } from "../interfaces";
+import { Use, Path, CreationUse, EntireUseToCreate } from "../interfaces";
 import UseService from "../service/use.service";
 
 @Route("uses")
@@ -32,9 +43,9 @@ export class UseController extends Controller {
 	@Post("{texture_id}")
 	@Security("discord", ["Administrator"])
 	public async appendUse(
-		@Path() texture_id: string,
+		@URLPath() texture_id: string,
 		@Body() body: EntireUseToCreate,
-	): Promise<{ use: Use; paths: Paths }> {
+	): Promise<{ use: Use; paths: Path[] }> {
 		const [use, paths] = await this.service.appendUse(texture_id, body);
 		// return as object for easier usage
 		return { use, paths };
@@ -45,7 +56,7 @@ export class UseController extends Controller {
 	 * @param id_or_name Use ID or Use Name
 	 */
 	@Get("{id_or_name}/paths")
-	public getPathUseByIdOrName(@Path() id_or_name: string): Promise<Paths> {
+	public getPathUseByIdOrName(@URLPath() id_or_name: string): Promise<Path[]> {
 		return this.service.getPathUseByIdOrName(id_or_name);
 	}
 
@@ -54,7 +65,7 @@ export class UseController extends Controller {
 	 * @param id_or_name Use ID or Use Name
 	 */
 	@Get("{id_or_name}")
-	public getUseByIdOrName(@Path() id_or_name: string): Promise<Use | Uses> {
+	public getUseByIdOrName(@URLPath() id_or_name: string): Promise<Use | Use[]> {
 		return this.service.getUseByIdOrName(id_or_name);
 	}
 
@@ -64,7 +75,7 @@ export class UseController extends Controller {
 	 */
 	@Put("{id}")
 	@Security("discord", ["Administrator"])
-	public changeUse(@Path() id: string, @Body() modifiedUse: CreationUse): Promise<Use> {
+	public changeUse(@URLPath() id: string, @Body() modifiedUse: CreationUse): Promise<Use> {
 		return this.service.updateUse(id, modifiedUse);
 	}
 
@@ -74,7 +85,7 @@ export class UseController extends Controller {
 	 */
 	@Delete("{id}")
 	@Security("discord", ["Administrator"])
-	public deleteUse(@Path() id: string): Promise<WriteConfirmation[]> {
+	public deleteUse(@URLPath() id: string): Promise<WriteConfirmation[]> {
 		return this.service.removeUseById(id);
 	}
 }

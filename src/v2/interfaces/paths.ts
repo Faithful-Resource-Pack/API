@@ -15,17 +15,15 @@ export interface Path extends InputPath {
 	id: string; // path unique id
 }
 
-export type Paths = Path[];
-
 export interface FirestormPath extends Path {}
 
 export interface PathRepository {
 	getRaw(): Promise<Record<string, Path>>;
 	getPathById(pathID: string): Promise<Path>;
-	getPathUseById(useID: string): Promise<Paths>;
-	getPathsByUseIdsAndVersion(useIDs: string[], version: string): Promise<Paths>;
+	getPathUseById(useID: string): Promise<Path[]>;
+	getPathsByUseIdsAndVersion(useIDs: string[], version: string): Promise<Path[]>;
 	createPath(path: InputPath): Promise<Path>;
-	createPathBulk(paths: InputPath[]): Promise<Paths>;
+	createPathBulk(paths: InputPath[]): Promise<Path[]>;
 	updatePath(pathID: string, path: Path): Promise<Path>;
 	renameVersion(oldVersion: string, newVersion: string): Promise<WriteConfirmation>;
 	removeVersion(version: string): Promise<WriteConfirmation>;

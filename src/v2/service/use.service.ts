@@ -1,8 +1,7 @@
 import { WriteConfirmation } from "firestorm-db";
 import {
 	Use,
-	Uses,
-	Paths,
+	Path,
 	CreationUse,
 	EntireUseToCreate,
 	InputPath,
@@ -24,9 +23,9 @@ export default class UseService {
 
 	private readonly repo = new UseFirestormRepository();
 
-	async getPathUseByIdOrName(idOrName: string): Promise<Paths> {
+	async getPathUseByIdOrName(idOrName: string): Promise<Path[]> {
 		const use = await this.getUseById(idOrName);
-		return this.pathService.getPathByUseId(use.id);
+		return this.pathService.getPathsByUseId(use.id);
 	}
 
 	getRaw(): Promise<Record<string, Use>> {
@@ -37,7 +36,7 @@ export default class UseService {
 		return this.repo.getUseById(id);
 	}
 
-	getUseByIdOrName(idOrName: string): Promise<Use | Uses> {
+	getUseByIdOrName(idOrName: string): Promise<Use | Use[]> {
 		return this.repo.getUseByIdOrName(idOrName);
 	}
 
@@ -59,7 +58,7 @@ export default class UseService {
 		return this.repo.removeUseById(id);
 	}
 
-	getUsesByIdsAndEdition(idArr: number[], edition: GalleryEdition): Promise<Uses> {
+	getUsesByIdsAndEdition(idArr: number[], edition: GalleryEdition): Promise<Use[]> {
 		return this.repo.getUsesByIdsAndEdition(idArr, edition);
 	}
 
@@ -70,14 +69,14 @@ export default class UseService {
 		return this.repo.set(use);
 	}
 
-	async createMultipleUses(uses: Uses): Promise<Uses> {
+	async createMultipleUses(uses: Use[]): Promise<Use[]> {
 		const exists = await Promise.all(uses.map((u) => this.doesUseExist(u.id)));
 		if (exists.some((u) => u)) throw new BadRequestError(`A use ID already exists`);
 		return this.repo.setMultiple(uses);
 	}
 
 	// used for editing an existing texture
-	async appendUse(textureID: string, use: EntireUseToCreate): Promise<[Use, Paths]> {
+	async appendUse(textureID: string, use: EntireUseToCreate): Promise<[Use, Path[]]> {
 		const lastCharCode = await this.repo.lastCharCode(textureID);
 		const nextLetter = String.fromCharCode(lastCharCode + 1);
 		const newUseID = `${textureID}${nextLetter}`;
@@ -102,7 +101,7 @@ export default class UseService {
 		textureID: string,
 		uses: EntireUseToCreate[],
 		firstUse = false,
-	): Promise<{ pathsToCreate: InputPath[]; usesToCreate: Uses }> {
+	): Promise<{ pathsToCreate: InputPath[]; usesToCreate: Use[] }> {
 		// using firstUse saves a request for each use added when adding a texture
 		const lastCharCode = firstUse ? "a".charCodeAt(0) - 1 : await this.repo.lastCharCode(textureID);
 		const pathsToCreate: InputPath[] = [];
@@ -131,7 +130,7 @@ export default class UseService {
 	}
 
 	// used when adding a new texture
-	async appendMultipleUses(textureID: string, uses: EntireUseToCreate[]): Promise<[Uses, Paths]> {
+	async appendMultipleUses(textureID: string, uses: EntireUseToCreate[]): Promise<[Use[], Path[]]> {
 		const { pathsToCreate, usesToCreate } = await this.generateAppendableUses(textureID, uses);
 
 		return Promise.all([

@@ -1,6 +1,6 @@
 import { WriteConfirmation } from "firestorm-db";
 import { FileFirestormRepository } from "../repository/files.repository";
-import { FileParent, FileUse, File, CreationFile, CreationFiles } from "../interfaces/files";
+import { FileParent, FileUse, File, CreationFile } from "../interfaces";
 
 export default class FileService {
 	private readonly repo = new FileFirestormRepository();
@@ -29,7 +29,7 @@ export default class FileService {
 		return this.repo.addFile(file);
 	}
 
-	public addFiles(files: CreationFiles): Promise<string[]> {
+	public addFiles(files: CreationFile[]): Promise<string[]> {
 		return this.repo.addFiles(files);
 	}
 

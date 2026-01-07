@@ -26,8 +26,6 @@ export interface WebsitePost extends CreateWebsitePost {
 	id: string;
 }
 
-export type WebsitePosts = WebsitePost[];
-
 export interface FirestormPost extends WebsitePost {}
 
 export interface WebsitePostRepository {

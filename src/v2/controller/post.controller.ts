@@ -17,13 +17,7 @@ import {
 } from "tsoa";
 import DOMPurify from "isomorphic-dompurify";
 import { WriteConfirmation } from "firestorm-db";
-import {
-	PostDownload,
-	PostChangelog,
-	WebsitePost,
-	CreateWebsitePost,
-	WebsitePosts,
-} from "../interfaces";
+import { PostDownload, PostChangelog, WebsitePost, CreateWebsitePost } from "../interfaces";
 
 import { BadRequestError, NotFoundError, PermissionError } from "../tools/errorTypes";
 import * as cache from "../tools/cache";
@@ -52,12 +46,12 @@ export class PostController extends Controller {
 	 * @returns Latest posts
 	 */
 	@Get("top")
-	public getTopPosts(@Query() count = 6): Promise<WebsitePosts> {
+	public getTopPosts(@Query() count = 6): Promise<WebsitePost[]> {
 		return this.service.getTopPosts(count);
 	}
 
 	@Get("approved")
-	public getApprovedPosts(): Promise<WebsitePosts> {
+	public getApprovedPosts(): Promise<WebsitePost[]> {
 		return this.service.getApprovedPosts();
 	}
 

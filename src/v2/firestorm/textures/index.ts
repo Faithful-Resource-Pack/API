@@ -10,8 +10,7 @@ import {
 	FirestormPath,
 	FirestormContribution,
 	Pack,
-	Uses,
-	Paths,
+	Use,
 } from "../../interfaces";
 import "../config";
 
@@ -28,8 +27,8 @@ import { NotFoundError } from "../../tools/errorTypes";
 export function urlFromTextureData(
 	pack: Pack,
 	version: string,
-	textureUses: Uses,
-	texturePaths: Paths,
+	textureUses: Use[],
+	texturePaths: Path[],
 ): string {
 	const baseURL = "https://raw.githubusercontent.com";
 	const availableEditions = Object.keys(pack.github);

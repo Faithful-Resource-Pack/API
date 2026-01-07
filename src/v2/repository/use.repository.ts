@@ -1,5 +1,5 @@
 import { ID_FIELD, SearchOption, WriteConfirmation } from "firestorm-db";
-import { GalleryEdition, Use, UseRepository, Uses } from "../interfaces";
+import { GalleryEdition, Use, UseRepository } from "../interfaces";
 import { paths, uses } from "../firestorm";
 
 export default class UseFirestormRepository implements UseRepository {
@@ -11,7 +11,7 @@ export default class UseFirestormRepository implements UseRepository {
 		return uses.get(id);
 	}
 
-	async getUseByIdOrName(idOrName: string): Promise<Uses | Use> {
+	async getUseByIdOrName(idOrName: string): Promise<Use[] | Use> {
 		try {
 			// ! must use return await for try/catch to work properly
 			// https://stackoverflow.com/a/42750371/20327257
@@ -29,7 +29,7 @@ export default class UseFirestormRepository implements UseRepository {
 		}
 	}
 
-	getUsesByIdsAndEdition(idArr: number[], edition: GalleryEdition): Promise<Uses> {
+	getUsesByIdsAndEdition(idArr: number[], edition: GalleryEdition): Promise<Use[]> {
 		const search: SearchOption<Use>[] = [
 			{
 				field: "texture",
@@ -74,7 +74,7 @@ export default class UseFirestormRepository implements UseRepository {
 		return uses.get(use.id);
 	}
 
-	async setMultiple(useArray: Uses): Promise<Uses> {
+	async setMultiple(useArray: Use[]): Promise<Use[]> {
 		const useIDs = useArray.map((u) => u.id);
 		await uses.setBulk(useIDs, useArray);
 		return uses.searchKeys(useIDs);

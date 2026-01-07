@@ -1,6 +1,10 @@
 import { ID_FIELD, WriteConfirmation } from "firestorm-db";
-import { PackID, Texture, Textures, EntireUseToCreate, CreationPath, Path } from "../interfaces";
 import {
+	PackID,
+	Texture,
+	EntireUseToCreate,
+	CreationPath,
+	Path,
 	Edition,
 	EntireTextureToCreate,
 	TextureCreationParam,
@@ -8,7 +12,7 @@ import {
 	PropertyToOutput,
 	FirestormTexture,
 	TextureStats,
-} from "../interfaces/textures";
+} from "../interfaces";
 import TextureFirestormRepository from "../repository/texture.repository";
 import PathService from "./path.service";
 import UseService from "./use.service";
@@ -57,7 +61,7 @@ export default class TextureService {
 		search: string | undefined,
 		tag: string | undefined,
 		partial = false,
-	): Promise<Textures> {
+	): Promise<Texture[]> {
 		const results = await this.textureRepo.search(search, tag, partial);
 		return Array.isArray(results) ? results : [results];
 	}
@@ -153,7 +157,7 @@ export default class TextureService {
 		return this.textureRepo.createTexture(texture);
 	}
 
-	async createEntireTextures(body: EntireTextureToCreate[]): Promise<Textures> {
+	async createEntireTextures(body: EntireTextureToCreate[]): Promise<Texture[]> {
 		// must do this before anything else to prevent id collisions
 		const createdTextures = await this.textureRepo.createTexturesBulk(
 			body.map((tex) => ({ name: tex.name, tags: tex.tags })),

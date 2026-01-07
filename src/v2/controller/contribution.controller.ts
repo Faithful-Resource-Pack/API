@@ -13,10 +13,9 @@ import {
 } from "tsoa";
 import { WriteConfirmation } from "firestorm-db";
 import {
-	Contributions,
 	Contribution,
 	ContributionCreationParams,
-	ContributionsAuthors,
+	ContributionAuthor,
 	ContributionStats,
 	PackID,
 } from "../interfaces";
@@ -66,7 +65,7 @@ export class ContributionController extends Controller {
 	 * Get all users who have contributed to a resource pack before
 	 */
 	@Get("authors")
-	public getAuthors(): Promise<ContributionsAuthors> {
+	public getAuthors(): Promise<ContributionAuthor[]> {
 		return this.service.getAuthors();
 	}
 
@@ -81,7 +80,7 @@ export class ContributionController extends Controller {
 		@Query() packs?: string,
 		@Query() users?: string,
 		@Query() search?: string,
-	): Promise<Contributions> {
+	): Promise<Contribution[]> {
 		return this.service.search({
 			packs: packs && packs !== "all" ? packs.split("-") : undefined,
 			users: users ? users.split("-") : [],
@@ -95,7 +94,7 @@ export class ContributionController extends Controller {
 	 * @param ends Ending timestamp
 	 */
 	@Get("between/{begin}/{ends}")
-	public getContributionInRange(begin: string, ends: string): Promise<Contributions> {
+	public getContributionInRange(begin: string, ends: string): Promise<Contribution[]> {
 		return this.service.getByDateRange(begin, ends);
 	}
 
@@ -104,7 +103,7 @@ export class ContributionController extends Controller {
 	 * @param timestamp Where to start counting
 	 */
 	@Get("after/{timestamp}")
-	public getContributionFrom(timestamp: string): Promise<Contributions> {
+	public getContributionFrom(timestamp: string): Promise<Contribution[]> {
 		return this.service.getByDateRange(timestamp, Date.now().toString());
 	}
 
@@ -113,7 +112,7 @@ export class ContributionController extends Controller {
 	 * @param timestamp Where to stop counting
 	 */
 	@Get("before/{timestamp}")
-	public getContributionBefore(timestamp: string): Promise<Contributions> {
+	public getContributionBefore(timestamp: string): Promise<Contribution[]> {
 		return this.service.getByDateRange("0", timestamp);
 	}
 
@@ -135,7 +134,7 @@ export class ContributionController extends Controller {
 	@Security("bot")
 	public addContribution(
 		@Body() body: ContributionCreationParams | ContributionCreationParams[],
-	): Promise<Contribution | Contributions> {
+	): Promise<Contribution | Contribution[]> {
 		return Array.isArray(body)
 			? this.service.addContributions(body)
 			: this.service.addContribution(body);

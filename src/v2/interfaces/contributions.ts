@@ -12,8 +12,7 @@ export interface Contribution extends ContributionCreationParams {
 	id: string; // contribution unique id
 }
 
-export type Contributions = Contribution[];
-export interface ContributionsAuthor {
+export interface ContributionAuthor {
 	id: string; // discord user id
 	username?: string; // display name
 	uuid?: string; // user Minecraft uuid
@@ -48,23 +47,21 @@ export interface ContributionSearch {
 	search?: string;
 }
 
-export type ContributionsAuthors = ContributionsAuthor[];
-
 export interface FirestormContribution extends Contribution {}
 
 export interface ContributionsRepository {
 	getContributionById(id: string): Promise<Contribution>;
 	addContribution(params: ContributionCreationParams): Promise<Contribution>;
-	addContributions(params: ContributionCreationParams[]): Promise<Contributions>;
+	addContributions(params: ContributionCreationParams[]): Promise<Contribution[]>;
 	deleteContribution(id: string): Promise<WriteConfirmation>;
 	updateContribution(id: string, params: ContributionCreationParams): Promise<Contribution>;
-	getByDateRange(begin: string, ends: string): Promise<Contributions>;
-	getAuthors(): Promise<ContributionsAuthors>;
+	getByDateRange(begin: string, ends: string): Promise<Contribution[]>;
+	getAuthors(): Promise<ContributionAuthor[]>;
 	getPacks(): Promise<PackID[]>;
 	searchByIdAndPacks(
 		textureIDs: string[],
 		packs: string[],
 		users?: string[],
-	): Promise<Contributions>;
-	searchContributionsFrom(users: string[], packs: string[]): Promise<Contributions>;
+	): Promise<Contribution[]>;
+	searchContributionsFrom(users: string[], packs: string[]): Promise<Contribution[]>;
 }

@@ -16,14 +16,12 @@ import { WriteConfirmation } from "firestorm-db";
 import { APIUser } from "discord-api-types/v10";
 import { BadRequestError, ForbiddenError, NotAvailableError } from "../tools/errorTypes";
 import {
-	Addons,
-	Contributions,
-	Usernames,
-	Users,
+	Addon,
+	Contribution,
+	Username,
 	User,
 	UserCreationParams,
 	UserStats,
-	Username,
 	UpdateUserProfile,
 } from "../interfaces";
 import UserService from "../service/user.service";
@@ -89,7 +87,7 @@ export class UserController extends Controller {
 	 * Get all usernames, UUIDs, and IDs
 	 */
 	@Get("names")
-	public getNames(): Promise<Usernames> {
+	public getNames(): Promise<Username[]> {
 		return this.service.getNames();
 	}
 
@@ -106,7 +104,7 @@ export class UserController extends Controller {
 	 * @param role The role to search for
 	 */
 	@Get("role/{role}")
-	public getUsersFromRole(@Path() role: string): Promise<Users> {
+	public getUsersFromRole(@Path() role: string): Promise<User[]> {
 		return this.service.getUsersFromRole(role);
 	}
 
@@ -119,7 +117,7 @@ export class UserController extends Controller {
 	public async getUsersFromRoleAndUsername(
 		@Path() role: string,
 		@Path() username: string,
-	): Promise<Users> {
+	): Promise<User[]> {
 		return this.service.getUsersFromRole(role, username);
 	}
 
@@ -128,7 +126,7 @@ export class UserController extends Controller {
 	 * @param id_or_username User ID/Username (join by "," if multiple)
 	 */
 	@Get("{id_or_username}")
-	public getUser(@Path() id_or_username: string): Promise<User | Users> {
+	public getUser(@Path() id_or_username: string): Promise<User | User[]> {
 		if (typeof id_or_username === "string" && id_or_username.includes(",")) {
 			const idArray = id_or_username.split(",");
 			return Promise.allSettled(idArray.map((id) => this.service.getUsersByNameOrId(id))).then(
@@ -144,7 +142,7 @@ export class UserController extends Controller {
 	 * @param id User ID
 	 */
 	@Get("{id}/contributions")
-	public getContributions(@Path() id: string): Promise<Contributions> {
+	public getContributions(@Path() id: string): Promise<Contribution[]> {
 		return this.service.getContributions(id);
 	}
 
@@ -162,7 +160,7 @@ export class UserController extends Controller {
 	 * @param id User ID
 	 */
 	@Get("{id}/addons/approved")
-	public getAddons(@Path() id: string): Promise<Addons> {
+	public getAddons(@Path() id: string): Promise<Addon[]> {
 		return this.service.getAddons(id);
 	}
 
@@ -176,7 +174,7 @@ export class UserController extends Controller {
 	public async getAllAddons(
 		@Path() id: string,
 		@Request() request: ExRequestWithAuth<string>,
-	): Promise<Addons> {
+	): Promise<Addon[]> {
 		if (id !== request.user) {
 			// check if admin
 			const user = await new UserService().getUserById(request.user);

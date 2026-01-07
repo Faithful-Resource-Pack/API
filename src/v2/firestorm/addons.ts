@@ -1,10 +1,10 @@
 import firestorm from "firestorm-db";
-import { FirestormAddon, AddonAll, Files } from "../interfaces";
+import { FirestormAddon, AddonAll, File } from "../interfaces";
 import { files } from "./files";
 import "./config";
 
 export const addons = firestorm.collection<FirestormAddon>("addons", (el) => {
-	el.getFiles = (): Promise<Files> =>
+	el.getFiles = (): Promise<File[]> =>
 		files.search([
 			{
 				field: "parent.id",

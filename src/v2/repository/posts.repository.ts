@@ -1,13 +1,13 @@
 import { WriteConfirmation } from "firestorm-db";
 import { posts } from "../firestorm";
-import { CreateWebsitePost, WebsitePost, WebsitePostRepository, WebsitePosts } from "../interfaces";
+import { CreateWebsitePost, WebsitePost, WebsitePostRepository } from "../interfaces";
 
 export default class PostFirestormRepository implements WebsitePostRepository {
 	getRaw(): Promise<Record<string, WebsitePost>> {
 		return posts.readRaw();
 	}
 
-	getApproved(): Promise<WebsitePosts> {
+	getApproved(): Promise<WebsitePost[]> {
 		return posts.search([
 			{
 				field: "published",

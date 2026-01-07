@@ -1,11 +1,11 @@
 import firestorm from "firestorm-db";
-import { Contributions, Addons, FirestormUser } from "../interfaces";
+import { Contribution, Addon, FirestormUser } from "../interfaces";
 import { contributions } from ".";
 import { addons } from "./addons";
 import "./config";
 
 export const users = firestorm.collection<FirestormUser>("users", (el) => {
-	el.contributions = (): Promise<Contributions> =>
+	el.contributions = (): Promise<Contribution[]> =>
 		contributions.search([
 			{
 				field: "authors",
@@ -14,7 +14,7 @@ export const users = firestorm.collection<FirestormUser>("users", (el) => {
 			},
 		]);
 
-	el.addons = (): Promise<Addons> =>
+	el.addons = (): Promise<Addon[]> =>
 		addons.search([
 			{
 				field: "authors",

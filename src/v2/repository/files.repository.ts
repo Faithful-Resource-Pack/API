@@ -1,22 +1,14 @@
 import firestorm, { ID_FIELD, WriteConfirmation } from "firestorm-db";
 import FormData from "form-data";
 import { files } from "../firestorm";
-import {
-	CreationFile,
-	CreationFiles,
-	File,
-	FileParent,
-	FileRepository,
-	Files,
-	FileUse,
-} from "../interfaces/files";
+import { CreationFile, File, FileParent, FileRepository, FileUse } from "../interfaces";
 
 export class FileFirestormRepository implements FileRepository {
 	getRaw(): Promise<Record<string, File>> {
 		return files.readRaw();
 	}
 
-	addFiles(fileList: CreationFiles): Promise<string[]> {
+	addFiles(fileList: CreationFile[]): Promise<string[]> {
 		return files.addBulk(fileList);
 	}
 
@@ -28,7 +20,7 @@ export class FileFirestormRepository implements FileRepository {
 		return files.get(id);
 	}
 
-	getFilesByParent(parent: FileParent): Promise<Files> {
+	getFilesByParent(parent: FileParent): Promise<File[]> {
 		return files.search([
 			{
 				field: "parent.id",

@@ -1,8 +1,8 @@
-import { Uses } from "./uses";
+import { Use } from "./uses";
 import { Texture, MCMETA, Edition } from "./textures";
-import { Contributions } from "./contributions";
+import { Contribution } from "./contributions";
 import { PackID } from "./packs";
-import { Paths } from "./paths";
+import { Path } from "./paths";
 
 export interface GalleryResult {
 	textureID: string;
@@ -17,10 +17,10 @@ export interface GalleryResult {
 export type GalleryEdition = Edition | "all";
 
 export interface GalleryModalResult {
-	contributions: Contributions;
+	contributions: Contribution[];
 	texture: Texture;
-	uses: Uses;
-	paths: Paths;
+	uses: Use[];
+	paths: Path[];
 	mcmeta: MCMETA;
 	urls: Record<PackID, string>;
 }

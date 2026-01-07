@@ -24,8 +24,6 @@ export interface Submission extends CreationSubmission {
 	id: PackID;
 }
 
-export type Submissions = Submission[];
-
 export interface FirestormSubmission extends Submission {}
 
 export interface SubmissionRepository {

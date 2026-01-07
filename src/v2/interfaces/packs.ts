@@ -45,8 +45,6 @@ export interface CreationPackAll extends CreationPack {
 	submission?: FirstCreationSubmission;
 }
 
-export type Packs = Pack[];
-
 export interface FirestormPack extends Pack {
 	submission(): Promise<Submission>;
 }
@@ -56,7 +54,7 @@ export interface PackRepository {
 	getById(id: PackID): Promise<Pack>;
 	getWithSubmission(id: PackID): Promise<PackAll>;
 	getAllTags(): Promise<string[]>;
-	search(params: PackSearch): Promise<Packs>;
+	search(params: PackSearch): Promise<Pack[]>;
 	renamePack(
 		oldPack: PackID,
 		newPack: string,

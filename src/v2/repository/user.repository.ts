@@ -3,14 +3,12 @@ import { AxiosError } from "axios";
 import { APIUser } from "discord-api-types/v10";
 import { users, contributions, addons } from "../firestorm";
 import {
-	Addons,
-	Contributions,
-	Usernames,
+	Addon,
+	Contribution,
 	User,
-	Users,
+	Username,
 	UserCreationParams,
 	UserRepository,
-	Username,
 	UserProfile,
 } from "../interfaces";
 import { NotFoundError } from "../tools/errorTypes";
@@ -40,7 +38,7 @@ export default class UserFirestormRepository implements UserRepository {
 		return users.readRaw();
 	}
 
-	async getNames(): Promise<Usernames> {
+	async getNames(): Promise<Username[]> {
 		const fields = await users.select({ fields: ["id", "username", "uuid", "anonymous"] });
 		return Object.values(fields).map(({ id, username, uuid, anonymous }) => {
 			if (anonymous) return { id };
@@ -82,7 +80,7 @@ export default class UserFirestormRepository implements UserRepository {
 		}
 	}
 
-	async getUsersByName(name: string): Promise<Users> {
+	async getUsersByName(name: string): Promise<User[]> {
 		if (!name) throw new TypeError("A name must be provided");
 
 		const foundUsers = await users.search([
@@ -96,7 +94,7 @@ export default class UserFirestormRepository implements UserRepository {
 		return foundUsers.map(mapUser);
 	}
 
-	async getUsersFromRole(role: string, username?: string): Promise<Users> {
+	async getUsersFromRole(role: string, username?: string): Promise<User[]> {
 		if (role === "all" && !username) return Object.values(await users.readRaw());
 		const options: SearchOption<User>[] = [];
 
@@ -165,17 +163,17 @@ export default class UserFirestormRepository implements UserRepository {
 		return users.values({ field: "roles", flatten: true });
 	}
 
-	async getContributionsById(id: string): Promise<Contributions> {
+	async getContributionsById(id: string): Promise<Contribution[]> {
 		const u = await users.get(id);
 		return u.contributions();
 	}
 
-	async getAddonsById(id: string): Promise<Addons> {
+	async getAddonsById(id: string): Promise<Addon[]> {
 		const u = await users.get(id);
 		return u.addons();
 	}
 
-	async getAddonsApprovedById(id: string): Promise<Addons> {
+	async getAddonsApprovedById(id: string): Promise<Addon[]> {
 		const arr = await this.getAddonsById(id);
 		return arr.filter((el) => el.approval.status === "approved");
 	}
@@ -189,7 +187,7 @@ export default class UserFirestormRepository implements UserRepository {
 		const rawAddons = await addons.readRaw();
 		const { addonsToTransfer, addonsToDelete } = Object.values(rawAddons)
 			.filter((a) => a.authors.includes(id))
-			.reduce<{ addonsToTransfer: Addons; addonsToDelete: Addons }>(
+			.reduce<{ addonsToTransfer: Addon[]; addonsToDelete: Addon[] }>(
 				(acc, cur) => {
 					// delete addons that are only owned by the deleted user
 					if (cur.authors.length === 1) acc.addonsToDelete.push(cur);

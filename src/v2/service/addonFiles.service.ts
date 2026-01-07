@@ -1,4 +1,4 @@
-import { CreationFile, File, Files, MulterFile } from "../interfaces";
+import { CreationFile, File, MulterFile } from "../interfaces";
 import { BadRequestError, NotFoundError } from "../tools/errorTypes";
 import FileService from "./file.service";
 import { WriteConfirmation } from "firestorm-db";
@@ -139,7 +139,7 @@ export default class AddonFileService {
 		// get existing screenshots
 		const files = await this.fileService
 			.getFilesByParent({ id: addonID, type: "addons" })
-			.catch<Files>(() => []);
+			.catch<File[]>(() => []);
 		const screens = files.filter((f) => f.use === "screenshot");
 
 		// find precise screen, by id else by index
@@ -162,7 +162,7 @@ export default class AddonFileService {
 		// get existing screenshots
 		const files = await this.fileService
 			.getFilesByParent({ id: addonID, type: "addons" })
-			.catch<Files>(() => []);
+			.catch<File[]>(() => []);
 		const header = files.find((f) => f.use === "header");
 
 		if (header === undefined) throw new NotFoundError("Header not found");

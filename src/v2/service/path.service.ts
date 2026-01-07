@@ -1,7 +1,7 @@
 import { WriteConfirmation } from "firestorm-db";
 import { BadRequestError, NotFoundError } from "../tools/errorTypes";
 import UseService from "./use.service";
-import { InputPath, Path, PathNewVersionParam, Paths } from "../interfaces";
+import { InputPath, Path, PathNewVersionParam } from "../interfaces";
 import PathFirestormRepository from "../repository/path.repository";
 import TextureService from "./texture.service";
 import { settings } from "../firestorm";
@@ -22,7 +22,7 @@ export default class PathService {
 		return this.repo.getRaw();
 	}
 
-	getPathByUseId(useID: string): Promise<Paths> {
+	getPathsByUseId(useID: string): Promise<Path[]> {
 		return this.repo.getPathUseById(useID);
 	}
 
@@ -45,7 +45,7 @@ export default class PathService {
 		return this.repo.createPath(path);
 	}
 
-	createMultiplePaths(paths: InputPath[]): Promise<Paths> {
+	createMultiplePaths(paths: InputPath[]): Promise<Path[]> {
 		return this.repo.createPathBulk(paths);
 	}
 

@@ -1,5 +1,5 @@
 import { ID_FIELD, SearchOption, WriteConfirmation } from "firestorm-db";
-import { InputPath, Path, Paths, PathRepository } from "../interfaces";
+import { InputPath, Path, PathRepository } from "../interfaces";
 import { paths } from "../firestorm/textures/paths";
 import { settings } from "../firestorm";
 import versionSorter from "../tools/versionSorter";
@@ -9,7 +9,7 @@ export default class PathFirestormRepository implements PathRepository {
 		return paths.readRaw();
 	}
 
-	async getPathsByUseIdsAndVersion(useIDs: string[], version: string): Promise<Paths> {
+	async getPathsByUseIdsAndVersion(useIDs: string[], version: string): Promise<Path[]> {
 		const search: SearchOption<Path>[] = [
 			{
 				field: "use",
@@ -37,7 +37,7 @@ export default class PathFirestormRepository implements PathRepository {
 		return paths.search(search);
 	}
 
-	getPathUseById(useID: string): Promise<Paths> {
+	getPathUseById(useID: string): Promise<Path[]> {
 		return paths.search([
 			{
 				field: "use",
@@ -52,7 +52,7 @@ export default class PathFirestormRepository implements PathRepository {
 		return { ...path, id };
 	}
 
-	async createPathBulk(pathArray: InputPath[]): Promise<Paths> {
+	async createPathBulk(pathArray: InputPath[]): Promise<Path[]> {
 		const ids = await paths.addBulk(pathArray);
 		return paths.searchKeys(ids);
 	}

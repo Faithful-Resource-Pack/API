@@ -2,11 +2,9 @@ import { SearchOption, WriteConfirmation } from "firestorm-db";
 import {
 	Contribution,
 	ContributionCreationParams,
-	Contributions,
 	ContributionsRepository,
-	ContributionsAuthors,
+	ContributionAuthor,
 	PackID,
-	ContributionsAuthor,
 } from "../interfaces";
 import { contributions, users } from "../firestorm";
 
@@ -19,7 +17,7 @@ export default class ContributionFirestormRepository implements ContributionsRep
 		return contributions.values({ field: "pack" });
 	}
 
-	async searchContributionsFrom(authors: string[], packs?: string[]): Promise<Contributions> {
+	async searchContributionsFrom(authors: string[], packs?: string[]): Promise<Contribution[]> {
 		const options: SearchOption<Contribution>[] = authors.map((author) => ({
 			field: "authors",
 			criteria: "array-contains",
@@ -34,7 +32,7 @@ export default class ContributionFirestormRepository implements ContributionsRep
 		textureIDs: string[],
 		packs?: string[],
 		authors?: string[],
-	): Promise<Contributions> {
+	): Promise<Contribution[]> {
 		const options: SearchOption<Contribution>[] = [
 			{
 				field: "texture",
@@ -59,12 +57,12 @@ export default class ContributionFirestormRepository implements ContributionsRep
 		return contributions.search(options);
 	}
 
-	async getAuthors(): Promise<ContributionsAuthors> {
+	async getAuthors(): Promise<ContributionAuthor[]> {
 		// don't use values because we need duplicates
 		const contributionSelect = await contributions.select({ fields: ["authors"] });
 		const authors = Object.values(contributionSelect).flatMap((c) => c.authors);
 
-		type PartialAuthor = Pick<ContributionsAuthor, "id" | "contributions">;
+		type PartialAuthor = Pick<ContributionAuthor, "id" | "contributions">;
 		const out = authors.reduce<Record<string, PartialAuthor>>((acc, id) => {
 			acc[id] ||= { id, contributions: 0 };
 			acc[id].contributions++;
@@ -72,7 +70,7 @@ export default class ContributionFirestormRepository implements ContributionsRep
 		}, {});
 
 		const userSelect = await users.select({ fields: ["username", "uuid", "anonymous"] });
-		return Object.values(out).map((author: ContributionsAuthor) => {
+		return Object.values(out).map((author: ContributionAuthor) => {
 			const user = userSelect[author.id];
 			if (user && !user.anonymous) {
 				author.username = user.username;
@@ -88,7 +86,7 @@ export default class ContributionFirestormRepository implements ContributionsRep
 		return contributions.get(id);
 	}
 
-	async addContributions(params: ContributionCreationParams[]): Promise<Contributions> {
+	async addContributions(params: ContributionCreationParams[]): Promise<Contribution[]> {
 		const ids = await contributions.addBulk(params);
 		return contributions.searchKeys(ids);
 	}
@@ -102,7 +100,7 @@ export default class ContributionFirestormRepository implements ContributionsRep
 		return contributions.remove(id);
 	}
 
-	async getByDateRange(begin: string, ends: string): Promise<Contributions> {
+	async getByDateRange(begin: string, ends: string): Promise<Contribution[]> {
 		// if ends > begin date : ------[B-----E]------
 		// else if begin > ends :    -----E]-------[B-----
 

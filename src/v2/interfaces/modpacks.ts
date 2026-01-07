@@ -1,17 +1,17 @@
-import { Mods } from "./mods";
+import { Mod } from "./mods";
 
 export interface Modpack {
 	id: string; // modpack id (curseforge project id)
 	name: string; // modpack name
 	authors: string[]; // modpacks authors
-	versions: Array<{
-		id: string; // modpack version
-		minecraft: string; // minecraft version (ex: "1.18")
-		mods: Mods;
-	}>;
+	versions: ModpackVersion[];
 }
 
-export type Modpacks = Modpack[];
+export interface ModpackVersion {
+	id: string;
+	minecraft: string; // modpack version
+	mods: Mod[]; // minecraft version (ex: "1.18")
+}
 
 export interface FirestormModpack extends Modpack {}
 

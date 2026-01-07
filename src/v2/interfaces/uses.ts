@@ -22,8 +22,6 @@ export interface Use extends CreationUse {
 	id: string; // use unique id
 }
 
-export type Uses = Use[];
-
 export interface FirestormUse extends Use {
 	getPaths(): Promise<FirestormPath[]>;
 }
@@ -31,11 +29,11 @@ export interface FirestormUse extends Use {
 export interface UseRepository {
 	getRaw(): Promise<Record<string, Use>>;
 	getUseById(id: string | number): Promise<Use>;
-	getUseByIdOrName(idOrName: string): Promise<Uses | Use>;
-	getUsesByIdsAndEdition(idArr: number[], edition: GalleryEdition): Promise<Uses>;
+	getUseByIdOrName(idOrName: string): Promise<Use[] | Use>;
+	getUsesByIdsAndEdition(idArr: number[], edition: GalleryEdition): Promise<Use[]>;
 	lastCharCode(textureID: string): Promise<number>;
 	set(use: Use): Promise<Use>;
-	setMultiple(uses: Uses): Promise<Uses>;
+	setMultiple(uses: Use[]): Promise<Use[]>;
 	removeUseById(useID: string): Promise<[WriteConfirmation, WriteConfirmation]>;
 	removeUsesByBulk(useIDs: string[]): Promise<[WriteConfirmation, WriteConfirmation][]>;
 }

@@ -14,14 +14,15 @@ import {
 	Tags,
 } from "tsoa";
 import { WriteConfirmation } from "firestorm-db";
-import { File, MulterFile } from "../interfaces/files";
 import {
+	File,
+	MulterFile,
 	AddonReview,
 	Addon,
 	AddonCreationParam,
 	AddonReviewBody,
 	AddonUpdateParam,
-} from "../interfaces/addons";
+} from "../interfaces";
 import { PermissionError, BadRequestError } from "../tools/errorTypes";
 import UserService from "../service/user.service";
 import AddonService from "../service/addon.service";

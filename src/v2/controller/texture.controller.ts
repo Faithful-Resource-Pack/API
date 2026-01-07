@@ -18,7 +18,6 @@ import { Request as ExRequest } from "express";
 import { WriteConfirmation } from "firestorm-db";
 import {
 	Texture,
-	Textures,
 	Edition,
 	PackID,
 	TextureCreationParam,
@@ -110,7 +109,7 @@ export class TextureController extends Controller {
 	 * @param name Name to search by
 	 */
 	@Get("search")
-	public searchTexture(@Query() name?: string, @Query() tag?: string): Promise<Textures> {
+	public searchTexture(@Query() name?: string, @Query() tag?: string): Promise<Texture[]> {
 		return this.service.search(name, tag, true);
 	}
 
@@ -119,7 +118,7 @@ export class TextureController extends Controller {
 	 * @param id_or_name Texture ID or texture name (join by "," if multiple)
 	 */
 	@Get("{id_or_name}")
-	public getTexture(@Path() id_or_name: string | number): Promise<Texture | Textures> {
+	public getTexture(@Path() id_or_name: string | number): Promise<Texture | Texture[]> {
 		if (typeof id_or_name === "string" && id_or_name.includes(",")) {
 			const idArray = id_or_name.split(",");
 			return Promise.allSettled(idArray.map((id) => this.service.getByNameOrId(id))).then((res) =>
@@ -198,7 +197,7 @@ export class TextureController extends Controller {
 	@Post("multiple")
 	@Security("bot")
 	@Security("discord", ["Administrator"])
-	public createMultipleTextures(@Body() body: EntireTextureToCreate[]): Promise<Textures> {
+	public createMultipleTextures(@Body() body: EntireTextureToCreate[]): Promise<Texture[]> {
 		return this.service.createEntireTextures(body);
 	}
 

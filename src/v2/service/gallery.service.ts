@@ -4,7 +4,7 @@ import {
 	PackID,
 	Path,
 	MCMETA,
-	Textures,
+	Texture,
 	Use,
 	GalleryEdition,
 	Edition,
@@ -119,7 +119,7 @@ export default class GalleryService {
 			},
 			{
 				textureToUse: {} as Record<string, Use>,
-				texturesFiltered: [] as Textures,
+				texturesFiltered: [] as Texture[],
 			},
 		);
 

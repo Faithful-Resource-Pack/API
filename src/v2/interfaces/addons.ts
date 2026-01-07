@@ -1,5 +1,5 @@
 import { WriteConfirmation } from "firestorm-db";
-import { Files } from "./files";
+import { File } from "./files";
 
 export interface AddonDownload {
 	key: string;
@@ -42,8 +42,6 @@ export interface Addon extends CreationAddon {
 	id: string;
 }
 
-export type Addons = Addon[];
-
 export type AddonDataParam = Pick<
 	Addon,
 	"name" | "description" | "authors" | "options" | "embed_description"
@@ -59,9 +57,8 @@ export interface AddonUpdateParam extends AddonCreationParam {
 }
 
 export interface AddonAll extends Addon {
-	files: Files;
+	files: File[];
 }
-export type AddonsAll = AddonAll[];
 
 export interface AddonStats {
 	approved: number;
@@ -75,7 +72,7 @@ export interface AddonStatsAdmin extends AddonStats {
 }
 
 export interface FirestormAddon extends Addon {
-	getFiles(): Promise<Files>;
+	getFiles(): Promise<File[]>;
 	all(): Promise<AddonAll>;
 }
 
@@ -83,8 +80,8 @@ export interface AddonRepository {
 	getRaw(): Promise<Record<string, Addon>>;
 	getAddonById(id: number): Promise<Addon>;
 	getAddonBySlug(slug: string): Promise<Addon | undefined>;
-	getAddonByStatus(status: AddonStatus): Promise<Addons>;
-	getFilesById(addonId: string | number): Promise<Files>;
+	getAddonByStatus(status: AddonStatus): Promise<Addon[]>;
+	getFilesById(addonId: string | number): Promise<File[]>;
 	create(addon: Addon): Promise<Addon>;
 	remove(id: string | number): Promise<WriteConfirmation>;
 	update(id: string | number, addon: Addon): Promise<Addon>;

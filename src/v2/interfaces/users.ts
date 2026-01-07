@@ -1,13 +1,12 @@
 import { WriteConfirmation } from "firestorm-db";
 import { APIUser } from "discord-api-types/v10";
-import { Contributions } from "./contributions";
-import { Addons } from "./addons";
+import { Contribution } from "./contributions";
+import { Addon } from "./addons";
 
 export interface Media {
 	type: string;
 	link: string;
 }
-export type Medias = Media[];
 
 export interface UserCreationParams {
 	username: string; // username displayed online
@@ -22,8 +21,6 @@ export interface Username {
 	uuid?: string | undefined;
 }
 
-export type Usernames = Username[];
-
 export interface UserProfile {
 	id?: string;
 	media?: Media[];
@@ -37,10 +34,8 @@ export interface UpdateUserProfile extends UserProfile {
 
 export interface User extends UserCreationParams {
 	id: string; // discord user id
-	media?: Medias;
+	media?: Media[];
 }
-
-export type Users = User[];
 
 export interface UserStats {
 	total: number;
@@ -50,8 +45,8 @@ export interface UserStats {
 }
 
 export interface FirestormUser extends User {
-	contributions(): Promise<Contributions>;
-	addons(): Promise<Addons>;
+	contributions(): Promise<Contribution[]>;
+	addons(): Promise<Addon[]>;
 }
 
 export interface UserRepository {
@@ -59,14 +54,14 @@ export interface UserRepository {
 	getUserProfiles(authors: string[]): Promise<UserProfile[]>;
 	getNameById(id: string): Promise<Username>;
 	getRaw(): Promise<Record<string, User>>;
-	getNames(): Promise<Usernames>;
+	getNames(): Promise<Username[]>;
 	getUserById(id: string): Promise<User>;
-	getUsersByName(name: string): Promise<Users>;
-	getContributionsById(id: string): Promise<Contributions>;
-	getAddonsApprovedById(id: string): Promise<Addons>;
-	getAddonsById(id: string): Promise<Addons>;
+	getUsersByName(name: string): Promise<User[]>;
+	getContributionsById(id: string): Promise<Contribution[]>;
+	getAddonsApprovedById(id: string): Promise<Addon[]>;
+	getAddonsById(id: string): Promise<Addon[]>;
 	update(id: string, user: User): Promise<User>;
 	remove(id: string): Promise<WriteConfirmation[]>;
-	getUsersFromRole(role: string, username?: string): Promise<Users>;
+	getUsersFromRole(role: string, username?: string): Promise<User[]>;
 	getRoles(): Promise<User["roles"]>;
 }

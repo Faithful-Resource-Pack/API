@@ -23,8 +23,6 @@ export interface CreationFile {
 export interface File extends CreationFile {
 	id: string; // file unique id
 }
-export type Files = File[];
-export type CreationFiles = CreationFile[];
 
 //! needs to be approved & finished by @TheRolfFR
 export type FileDataParam = Pick<File, "name" | "use" | "type">;
@@ -35,9 +33,9 @@ export interface FirestormFile extends File {}
 export interface FileRepository {
 	getRaw(): Promise<Record<string, File>>;
 	addFile(file: File): Promise<string>;
-	addFiles(files: Files): Promise<string[]>;
+	addFiles(files: File[]): Promise<string[]>;
 	getFileById(id: string): Promise<File>;
-	getFilesByParent(parent: FileParent): Promise<Files>;
+	getFilesByParent(parent: FileParent): Promise<File[]>;
 	setFileById(id: string, file: File): Promise<File>;
 	removeFileById(id: string): Promise<WriteConfirmation>;
 	removeFilesByParent(parent: FileParent): Promise<WriteConfirmation>;

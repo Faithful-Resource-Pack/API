@@ -7,8 +7,7 @@ import { PermissionError, NotFoundError, APIError } from "./errorTypes";
 import UserService from "../service/user.service";
 import AddonService from "../service/addon.service";
 import PostService from "../service/post.service";
-import { Addon } from "../interfaces";
-import { AddonStatusApproved, AddonStatusValues } from "../interfaces/addons";
+import { Addon, AddonStatusApproved, AddonStatusValues } from "../interfaces";
 
 const userService = new UserService();
 const addonService = new AddonService();

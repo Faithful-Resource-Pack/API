@@ -1,6 +1,6 @@
 import { WriteConfirmation } from "firestorm-db";
 import { addons, files } from "../firestorm";
-import { Files, AddonStatus, Addon, Addons, AddonRepository, CreationAddon } from "../interfaces";
+import { File, AddonStatus, Addon, AddonRepository, CreationAddon } from "../interfaces";
 
 export default class AddonFirestormRepository implements AddonRepository {
 	getRaw(): Promise<Record<string, Addon>> {
@@ -11,7 +11,7 @@ export default class AddonFirestormRepository implements AddonRepository {
 		return addons.get(id);
 	}
 
-	async getFilesById(addonId: string | number): Promise<Files> {
+	async getFilesById(addonId: string | number): Promise<File[]> {
 		return files.search([
 			{
 				field: "parent.id",
@@ -26,7 +26,7 @@ export default class AddonFirestormRepository implements AddonRepository {
 		]);
 	}
 
-	getAddonByStatus(status: AddonStatus): Promise<Addons> {
+	getAddonByStatus(status: AddonStatus): Promise<Addon[]> {
 		return addons.search([
 			{
 				criteria: "==",

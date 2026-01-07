@@ -1,7 +1,7 @@
 import { WriteConfirmation } from "firestorm-db";
-import { EntireUseToCreate, FirestormUse, Uses } from "./uses";
-import { FirestormPath, Paths } from "./paths";
-import { Contributions, FirestormContribution } from "./contributions";
+import { EntireUseToCreate, FirestormUse, Use } from "./uses";
+import { FirestormPath, Path } from "./paths";
+import { Contribution, FirestormContribution } from "./contributions";
 import { PackID } from "./packs";
 
 export interface TextureCreationParam {
@@ -11,7 +11,6 @@ export interface TextureCreationParam {
 export interface Texture extends TextureCreationParam {
 	id: string; // texture unique id
 }
-export type Textures = Texture[];
 
 export interface MCMETA {
 	animation?: {
@@ -22,13 +21,11 @@ export interface MCMETA {
 }
 
 export interface TextureAll extends Texture {
-	uses: Uses;
-	paths: Paths;
+	uses: Use[];
+	paths: Path[];
 	mcmeta: MCMETA;
-	contributions: Contributions;
+	contributions: Contribution[];
 }
-
-export type TexturesAll = TextureAll[];
 
 export interface EntireTextureToCreate extends TextureCreationParam {
 	uses: EntireUseToCreate[];
@@ -43,23 +40,23 @@ export interface TextureStats {
 export type Edition = "java" | "bedrock";
 export type TextureProperty = null | "uses" | "paths" | "contributions" | "mcmeta" | "all";
 export type AnyTextureProperty =
-	| Textures
+	| Texture[]
 	| Texture
-	| Paths
-	| Uses
-	| Contributions
+	| Path[]
+	| Use[]
+	| Contribution[]
 	| MCMETA
 	| TextureAll;
 
 // average typescript experience
 export type PropertyToOutput<T extends TextureProperty> = T extends null
-	? Texture | Textures
+	? Texture | Texture[]
 	: T extends "uses"
-		? Uses
+		? Use[]
 		: T extends "paths"
-			? Paths
+			? Path[]
 			: T extends "contributions"
-				? Contributions
+				? Contribution[]
 				: T extends "mcmeta"
 					? MCMETA
 					: T extends "all"
@@ -82,7 +79,7 @@ export interface TextureRepository {
 		nameOrId: string | number | undefined,
 		tag?: string,
 		forcePartial?: boolean,
-	): Promise<Texture | Textures>;
+	): Promise<Texture | Texture[]>;
 	searchProperty<Property extends TextureProperty>(
 		nameOrID: string | number,
 		property: Property,

@@ -12,8 +12,7 @@ import {
 } from "tsoa";
 import {
 	Addon,
-	Addons,
-	Files,
+	File,
 	AddonProperty,
 	AddonDownload,
 	AddonStatus,
@@ -71,7 +70,7 @@ export class AddonController extends Controller {
 	@Response<PermissionError>(403)
 	@Security("discord", ["addon:approved", "Administrator", "Art Director Council"])
 	@Get("{id_or_slug}")
-	public async getAddon(@Path() id_or_slug: string): Promise<Addon | Addons> {
+	public async getAddon(@Path() id_or_slug: string): Promise<Addon | Addon[]> {
 		if (AddonStatusValues.includes(id_or_slug as AddonStatus))
 			return this.service.getAddonsByStatus(id_or_slug as AddonStatus);
 		const [, addon] = await this.service.getAddonFromSlugOrId(id_or_slug);
@@ -120,7 +119,7 @@ export class AddonController extends Controller {
 	public async getAddonPropertyById(
 		@Path() id_or_slug: string,
 		@Path() property: AddonProperty,
-	): Promise<Addon | Files> {
+	): Promise<Addon | File[]> {
 		const [addonID] = await this.service.getAddonFromSlugOrId(id_or_slug);
 		return this.service.getAddonProperty(addonID, property);
 	}
