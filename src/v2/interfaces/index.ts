@@ -1,5 +1,4 @@
 export * from "./addons";
-export * from "./changelogs";
 export * from "./contributions";
 export * from "./files";
 export * from "./gallery";
