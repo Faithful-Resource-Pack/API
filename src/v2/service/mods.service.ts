@@ -1,12 +1,11 @@
 import { Mod } from "../interfaces";
-import { mods } from "../firestorm";
 import ModsFirestormRepository from "../repository/mods.repository";
 
 export default class ModsService {
 	private readonly modsRepo = new ModsFirestormRepository();
 
 	getRaw(): Promise<Record<string, Mod>> {
-		return mods.readRaw();
+		return this.modsRepo.getRaw();
 	}
 
 	getThumbnail(id: number): Promise<string> {
