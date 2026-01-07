@@ -1,9 +1,9 @@
 import { SearchOption, WriteConfirmation } from "firestorm-db";
 import {
 	Contribution,
+	ContributionAuthor,
 	ContributionCreationParams,
 	ContributionsRepository,
-	ContributionAuthor,
 	PackID,
 } from "../interfaces";
 import { contributions, users } from "../firestorm";

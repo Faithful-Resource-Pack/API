@@ -3,11 +3,11 @@ import { APIUser } from "discord-api-types/v10";
 import {
 	Addon,
 	Contribution,
-	User,
-	Username,
-	UserStats,
-	UserProfile,
 	UpdateUserProfile,
+	User,
+	UserProfile,
+	UserStats,
+	Username,
 } from "../interfaces";
 import UserFirestormRepository from "../repository/user.repository";
 import { BadRequestError } from "../tools/errorTypes";

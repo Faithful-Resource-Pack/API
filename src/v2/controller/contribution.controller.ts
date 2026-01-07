@@ -14,8 +14,8 @@ import {
 import { WriteConfirmation } from "firestorm-db";
 import {
 	Contribution,
-	ContributionCreationParams,
 	ContributionAuthor,
+	ContributionCreationParams,
 	ContributionStats,
 	PackID,
 } from "../interfaces";

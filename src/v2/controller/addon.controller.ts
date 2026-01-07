@@ -12,13 +12,13 @@ import {
 } from "tsoa";
 import {
 	Addon,
-	File,
-	AddonProperty,
 	AddonDownload,
-	AddonStatus,
-	AddonStatusValues,
+	AddonProperty,
 	AddonStats,
 	AddonStatsAdmin,
+	AddonStatus,
+	AddonStatusValues,
+	File,
 	UserProfile,
 } from "../interfaces";
 

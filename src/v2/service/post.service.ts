@@ -1,5 +1,5 @@
 import { WriteConfirmation } from "firestorm-db";
-import { PostDownload, PostChangelog, WebsitePost, CreateWebsitePost } from "../interfaces";
+import { CreateWebsitePost, PostChangelog, PostDownload, WebsitePost } from "../interfaces";
 import { NotFoundError } from "../tools/errorTypes";
 import PostFirestormRepository from "../repository/posts.repository";
 import * as cache from "../tools/cache";

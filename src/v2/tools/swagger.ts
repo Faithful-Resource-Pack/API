@@ -1,10 +1,10 @@
 import { Controller, Swagger } from "tsoa";
 import multer from "multer";
-import { Application, NextFunction, Response as ExResponse, Request as ExRequest } from "express";
+import { Application, Request as ExRequest, Response as ExResponse, NextFunction } from "express";
 import { readFileSync } from "fs";
 import { MulterFile } from "../interfaces";
 import { AddonChangeController } from "../controller/addonChange.controller";
-import { expressAuthentication, ExRequestWithAuth } from "./authentication";
+import { ExRequestWithAuth, expressAuthentication } from "./authentication";
 import { BadRequestError } from "./errorTypes";
 
 const MIME_TYPES_ACCEPTED = ["image/gif", "image/png", "image/jpeg"];

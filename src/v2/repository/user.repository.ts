@@ -1,15 +1,15 @@
 import { ID_FIELD, SearchOption, WriteConfirmation } from "firestorm-db";
 import { AxiosError } from "axios";
 import { APIUser } from "discord-api-types/v10";
-import { users, contributions, addons } from "../firestorm";
+import { addons, contributions, users } from "../firestorm";
 import {
 	Addon,
 	Contribution,
 	User,
-	Username,
 	UserCreationParams,
-	UserRepository,
 	UserProfile,
+	UserRepository,
+	Username,
 } from "../interfaces";
 import { NotFoundError } from "../tools/errorTypes";
 import AddonService from "../service/addon.service";

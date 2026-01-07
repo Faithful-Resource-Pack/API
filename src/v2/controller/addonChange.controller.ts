@@ -15,15 +15,15 @@ import {
 } from "tsoa";
 import { WriteConfirmation } from "firestorm-db";
 import {
-	File,
-	MulterFile,
-	AddonReview,
 	Addon,
 	AddonCreationParam,
+	AddonReview,
 	AddonReviewBody,
 	AddonUpdateParam,
+	File,
+	MulterFile,
 } from "../interfaces";
-import { PermissionError, BadRequestError } from "../tools/errorTypes";
+import { BadRequestError, PermissionError } from "../tools/errorTypes";
 import UserService from "../service/user.service";
 import AddonService from "../service/addon.service";
 import * as cache from "../tools/cache";

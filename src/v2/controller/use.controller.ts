@@ -3,15 +3,15 @@ import {
 	Controller,
 	Delete,
 	Get,
-	Path as URLPath,
 	Post,
 	Put,
 	Route,
 	Security,
 	Tags,
+	Path as URLPath,
 } from "tsoa";
 import { WriteConfirmation } from "firestorm-db";
-import { Use, Path, CreationUse, EntireUseToCreate } from "../interfaces";
+import { CreationUse, EntireUseToCreate, Path, Use } from "../interfaces";
 import UseService from "../service/use.service";
 
 @Route("uses")

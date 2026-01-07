@@ -1,5 +1,5 @@
 import { WriteConfirmation } from "firestorm-db";
-import { Submission, CreationSubmission, PackID, PackAll } from "../interfaces";
+import { CreationSubmission, PackAll, PackID, Submission } from "../interfaces";
 import SubmissionFirestormRepository from "../repository/submission.repository";
 import { BadRequestError } from "../tools/errorTypes";
 import PackService from "./pack.service";

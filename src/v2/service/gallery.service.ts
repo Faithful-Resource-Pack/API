@@ -1,14 +1,14 @@
 import { settings, textures, urlFromTextureData } from "../firestorm";
 import {
+	Edition,
+	GalleryEdition,
+	GalleryModalResult,
 	GalleryResult,
+	MCMETA,
 	PackID,
 	Path,
-	MCMETA,
 	Texture,
 	Use,
-	GalleryEdition,
-	Edition,
-	GalleryModalResult,
 } from "../interfaces";
 import { NotFoundError } from "../tools/errorTypes";
 import PackService from "./pack.service";

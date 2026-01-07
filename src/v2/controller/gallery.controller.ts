@@ -1,5 +1,5 @@
 import { Controller, Get, Path, Query, Route, Security, Tags } from "tsoa";
-import { GalleryModalResult, GalleryResult, PackID, GalleryEdition } from "../interfaces";
+import { GalleryEdition, GalleryModalResult, GalleryResult, PackID } from "../interfaces";
 import GalleryService from "../service/gallery.service";
 import * as cache from "../tools/cache";
 

@@ -1,4 +1,4 @@
-import { Controller, Get, Path, Request, Route, SuccessResponse, Tags, Response } from "tsoa";
+import { Controller, Get, Path, Request, Response, Route, SuccessResponse, Tags } from "tsoa";
 import { Request as ExRequest } from "express";
 import { Mod } from "../interfaces";
 import { NotFoundError } from "../tools/errorTypes";

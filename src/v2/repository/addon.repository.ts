@@ -1,6 +1,6 @@
 import { WriteConfirmation } from "firestorm-db";
 import { addons, files } from "../firestorm";
-import { File, AddonStatus, Addon, AddonRepository, CreationAddon } from "../interfaces";
+import { Addon, AddonRepository, AddonStatus, CreationAddon, File } from "../interfaces";
 
 export default class AddonFirestormRepository implements AddonRepository {
 	getRaw(): Promise<Record<string, Addon>> {

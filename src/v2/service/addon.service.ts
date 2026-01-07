@@ -2,20 +2,20 @@ import { APIEmbed } from "discord-api-types/v10";
 import { WriteConfirmation } from "firestorm-db";
 import {
 	Addon,
-	AddonStatus,
 	AddonAll,
-	CreationFile,
-	File,
-	FileParent,
-	UserProfile,
 	AddonCreationParam,
 	AddonDataParam,
 	AddonProperty,
 	AddonReview,
 	AddonStats,
 	AddonStatsAdmin,
+	AddonStatus,
 	AddonStatusApproved,
 	CreationAddon,
+	CreationFile,
+	File,
+	FileParent,
+	UserProfile,
 } from "../interfaces";
 import { BadRequestError, NotFoundError } from "../tools/errorTypes";
 import UserService from "./user.service";

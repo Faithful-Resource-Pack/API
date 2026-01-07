@@ -1,4 +1,4 @@
-import { Controller, Get, Route, Tags, Security } from "tsoa";
+import { Controller, Get, Route, Security, Tags } from "tsoa";
 import FileService from "../service/file.service";
 import { File } from "../interfaces";
 

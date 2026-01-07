@@ -1,11 +1,11 @@
 import { WriteConfirmation } from "firestorm-db";
 import {
-	Use,
-	Path,
 	CreationUse,
 	EntireUseToCreate,
-	InputPath,
 	GalleryEdition,
+	InputPath,
+	Path,
+	Use,
 } from "../interfaces";
 import UseFirestormRepository from "../repository/use.repository";
 import { BadRequestError, NotFoundError } from "../tools/errorTypes";

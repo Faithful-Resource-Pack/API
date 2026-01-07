@@ -1,16 +1,16 @@
 import { ID_FIELD, SearchOption, WriteConfirmation } from "firestorm-db";
 import {
 	Edition,
+	FirestormTexture,
 	PackID,
+	PropertyToOutput,
+	Texture,
 	TextureCreationParam,
 	TextureProperty,
-	Texture,
 	TextureRepository,
-	PropertyToOutput,
-	FirestormTexture,
 } from "../interfaces";
 import { NotFoundError } from "../tools/errorTypes";
-import { textures, paths, uses, contributions, settings, packs } from "../firestorm";
+import { contributions, packs, paths, settings, textures, uses } from "../firestorm";
 import versionSorter from "../tools/versionSorter";
 
 export default class TextureFirestormRepository implements TextureRepository {

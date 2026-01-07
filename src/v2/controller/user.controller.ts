@@ -18,11 +18,11 @@ import { BadRequestError, ForbiddenError, NotAvailableError } from "../tools/err
 import {
 	Addon,
 	Contribution,
-	Username,
+	UpdateUserProfile,
 	User,
 	UserCreationParams,
 	UserStats,
-	UpdateUserProfile,
+	Username,
 } from "../interfaces";
 import UserService from "../service/user.service";
 import * as cache from "../tools/cache";

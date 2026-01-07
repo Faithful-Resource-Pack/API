@@ -1,5 +1,5 @@
 import { Use } from "./uses";
-import { Texture, MCMETA, Edition } from "./textures";
+import { Edition, MCMETA, Texture } from "./textures";
 import { Contribution } from "./contributions";
 import { PackID } from "./packs";
 import { Path } from "./paths";

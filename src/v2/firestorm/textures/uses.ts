@@ -1,5 +1,5 @@
 import firestorm from "firestorm-db";
-import { FirestormUse, FirestormPath } from "../../interfaces";
+import { FirestormPath, FirestormUse } from "../../interfaces";
 import "../config";
 import { paths } from "./paths";
 

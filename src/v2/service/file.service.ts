@@ -1,6 +1,6 @@
 import { WriteConfirmation } from "firestorm-db";
 import { FileFirestormRepository } from "../repository/files.repository";
-import { FileParent, FileUse, File, CreationFile } from "../interfaces";
+import { CreationFile, File, FileParent, FileUse } from "../interfaces";
 
 export default class FileService {
 	private readonly repo = new FileFirestormRepository();

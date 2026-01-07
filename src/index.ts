@@ -1,7 +1,7 @@
 import "dotenv/config";
 import "./v2/environment";
 
-import express, { Request, Response, NextFunction } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import bodyParser from "body-parser";
 import swaggerUi from "swagger-ui-express";
 import { ValidateError } from "tsoa";

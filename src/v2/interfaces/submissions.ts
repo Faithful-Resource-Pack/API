@@ -1,5 +1,5 @@
 import { WriteConfirmation } from "firestorm-db";
-import { PackID, PackAll } from "./packs";
+import { PackAll, PackID } from "./packs";
 
 export interface SubmissionChannels {
 	submit: string;

@@ -1,23 +1,23 @@
 import { Request as ExRequest } from "express";
 import {
+	Body,
 	Controller,
+	Delete,
 	Get,
 	Path,
+	Post,
+	Put,
+	Query,
 	Request,
 	Response,
 	Route,
-	Post,
 	Security,
 	SuccessResponse,
 	Tags,
-	Body,
-	Put,
-	Delete,
-	Query,
 } from "tsoa";
 import DOMPurify from "isomorphic-dompurify";
 import { WriteConfirmation } from "firestorm-db";
-import { PostDownload, PostChangelog, WebsitePost, CreateWebsitePost } from "../interfaces";
+import { CreateWebsitePost, PostChangelog, PostDownload, WebsitePost } from "../interfaces";
 
 import { BadRequestError, NotFoundError, PermissionError } from "../tools/errorTypes";
 import * as cache from "../tools/cache";

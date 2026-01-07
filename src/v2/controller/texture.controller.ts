@@ -17,13 +17,13 @@ import {
 import { Request as ExRequest } from "express";
 import { WriteConfirmation } from "firestorm-db";
 import {
-	Texture,
+	AnyTextureProperty,
 	Edition,
+	EntireTextureToCreate,
 	PackID,
+	Texture,
 	TextureCreationParam,
 	TextureProperty,
-	EntireTextureToCreate,
-	AnyTextureProperty,
 	TextureStats,
 } from "../interfaces";
 import TextureService from "../service/texture.service";

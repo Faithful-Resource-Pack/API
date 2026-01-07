@@ -1,17 +1,17 @@
 import {
+	Body,
 	Controller,
 	Delete,
 	Get,
-	Path as URLPath,
 	Post,
+	Put,
 	Route,
 	Security,
 	Tags,
-	Body,
-	Put,
+	Path as URLPath,
 } from "tsoa";
 import { WriteConfirmation } from "firestorm-db";
-import { Path, InputPath, PathNewVersionParam, PathRemoveVersionParam } from "../interfaces";
+import { InputPath, Path, PathNewVersionParam, PathRemoveVersionParam } from "../interfaces";
 import PathService from "../service/path.service";
 
 @Route("paths")
