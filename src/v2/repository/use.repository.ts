@@ -1,5 +1,5 @@
-import { ID_FIELD, SearchOption, WriteConfirmation } from "firestorm-db";
-import { GalleryEdition, Use, UseRepository } from "../interfaces";
+import { ID_FIELD, WriteConfirmation } from "firestorm-db";
+import { Use, UseRepository } from "../interfaces";
 import { paths, uses } from "../firestorm";
 
 export default class UseFirestormRepository implements UseRepository {

@@ -1,5 +1,5 @@
 import { Controller, Get, Path, Query, Route, Security, Tags } from "tsoa";
-import { GalleryEdition, GalleryModalResult, GalleryResult, PackID } from "../interfaces";
+import { GalleryModalResult, GalleryResult, PackID } from "../interfaces";
 import GalleryService from "../service/gallery.service";
 import * as cache from "../tools/cache";
 
@@ -7,6 +7,16 @@ import * as cache from "../tools/cache";
 @Tags("Gallery")
 export class GalleryController extends Controller {
 	private readonly service = new GalleryService();
+
+	/**
+	 * Get gallery modal data with urls, mcmeta, texture, uses and paths
+	 * @param id Searched texture ID
+	 * @param version Minecraft version for the images
+	 */
+	@Get("modal/{id}/{version}")
+	public async modal(@Path() id: number, @Path() version: string): Promise<GalleryModalResult> {
+		return this.service.searchModal(id, version);
+	}
 
 	/**
 	 * Get gallery data with provided information
@@ -37,16 +47,6 @@ export class GalleryController extends Controller {
 				trimmedSearch || undefined,
 			),
 		);
-	}
-
-	/**
-	 * Get gallery modal data with urls, mcmeta, texture, uses and paths
-	 * @param id Searched texture ID
-	 * @param version Minecraft version for the images
-	 */
-	@Get("modal/{id}/{version}")
-	public async modal(@Path() id: number, @Path() version: string): Promise<GalleryModalResult> {
-		return this.service.searchModal(id, version);
 	}
 
 	/**

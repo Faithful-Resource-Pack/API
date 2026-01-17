@@ -1,6 +1,5 @@
 import { WriteConfirmation } from "firestorm-db";
 import { CreationPath, FirestormPath } from "./paths";
-import { GalleryEdition } from "./gallery";
 import { Edition } from "./textures";
 
 export interface BaseUse {

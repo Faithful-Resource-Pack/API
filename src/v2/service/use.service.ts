@@ -1,12 +1,5 @@
 import { WriteConfirmation } from "firestorm-db";
-import {
-	CreationUse,
-	EntireUseToCreate,
-	GalleryEdition,
-	InputPath,
-	Path,
-	Use,
-} from "../interfaces";
+import { CreationUse, EntireUseToCreate, InputPath, Path, Use } from "../interfaces";
 import UseFirestormRepository from "../repository/use.repository";
 import { BadRequestError, NotFoundError } from "../tools/errorTypes";
 import PathService from "./path.service";

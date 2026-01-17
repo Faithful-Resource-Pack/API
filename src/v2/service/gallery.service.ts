@@ -1,7 +1,6 @@
 import { settings, textures, urlFromTextureData } from "../firestorm";
 import {
 	Edition,
-	GalleryEdition,
 	GalleryModalResult,
 	GalleryResult,
 	MCMETA,
