@@ -58,8 +58,8 @@ export default class UseService {
 		return this.repo.removeUseById(id);
 	}
 
-	getUsesByIdsAndEdition(idArr: number[], edition: GalleryEdition): Promise<Use[]> {
-		return this.repo.getUsesByIdsAndEdition(idArr, edition);
+	getUsesByIds(idArr: number[]): Promise<Use[]> {
+		return this.repo.getUsesByIds(idArr);
 	}
 
 	async createUse(use: Use): Promise<Use> {

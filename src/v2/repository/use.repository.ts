@@ -29,21 +29,14 @@ export default class UseFirestormRepository implements UseRepository {
 		}
 	}
 
-	getUsesByIdsAndEdition(idArr: number[], edition: GalleryEdition): Promise<Use[]> {
-		const search: SearchOption<Use>[] = [
+	getUsesByIds(idArr: number[]): Promise<Use[]> {
+		return uses.search([
 			{
 				field: "texture",
 				criteria: "in",
 				value: idArr,
 			},
-		];
-		if (edition !== "all")
-			search.push({
-				field: "edition",
-				criteria: "==",
-				value: edition,
-			});
-		return uses.search(search);
+		]);
 	}
 
 	async lastCharCode(textureID: string): Promise<number> {

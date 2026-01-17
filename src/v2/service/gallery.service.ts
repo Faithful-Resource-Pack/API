@@ -56,7 +56,6 @@ export default class GalleryService {
 
 	public async search(
 		pack: PackID,
-		edition: GalleryEdition,
 		version: string,
 		tag?: string,
 		search?: string,
@@ -71,7 +70,7 @@ export default class GalleryService {
 		if (texturesFound.length === 0) return [];
 		const ids = texturesFound.map((t) => Number(t.id));
 
-		const usesFound = await this.useService.getUsesByIdsAndEdition(ids, edition);
+		const usesFound = await this.useService.getUsesByIds(ids);
 		if (usesFound.length === 0) return [];
 		const useIDs = usesFound.map((u) => u.id);
 

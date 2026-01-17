@@ -23,10 +23,8 @@ export default class PathFirestormRepository implements PathRepository {
 			search.push({
 				field: "versions",
 				criteria: "array-contains-any",
-				value: Object.entries<string[]>(s.versions)
-					.filter(([k]) => k !== ID_FIELD)
-					// latest is always at top
-					.map(([, obj]) => obj[0]),
+				// latest is always at top
+				value: Object.values<string[]>(s.versions).map((editionVersions) => editionVersions[0]),
 			});
 		} else
 			search.push({

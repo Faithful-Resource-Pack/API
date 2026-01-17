@@ -11,15 +11,13 @@ export class GalleryController extends Controller {
 	/**
 	 * Get gallery data with provided information
 	 * @param pack Pack being searched
-	 * @param edition Edition to search
 	 * @param version Version to search
 	 * @param tag Tag to search
 	 * @param search Gallery search
 	 */
-	@Get("{pack}/{edition}/{version}/{tag}/")
+	@Get("{pack}/{version}/{tag}/")
 	public search(
 		@Path() pack: PackID,
-		@Path() edition: GalleryEdition,
 		@Path() version: string,
 		@Path() tag: string,
 		@Query() search?: string,
@@ -29,10 +27,9 @@ export class GalleryController extends Controller {
 		// to remove the trailing -
 		const cacheSlug = trimmedSearch ? `-${trimmedSearch}` : "";
 
-		return cache.handle(`gallery-${pack}-${edition}-${version}-${tag}${cacheSlug}`, () =>
+		return cache.handle(`gallery-${pack}-${version}-${tag}${cacheSlug}`, () =>
 			this.service.search(
 				pack,
-				edition,
 				version,
 				// "all" tag is treated as no tag
 				tag.toLowerCase() === "all" ? undefined : tag,
