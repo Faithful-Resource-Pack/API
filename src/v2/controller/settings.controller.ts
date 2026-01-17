@@ -13,6 +13,7 @@ import {
 import { WriteConfirmation } from "firestorm-db";
 import { NotFoundError, PermissionError } from "../tools/errorTypes";
 import SettingsService from "../service/settings.service";
+import * as cache from "../tools/cache";
 
 @Route("settings")
 @Tags("Settings")
@@ -25,7 +26,7 @@ export class SettingsController extends Controller {
 	@SuccessResponse(200)
 	@Get("raw")
 	public getRaw(): Promise<Record<string, unknown>> {
-		return this.settingsService.raw();
+		return cache.handle("settings-raw", () => this.settingsService.raw());
 	}
 
 	/**
@@ -51,7 +52,8 @@ export class SettingsController extends Controller {
 	@Response<PermissionError>(403)
 	@Post("/raw")
 	@Security("discord", ["Administrator"])
-	public update(@Body() body: Record<string, unknown>): Promise<WriteConfirmation> {
+	public async update(@Body() body: Record<string, unknown>): Promise<WriteConfirmation> {
+		await cache.purge(/settings-raw/g);
 		return this.settingsService.update(body);
 	}
 }
