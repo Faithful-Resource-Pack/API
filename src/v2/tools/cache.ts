@@ -95,7 +95,10 @@ export async function handle<T>(
 	if (cacheData.expired || !cacheData.data) {
 		cacheData.data = await callback();
 		// write if cache enabled
-		if (!NO_CACHE) write(key, cacheData.data).catch((...args) => console.error(...args));
+		if (!NO_CACHE) {
+			if (process.env.VERBOSE === "true") console.log(`Creating cache ${key} at ${keyToPath(key)}`);
+			write(key, cacheData.data).catch((...args) => console.error(...args));
+		}
 	}
 
 	return cacheData.data;
