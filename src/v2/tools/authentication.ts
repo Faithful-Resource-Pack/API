@@ -32,20 +32,21 @@ export async function expressAuthentication(
 	scopes: string[] = [],
 ): Promise<any> {
 	// handle public add-ons/posts without a token (for website etc)
-	if ("id_or_slug" in request.params) {
+	if ("id_or_slug" in request.params && !Array.isArray(request.params.id_or_slug)) {
+		const idOrSlug = request.params.id_or_slug;
 		if (scopes.includes("addon:approved")) {
 			// /v2/addons/approved is public, safe to send
-			if (request.params.id_or_slug === AddonStatusApproved) return true;
+			if (idOrSlug === AddonStatusApproved) return true;
 
 			// it's an addon slug and not a status
-			if (isSlug(request.params.id_or_slug)) {
-				const addon = (await addonService.getAddonFromSlugOrId(request.params.id_or_slug))[1];
+			if (isSlug(idOrSlug)) {
+				const addon = (await addonService.getAddonFromSlugOrId(idOrSlug))[1];
 				if (addon.approval.status === AddonStatusApproved) return true;
 			}
 		}
 		if (scopes.includes("post:approved")) {
-			if (request.params.id_or_slug === "approved") return true;
-			const post = await postService.getByIdOrPermalink(request.params.id_or_slug);
+			if (idOrSlug === "approved") return true;
+			const post = await postService.getByIdOrPermalink(idOrSlug);
 			if (post.published === true) return true;
 		}
 	}
@@ -101,7 +102,9 @@ export async function expressAuthentication(
 
 			// check add-on ownership
 			if (scopes.includes("addon:own") || scopes.includes("addon:approved")) {
-				const idOrSlug = request.params.id_or_slug;
+				const idOrSlug = Array.isArray(request.params.id_or_slug)
+					? request.params.id_or_slug[0]
+					: request.params.id_or_slug;
 				if (isSlug(idOrSlug)) {
 					const addon: Addon = (await addonService.getAddonFromSlugOrId(idOrSlug))[1];
 					if (addon.authors.includes(discordID)) return discordID;
