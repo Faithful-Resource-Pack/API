@@ -9,23 +9,13 @@ export class GalleryController extends Controller {
 	private readonly service = new GalleryService();
 
 	/**
-	 * Get gallery modal data with urls, mcmeta, texture, uses and paths
-	 * @param id Searched texture ID
-	 * @param version Minecraft version for the images
-	 */
-	@Get("modal/{id}/{version}")
-	public async modal(@Path() id: number, @Path() version: string): Promise<GalleryModalResult> {
-		return this.service.searchModal(id, version);
-	}
-
-	/**
 	 * Get gallery data with provided information
 	 * @param pack Pack being searched
 	 * @param version Version to search
 	 * @param tag Tag to search
-	 * @param search Gallery search
+	 * @param search Texture name or ID to search
 	 */
-	@Get("{pack}/{version}/{tag}/")
+	@Get("search/{pack}/{version}/{tag}/")
 	public search(
 		@Path() pack: PackID,
 		@Path() version: string,
@@ -47,6 +37,16 @@ export class GalleryController extends Controller {
 				trimmedSearch || undefined,
 			),
 		);
+	}
+
+	/**
+	 * Get gallery modal data with urls, mcmeta, texture, uses and paths
+	 * @param id Searched texture ID
+	 * @param version Minecraft version for the images
+	 */
+	@Get("modal/{id}/{version}")
+	public async modal(@Path() id: number, @Path() version: string): Promise<GalleryModalResult> {
+		return this.service.searchModal(id, version);
 	}
 
 	/**
