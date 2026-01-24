@@ -18,6 +18,7 @@ const mapUser = (user: Partial<User> & { id: string }): User => ({
 	// falsy checking
 	id: user.id,
 	username: user.username || "",
+	bio: user.bio || "",
 	uuid: user.uuid || "",
 	roles: user.roles || [],
 	media: user.media,
@@ -70,6 +71,7 @@ export default class UserFirestormRepository implements UserRepository {
 				id,
 				// use discord username as default username (can be changed later in webapp)
 				username: global_name || "",
+				bio: "",
 				uuid: "",
 				roles: [],
 				media: [],
@@ -227,9 +229,9 @@ export default class UserFirestormRepository implements UserRepository {
 
 	async getUserProfiles(searchedUsers: string[]): Promise<UserProfile[]> {
 		const u = await users.searchKeys(searchedUsers);
-		return u.map(({ id, anonymous, username, uuid, media }) => {
+		return u.map(({ id, anonymous, username, bio, uuid, media }) => {
 			if (anonymous) return { id };
-			return { id, username, uuid, media };
+			return { id, username, uuid, media, bio };
 		});
 	}
 }

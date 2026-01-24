@@ -12,6 +12,8 @@ import {
 import UserFirestormRepository from "../repository/user.repository";
 import { BadRequestError } from "../tools/errorTypes";
 
+const MAX_BIO_LENGTH = 300;
+
 export default class UserService {
 	private readonly repo = new UserFirestormRepository();
 
@@ -107,6 +109,12 @@ export default class UserService {
 		if (username.length === 0) throw new BadRequestError("Username cannot be empty");
 
 		user.username = username;
+
+		const bio = (body.bio || "").trim();
+		if (bio.length > MAX_BIO_LENGTH)
+			throw new BadRequestError(`Bio cannot be more than ${MAX_BIO_LENGTH} characters`);
+
+		user.bio = bio;
 
 		user.uuid = body.uuid || "";
 		user.media = body.media;

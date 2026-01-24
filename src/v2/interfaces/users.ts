@@ -26,6 +26,7 @@ export interface UserProfile {
 	media?: Media[];
 	username?: string;
 	uuid?: string;
+	bio?: string;
 }
 
 export interface UpdateUserProfile extends UserProfile {
@@ -34,6 +35,7 @@ export interface UpdateUserProfile extends UserProfile {
 
 export interface User extends UserCreationParams {
 	id: string; // discord user id
+	bio?: string;
 	media?: Media[];
 }
 
