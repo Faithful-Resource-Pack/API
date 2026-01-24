@@ -18,14 +18,14 @@ export interface UserCreationParams {
 export interface Username {
 	id?: string;
 	username?: string;
-	uuid?: string | undefined;
+	uuid?: string;
 }
 
 export interface UserProfile {
 	id?: string;
 	media?: Media[];
-	username?: string | undefined;
-	uuid?: string | undefined;
+	username?: string;
+	uuid?: string;
 }
 
 export interface UpdateUserProfile extends UserProfile {
