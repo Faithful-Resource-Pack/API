@@ -179,9 +179,10 @@ export default class UserFirestormRepository implements UserRepository {
 	}
 
 	async update(id: string, user: UserCreationParams): Promise<User> {
-		const current = await users.get(id);
+		const current: User | Record<string, never> = await this.getUserById(id).catch(() => ({}));
 
 		// make sure optional fields don't get randomly removed
+		// if creating it just spreads an empty object so nothing happens
 		await users.set(id, { ...current, ...user });
 		return this.getUserById(id);
 	}
