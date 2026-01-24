@@ -115,12 +115,6 @@ export default class UserService {
 		return this.update(id, user);
 	}
 
-	public async setRoles(id: string, roles: string[]): Promise<User> {
-		const user = await this.getUserById(id);
-		user.roles = roles;
-		return this.update(id, user);
-	}
-
 	public create(id: string, user: User): Promise<User> {
 		return this.repo.update(id, user);
 	}

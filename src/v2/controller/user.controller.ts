@@ -238,18 +238,6 @@ export class UserController extends Controller {
 	}
 
 	/**
-	 * Set roles for a user with the given user ID
-	 * @param id User ID
-	 * @param roles Role names (not IDs!)
-	 */
-	@Put("{id}/roles")
-	@Security("discord", ["Administrator"])
-	@Security("bot")
-	public setRoles(@Path() id: string, @Body() roles: string[]): Promise<User> {
-		return this.service.setRoles(id, roles);
-	}
-
-	/**
 	 * Delete the user with the given ID
 	 * @param id User ID to be deleted
 	 */
