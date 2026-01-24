@@ -68,12 +68,12 @@ export default class UserFirestormRepository implements UserRepository {
 
 			const empty: User = {
 				id,
-				anonymous: false,
-				roles: [],
 				// use discord username as default username (can be changed later in webapp)
 				username: global_name || "",
 				uuid: "",
+				roles: [],
 				media: [],
+				anonymous: false,
 			};
 			await users.set(id, empty);
 			return this.getUserById(id);
@@ -179,7 +179,10 @@ export default class UserFirestormRepository implements UserRepository {
 	}
 
 	async update(id: string, user: UserCreationParams): Promise<User> {
-		await users.set(id, user);
+		const current = await users.get(id);
+
+		// make sure optional fields don't get randomly removed
+		await users.set(id, { ...current, ...user });
 		return this.getUserById(id);
 	}
 
