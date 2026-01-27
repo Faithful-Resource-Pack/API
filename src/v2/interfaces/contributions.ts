@@ -5,7 +5,7 @@ export interface ContributionCreationParams {
 	date: number; // unix timestamp
 	pack: PackID; // resource pack name
 	authors: string[]; // discord user ids
-	texture: string; // texture id
+	texture: number; // texture id
 }
 
 export interface Contribution extends ContributionCreationParams {
