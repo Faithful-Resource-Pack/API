@@ -49,6 +49,6 @@
 	"routes": {
 		"basePath": "v2",
 		"routesDir": "build",
-		"authenticationModule": "src/v2/tools/authentication.ts"
+		"authenticationModule": "src/v2/auth/index.ts"
 	}
 }

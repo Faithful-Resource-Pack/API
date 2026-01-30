@@ -1,27 +1,25 @@
 import { Controller, Swagger } from "tsoa";
-import multer from "multer";
+import createMulter from "multer";
 import { Application, Request as ExRequest, Response as ExResponse, NextFunction } from "express";
 import { readFileSync } from "fs";
 import { MulterFile } from "../interfaces";
 import { AddonChangeController } from "../controller/addonChange.controller";
-import { ExRequestWithAuth, expressAuthentication } from "./authentication";
+import { expressAuthentication } from "../auth";
 import { BadRequestError } from "./errorTypes";
+import { ExRequestWithAuth } from "../auth/discord";
 
 const MIME_TYPES_ACCEPTED = ["image/gif", "image/png", "image/jpeg"];
 
-const upload = multer({
-	limits: {
-		fileSize: 3000000, // 3MB
-	},
-	fileFilter(_req, file, callback) {
-		if (MIME_TYPES_ACCEPTED.includes(file.mimetype)) callback(null, true);
-		else {
-			callback(
-				new BadRequestError(
-					`Incorrect file mime type provided, ${MIME_TYPES_ACCEPTED.join(" or ")} expected`,
-				),
-			);
-		}
+const multer = createMulter({
+	// 3MB
+	limits: { fileSize: 3000000 },
+	fileFilter: (_req, file, callback) => {
+		if (MIME_TYPES_ACCEPTED.includes(file.mimetype)) return callback(null, true);
+		callback(
+			new BadRequestError(
+				`Invalid file media type ${file.mimetype} provided. Available types: ${MIME_TYPES_ACCEPTED.join(", ")}`,
+			),
+		);
 	},
 });
 
@@ -82,7 +80,7 @@ export function formHandler<T>(
 			).catch((err: unknown) => next(err));
 			next();
 		},
-		upload.single("file"),
+		multer.single("file"),
 		(req: ExRequest, res: ExResponse, next: NextFunction) => {
 			try {
 				const firstParam = Object.keys(req.params)[0];

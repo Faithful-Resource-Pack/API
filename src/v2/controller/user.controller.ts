@@ -26,7 +26,7 @@ import {
 } from "../interfaces";
 import UserService from "../service/user.service";
 import * as cache from "../tools/cache";
-import { ExRequestWithAuth } from "../tools/authentication";
+import { ExRequestWithAuth } from "../auth/discord";
 
 @Route("users")
 @Tags("Users")

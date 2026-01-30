@@ -27,7 +27,7 @@ import { BadRequestError, PermissionError } from "../tools/errorTypes";
 import UserService from "../service/user.service";
 import AddonService from "../service/addon.service";
 import * as cache from "../tools/cache";
-import { ExRequestWithAuth } from "../tools/authentication";
+import { ExRequestWithAuth } from "../auth/discord";
 import AddonFileService from "../service/addonFiles.service";
 
 @Route("addons")
