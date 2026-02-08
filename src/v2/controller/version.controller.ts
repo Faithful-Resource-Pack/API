@@ -20,7 +20,7 @@ export class VersionsController extends Controller {
 	/**
 	 * Get a sorted list of all valid versions across editions
 	 */
-	@Get("flat")
+	@Get("list")
 	public getVersions(): Promise<string[]> {
 		return this.service.getFlat();
 	}
