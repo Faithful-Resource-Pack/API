@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Path, Post, Put, Route, Security, Tags }
 import VersionService from "../service/version.service";
 import { Edition, NewVersionParam } from "../interfaces";
 import { WriteConfirmation } from "firestorm-db";
+import * as cache from "../tools/cache";
 
 @Route("versions")
 @Tags("Versions")
@@ -40,9 +41,11 @@ export class VersionsController extends Controller {
 	@Post("")
 	@Security("bot")
 	@Security("discord", ["Administrator"])
-	public addVersion(@Body() body: NewVersionParam): Promise<WriteConfirmation[]> {
+	public async addVersion(@Body() body: NewVersionParam): Promise<WriteConfirmation[]> {
 		// tsoa doesn't support tuples so we retype it as array (doesn't really matter)
-		return this.service.add(body);
+		const res = await this.service.add(body);
+		await cache.purge("settings-raw");
+		return res;
 	}
 
 	/**
@@ -53,11 +56,13 @@ export class VersionsController extends Controller {
 	@Put("rename/{old_version}/{new_version}")
 	@Security("bot")
 	@Security("discord", ["Administrator"])
-	public renameVersion(
+	public async renameVersion(
 		@Path() old_version: string,
 		@Path() new_version: string,
 	): Promise<WriteConfirmation[]> {
-		return this.service.rename(old_version, new_version);
+		const res = await this.service.rename(old_version, new_version);
+		await cache.purge("settings-raw");
+		return res;
 	}
 
 	/**
@@ -67,7 +72,9 @@ export class VersionsController extends Controller {
 	@Delete("{version}")
 	@Security("bot")
 	@Security("discord", ["Administrator"])
-	public deleteVersion(@Path() version: string): Promise<WriteConfirmation[]> {
-		return this.service.remove(version);
+	public async deleteVersion(@Path() version: string): Promise<WriteConfirmation[]> {
+		const res = await this.service.remove(version);
+		await cache.purge("settings-raw");
+		return res;
 	}
 }
