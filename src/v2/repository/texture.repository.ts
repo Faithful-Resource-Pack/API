@@ -1,6 +1,5 @@
 import { ID_FIELD, SearchOption, WriteConfirmation } from "firestorm-db";
 import {
-	Edition,
 	FirestormTexture,
 	PackID,
 	PropertyToOutput,
@@ -9,9 +8,7 @@ import {
 	TextureProperty,
 	TextureRepository,
 } from "../interfaces";
-import { NotFoundError } from "../tools/errorTypes";
-import { contributions, packs, paths, settings, textures, uses } from "../firestorm";
-import versionSorter from "../tools/versionSorter";
+import { contributions, packs, paths, textures, uses } from "../firestorm";
 
 export default class TextureFirestormRepository implements TextureRepository {
 	public getRaw(): Promise<Record<string, FirestormTexture>> {
@@ -128,23 +125,6 @@ export default class TextureFirestormRepository implements TextureRepository {
 	public async getTags(): Promise<string[]> {
 		const res = await textures.values({ field: "tags", flatten: true });
 		return res.sort();
-	}
-
-	public async getVersions(): Promise<string[]> {
-		const s = await settings.readRaw(true);
-		return Object.values(s.versions as string[])
-			.flat()
-			.sort(versionSorter)
-			.reverse();
-	}
-
-	public async getVersionByEdition(edition: Edition): Promise<string[]> {
-		const versions: Record<Edition, string[]> = await settings.get("versions");
-		if (!versions[edition])
-			throw new NotFoundError(
-				`Edition ${edition} not found. Available editions: ${Object.keys(versions).join(", ")}`,
-			);
-		return versions[edition];
 	}
 
 	public async createTexture(texture: TextureCreationParam): Promise<Texture> {

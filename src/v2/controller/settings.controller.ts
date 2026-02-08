@@ -53,7 +53,7 @@ export class SettingsController extends Controller {
 	@Post("/raw")
 	@Security("discord", ["Administrator"])
 	public async update(@Body() body: Record<string, unknown>): Promise<WriteConfirmation> {
-		await cache.purge(/settings-raw/g);
+		await cache.purge("settings-raw");
 		return this.settingsService.update(body);
 	}
 }

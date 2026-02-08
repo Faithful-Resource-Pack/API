@@ -90,8 +90,6 @@ export interface TextureRepository {
 	getResolutions(): Promise<number[]>;
 	getAnimated(): Promise<number[]>;
 	getTags(): Promise<string[]>;
-	getVersions(): Promise<string[]>;
-	getVersionByEdition(edition: Edition): Promise<string[]>;
 	createTexture(texture: TextureCreationParam): Promise<Texture>;
 	createTexturesBulk(textureArr: EntireTextureToCreate[]): Promise<Texture[]>;
 	editTexture(id: string, body: TextureCreationParam): Promise<Texture>;
