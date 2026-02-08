@@ -1,6 +1,5 @@
-import { settings, textures, urlFromTextureData } from "../firestorm";
+import { textures, urlFromTextureData } from "../firestorm";
 import {
-	Edition,
 	GalleryModalResult,
 	GalleryResult,
 	MCMETA,
@@ -14,13 +13,16 @@ import PackService from "./pack.service";
 import PathService from "./path.service";
 import TextureService from "./texture.service";
 import UseService from "./use.service";
+import VersionService from "./version.service";
 
 export default class GalleryService {
-	private readonly pathService = new PathService();
+	private readonly textureService = new TextureService();
 
 	private readonly useService = new UseService();
 
-	private readonly textureService = new TextureService();
+	private readonly pathService = new PathService();
+
+	private readonly versionService = new VersionService();
 
 	private readonly packService = new PackService();
 
@@ -33,7 +35,7 @@ export default class GalleryService {
 	): Promise<string[]> {
 		const baseURL = "https://raw.githubusercontent.com";
 		const { github } = await this.packService.getById(pack);
-		const { versions } = (await settings.readRaw()) as { versions: Record<Edition, string[]> };
+		const versions = await this.versionService.getRaw();
 
 		return (
 			textureIDs
