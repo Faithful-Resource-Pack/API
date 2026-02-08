@@ -13,7 +13,18 @@ export default class VersionService {
 		return s.versions as Record<Edition, string[]>;
 	}
 
-	async getFlat(): Promise<string[]> {
+	async getLatest(): Promise<Record<Edition, string>> {
+		const versions = await this.getRaw();
+		return Object.entries(versions).reduce(
+			(acc, [edition, versions]) => {
+				acc[edition] = versions[0];
+				return acc;
+			},
+			{} as Record<Edition, string>,
+		);
+	}
+
+	async getList(): Promise<string[]> {
 		const versions = await this.getRaw();
 		return Object.values(versions).flat().sort(versionSorter).reverse();
 	}

@@ -35,7 +35,7 @@ export default class GalleryService {
 	): Promise<string[]> {
 		const baseURL = "https://raw.githubusercontent.com";
 		const { github } = await this.packService.getById(pack);
-		const versions = await this.versionService.getRaw();
+		const latestVersions = await this.versionService.getLatest();
 
 		return (
 			textureIDs
@@ -49,7 +49,7 @@ export default class GalleryService {
 					if (!packGithub) return "";
 
 					// convert "latest" to actual latest version
-					const githubVersion = version === "latest" ? versions[use.edition][0] : version;
+					const githubVersion = version === "latest" ? latestVersions[use.edition] : version;
 					return `${baseURL}/${packGithub.org}/${packGithub.repo}/${githubVersion}/${path}`;
 				})
 		);

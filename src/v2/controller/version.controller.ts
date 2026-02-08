@@ -21,8 +21,16 @@ export class VersionsController extends Controller {
 	 * Get a sorted list of all valid versions across editions
 	 */
 	@Get("list")
-	public getVersions(): Promise<string[]> {
-		return this.service.getFlat();
+	public getList(): Promise<string[]> {
+		return this.service.getList();
+	}
+
+	/**
+	 * Get a record of editions and their latest version
+	 */
+	@Get("latest")
+	public getLatest(): Promise<Record<Edition, string>> {
+		return this.service.getLatest();
 	}
 
 	/**
