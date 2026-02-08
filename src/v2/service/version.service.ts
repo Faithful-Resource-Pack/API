@@ -27,11 +27,22 @@ export default class VersionService {
 		return versions[edition];
 	}
 
-	async add(body: NewVersionParam): Promise<[WriteConfirmation, WriteConfirmation]> {
+	async add(body: NewVersionParam): Promise<WriteConfirmation[]> {
 		const versions = await this.getVersionByEdition(body.edition);
 
+		if (body.template === undefined)
+			return Promise.all([
+				settings.editField({
+					id: "versions",
+					field: body.edition,
+					operation: "array-splice",
+					// equivalent of array_unshift (new versions go at start of list)
+					value: [0, 0, body.version],
+				}),
+			]);
+
 		// check existing version to the paths provided
-		if (!versions.includes(body.version))
+		if (!versions.includes(body.template))
 			throw new BadRequestError("Incorrect input path version provided");
 
 		return Promise.all([
@@ -40,16 +51,13 @@ export default class VersionService {
 				field: body.edition,
 				operation: "array-splice",
 				// equivalent of array_unshift (new versions go at start of list)
-				value: [0, 0, body.newVersion],
+				value: [0, 0, body.version],
 			}),
-			this.pathRepo.addNewVersionToVersion(body.version, body.newVersion),
+			this.pathRepo.addNewVersionToVersion(body.template, body.version),
 		]);
 	}
 
-	async rename(
-		oldVersion: string,
-		newVersion: string,
-	): Promise<[WriteConfirmation, WriteConfirmation]> {
+	async rename(oldVersion: string, newVersion: string): Promise<WriteConfirmation[]> {
 		const allVersions: Record<string, string[]> = await settings.get("versions");
 		const edition = Object.entries(allVersions).find((v) => v[1].includes(oldVersion))?.[0];
 		if (!edition) throw new NotFoundError(`Matching edition not found for version ${oldVersion}`);
@@ -70,7 +78,7 @@ export default class VersionService {
 		]);
 	}
 
-	async remove(version: string): Promise<[WriteConfirmation, WriteConfirmation]> {
+	async remove(version: string): Promise<WriteConfirmation[]> {
 		const allVersions: Record<string, string[]> = await settings.get("versions");
 		const edition = Object.entries(allVersions).find((v) => v[1].includes(version))?.[0];
 
