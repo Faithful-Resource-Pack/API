@@ -11,7 +11,7 @@ import {
 	Path as URLPath,
 } from "tsoa";
 import { WriteConfirmation } from "firestorm-db";
-import { InputPath, Path, PathNewVersionParam, PathRemoveVersionParam } from "../interfaces";
+import { InputPath, Path } from "../interfaces";
 import PathService from "../service/path.service";
 
 @Route("paths")
@@ -36,44 +36,6 @@ export class PathsController extends Controller {
 	@Security("discord", ["Administrator"])
 	public createPath(@Body() body: InputPath): Promise<Path> {
 		return this.service.createPath(body);
-	}
-
-	/**
-	 * Add a version to existing paths
-	 * @param body Version name, edition it belongs to, and reference version if needed
-	 */
-	@Post("versions/add")
-	@Security("bot")
-	@Security("discord", ["Administrator"])
-	public addVersion(@Body() body: PathNewVersionParam): Promise<WriteConfirmation[]> {
-		// tsoa doesn't support tuples so we retype it as array (doesn't really matter)
-		return this.service.addVersion(body);
-	}
-
-	/**
-	 * Remove a version from existing paths
-	 * @param body Version name to remove
-	 */
-	@Post("versions/remove")
-	@Security("bot")
-	@Security("discord", ["Administrator"])
-	public removeVersion(@Body() body: PathRemoveVersionParam): Promise<WriteConfirmation[]> {
-		return this.service.removeVersion(body.version);
-	}
-
-	/**
-	 * Rename a version (e.g. 1.17 -> 1.17.1)
-	 * @param old_version Version to replace
-	 * @param new_version Version to replace with
-	 */
-	@Put("versions/rename/{old_version}/{new_version}")
-	@Security("bot")
-	@Security("discord", ["Administrator"])
-	public renameVersion(
-		@URLPath() old_version: string,
-		@URLPath() new_version: string,
-	): Promise<WriteConfirmation[]> {
-		return this.service.renameVersion(old_version, new_version);
 	}
 
 	/**

@@ -1,5 +1,4 @@
 import { WriteConfirmation } from "firestorm-db";
-import { Edition } from "./textures";
 
 export interface CreationPath {
 	name: string; // texture path ('textures/block/stone.png')
@@ -30,14 +29,4 @@ export interface PathRepository {
 	addNewVersionToVersion(version: string, newVersion: string): Promise<WriteConfirmation>;
 	removePathById(pathID: string): Promise<WriteConfirmation>;
 	removePathsByBulk(pathIDs: string[]): Promise<WriteConfirmation>;
-}
-
-export interface PathNewVersionParam {
-	edition: Edition;
-	version: string;
-	newVersion: string;
-}
-
-export interface PathRemoveVersionParam {
-	version: string;
 }

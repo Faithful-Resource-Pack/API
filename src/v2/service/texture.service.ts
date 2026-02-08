@@ -1,7 +1,6 @@
 import { ID_FIELD, WriteConfirmation } from "firestorm-db";
 import {
 	CreationPath,
-	Edition,
 	EntireTextureToCreate,
 	EntireUseToCreate,
 	FirestormTexture,
@@ -120,14 +119,6 @@ export default class TextureService {
 
 	getTags(): Promise<string[]> {
 		return this.textureRepo.getTags();
-	}
-
-	getVersions(): Promise<string[]> {
-		return this.textureRepo.getVersions();
-	}
-
-	getVersionByEdition(edition: Edition): Promise<string[]> {
-		return this.textureRepo.getVersionByEdition(edition);
 	}
 
 	async mergeTextures(source: string, destination: string) {

@@ -12,3 +12,4 @@ export * from "./users";
 export * from "./uses";
 export * from "./packs";
 export * from "./submissions";
+export * from "./versions";

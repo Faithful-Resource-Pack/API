@@ -18,7 +18,6 @@ import { Request as ExRequest } from "express";
 import { WriteConfirmation } from "firestorm-db";
 import {
 	AnyTextureProperty,
-	Edition,
 	EntireTextureToCreate,
 	PackID,
 	Texture,
@@ -84,23 +83,6 @@ export class TextureController extends Controller {
 	@Get("animated")
 	public getAnimated(): Promise<number[]> {
 		return this.service.getAnimated();
-	}
-
-	/**
-	 * Get all existing Minecraft versions supported in the database
-	 */
-	@Get("versions")
-	public getVersions(): Promise<string[]> {
-		return this.service.getVersions();
-	}
-
-	/**
-	 * Get all existing Minecraft versions for a given edition
-	 * @param edition Existing edition inside the settings collection
-	 */
-	@Get("versions/{edition}")
-	public getVersionByEdition(@Path() edition: Edition): Promise<string[]> {
-		return this.service.getVersionByEdition(edition);
 	}
 
 	/**
