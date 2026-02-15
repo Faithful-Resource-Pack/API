@@ -18,3 +18,8 @@ html > body > div#swagger-ui > section.swagger-ui.swagger-container > div.swagge
 .opblock-summary-method {
 	color: #fff !important;
 }
+
+a {
+	color: #007BFF;
+	text-decoration: none;
+}
