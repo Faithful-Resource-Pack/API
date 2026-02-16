@@ -14,18 +14,15 @@ export default class CloudflareService {
 	}
 
 	public async purge(): Promise<(CachePurgeResponse | null)[]> {
-		const res = await this.cf.zones.list();
 		// permission needed: #cache_purge:edit
-
+		const ids = await this.zoneIds();
 		return Promise.all(
-			res.result
-				.map((e) => e.id)
-				.map((id) =>
-					this.cf.cache.purge({
-						zone_id: id,
-						purge_everything: true,
-					}),
-				),
+			ids.map((id) =>
+				this.cf.cache.purge({
+					zone_id: id,
+					purge_everything: true,
+				}),
+			),
 		);
 	}
 
