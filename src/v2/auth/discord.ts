@@ -95,7 +95,7 @@ async function getRoles(scopes: string[], discordID: string) {
 	const user = await userService.getUserById(discordID).catch<null>(() => null);
 
 	// scopes are roles
-	const allowedRoles = scopes;
+	const allowedRoles = [...scopes];
 	const userRoles: string[] = user?.roles || [];
 
 	// add dev role when developing stuff only
