@@ -8,14 +8,6 @@ export class FileFirestormRepository implements FileRepository {
 		return files.readRaw();
 	}
 
-	addFiles(fileList: CreationFile[]): Promise<string[]> {
-		return files.addBulk(fileList);
-	}
-
-	addFile(file: CreationFile): Promise<string> {
-		return files.add(file);
-	}
-
 	getFileById(id: string): Promise<File> {
 		return files.get(id);
 	}
@@ -35,9 +27,12 @@ export class FileFirestormRepository implements FileRepository {
 		]);
 	}
 
-	async setFileById(id: string, file: File): Promise<File> {
-		await files.set(id, file);
-		return this.getFileById(id);
+	addFile(file: CreationFile): Promise<string> {
+		return files.add(file);
+	}
+
+	addFiles(fileList: CreationFile[]): Promise<string[]> {
+		return files.addBulk(fileList);
 	}
 
 	removeFileById(id: string): Promise<WriteConfirmation> {

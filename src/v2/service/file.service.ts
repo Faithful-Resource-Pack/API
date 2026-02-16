@@ -5,8 +5,8 @@ import { CreationFile, File, FileParent, FileUse } from "../interfaces";
 export default class FileService {
 	private readonly repo = new FileFirestormRepository();
 
-	public removeFileByPath(path: string): Promise<WriteConfirmation> {
-		return this.repo.removeFileByPath(path);
+	public getRaw(): Promise<Record<string, File>> {
+		return this.repo.getRaw();
 	}
 
 	public getFileById(id: string) {
@@ -15,14 +15,6 @@ export default class FileService {
 
 	public getFilesByParent(id: FileParent) {
 		return this.repo.getFilesByParent(id);
-	}
-
-	public removeFilesByParentAndUse(parent: FileParent, use: FileUse): Promise<WriteConfirmation> {
-		return this.repo.removeFilesByParentAndUse(parent, use);
-	}
-
-	public removeFilesByParent(parent: FileParent): Promise<WriteConfirmation> {
-		return this.repo.removeFilesByParent(parent);
 	}
 
 	public addFile(file: CreationFile): Promise<string> {
@@ -37,6 +29,18 @@ export default class FileService {
 		return this.repo.removeFileById(id);
 	}
 
+	public removeFilesByParent(parent: FileParent): Promise<WriteConfirmation> {
+		return this.repo.removeFilesByParent(parent);
+	}
+
+	public removeFilesByParentAndUse(parent: FileParent, use: FileUse): Promise<WriteConfirmation> {
+		return this.repo.removeFilesByParentAndUse(parent, use);
+	}
+
+	public removeFileByPath(path: string): Promise<WriteConfirmation> {
+		return this.repo.removeFileByPath(path);
+	}
+
 	public upload(
 		path: string,
 		filename: string,
@@ -48,9 +52,5 @@ export default class FileService {
 
 	public remove(path: string): Promise<WriteConfirmation> {
 		return this.repo.remove(path);
-	}
-
-	public getRaw(): Promise<Record<string, File>> {
-		return this.repo.getRaw();
 	}
 }

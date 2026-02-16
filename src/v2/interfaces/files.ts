@@ -36,7 +36,6 @@ export interface FileRepository {
 	addFiles(files: File[]): Promise<string[]>;
 	getFileById(id: string): Promise<File>;
 	getFilesByParent(parent: FileParent): Promise<File[]>;
-	setFileById(id: string, file: File): Promise<File>;
 	removeFileById(id: string): Promise<WriteConfirmation>;
 	removeFilesByParent(parent: FileParent): Promise<WriteConfirmation>;
 	removeFilesByParentAndUse(parent: FileParent, use: FileUse): Promise<WriteConfirmation>;
