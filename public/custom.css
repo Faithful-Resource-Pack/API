@@ -19,7 +19,13 @@ html > body > div#swagger-ui > section.swagger-ui.swagger-container > div.swagge
 	color: #fff !important;
 }
 
+/* colors from main site (see https://github.com/Faithful-Resource-Pack/Website/blob/main/app/assets/css/variables.scss) */
 a {
 	color: #007BFF;
 	text-decoration: none;
+	transition: all 0.1s ease;
+}
+
+a:hover {
+	color: #0069D9;
 }
