@@ -13,6 +13,7 @@ import {
 	Use,
 } from "../../interfaces";
 import "../config";
+import * as cache from "../../tools/cache";
 
 import { uses } from "./uses";
 import { paths } from "./paths";
@@ -96,19 +97,25 @@ export const textures = firestorm.collection<FirestormTexture>("textures", (el) 
 			},
 		]);
 
-	el.mcmeta = async (texturePaths?: FirestormPath[]): Promise<MCMETA> => {
-		// mcmetas only exist on java edition
-		const baseURL = "https://raw.githubusercontent.com/Faithful-Pack/Default-Java";
+	el.mcmeta = (texturePaths?: FirestormPath[]): Promise<MCMETA> =>
+		// mcmetas practically never change and are very expensive to run so cache them weekly
+		cache.handle(
+			`mcmeta-${el.id}`,
+			async () => {
+				// mcmetas only exist on java edition
+				const baseURL = "https://raw.githubusercontent.com/Faithful-Pack/Default-Java";
 
-		texturePaths ??= await el.paths();
-		const foundPath = texturePaths.find((path) => path.mcmeta);
-		if (!foundPath) return {};
-		const version = foundPath.versions.sort(versionSorter).at(-1);
-		return axios
-			.get<MCMETA>(`${baseURL}/${version}/${foundPath.name}.mcmeta`)
-			.then((res) => (res ? res.data : {}))
-			.catch(() => ({})); // avoid crash if mcmeta file cannot be found
-	};
+				texturePaths ??= await el.paths();
+				const foundPath = texturePaths.find((path) => path.mcmeta);
+				if (!foundPath) return {};
+				const version = foundPath.versions.sort(versionSorter).at(-1);
+				return axios
+					.get<MCMETA>(`${baseURL}/${version}/${foundPath.name}.mcmeta`)
+					.then((res) => (res ? res.data : {}))
+					.catch(() => ({})); // avoid crash if mcmeta file cannot be found
+			},
+			604800000,
+		);
 
 	el.all = async (): Promise<TextureAll> => {
 		const textureUses = await el.uses();
