@@ -131,9 +131,13 @@ export default class GalleryService {
 				.filter((useId) => useToPath[useId]?.mcmeta)
 				.map(async (useId) => {
 					// use parseInt to strip the last character
-					const tex = await textures.get(Number.parseInt(useId, 10));
+					const texID = Number.parseInt(useId, 10);
+
+					// multiple paths in the same texture are marked as animated, discard others
+					if (animations[texID] !== undefined) return;
+					const tex = await textures.get(texID);
 					const mcmeta = await tex.mcmeta();
-					animations[Number.parseInt(useId, 10)] = mcmeta;
+					animations[texID] = mcmeta;
 				}),
 		);
 
