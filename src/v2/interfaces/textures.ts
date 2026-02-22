@@ -5,7 +5,7 @@ import { Contribution, FirestormContribution } from "./contributions";
 import { PackID } from "./packs";
 
 export interface TextureCreationParam {
-	name: string | number; // texture name
+	name: string; // texture name
 	tags: string[]; // texture tags (block, item...)
 }
 export interface Texture extends TextureCreationParam {
