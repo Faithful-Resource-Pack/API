@@ -21,11 +21,11 @@ html > body > div#swagger-ui > section.swagger-ui.swagger-container > div.swagge
 
 /* colors from main site (see https://github.com/Faithful-Resource-Pack/Website/blob/main/app/assets/css/variables.scss) */
 a {
-	color: #007BFF;
+	color: #4EA229;
 	text-decoration: none;
 	transition: all 0.1s ease;
 }
 
 a:hover {
-	color: #0069D9;
+	color: #76C945;
 }
