@@ -6,7 +6,7 @@
 		"src/**/*controller.ts"
 	],
 	"spec": {
-		"name": "Faithful API",
+		"name": "Welcome to the Faithful API Docs",
 		"basePath": "v2",
 		"outputDirectory": "public",
 		"specVersion": 3,

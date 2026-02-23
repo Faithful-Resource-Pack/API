@@ -17,4 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		</p>
 		<p style="margin-top: 4px; margin-bottom: 24px">© ${new Date().getFullYear()} Faithful Resource Pack</p>
 	</div>`;
+
+	// less terrible responsiveness
+	document.head.innerHTML += `<meta name="viewport" content="width=device-width, initial-scale=1.0" />`;
 });
