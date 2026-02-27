@@ -15,7 +15,7 @@ import {
 	SuccessResponse,
 	Tags,
 } from "tsoa";
-import DOMPurify from "isomorphic-dompurify";
+import { sanitize } from "isomorphic-dompurify";
 import { WriteConfirmation } from "firestorm-db";
 import { CreateWebsitePost, PostChangelog, PostDownload, WebsitePost } from "../interfaces";
 
@@ -118,7 +118,7 @@ export class PostController extends Controller {
 	@Post("")
 	public createPost(@Body() postToCreate: CreateWebsitePost): Promise<WebsitePost> {
 		// sanitize from the start
-		postToCreate.description = DOMPurify.sanitize(postToCreate.description);
+		postToCreate.description = sanitize(postToCreate.description);
 		return this.service.create(postToCreate);
 	}
 
@@ -135,7 +135,7 @@ export class PostController extends Controller {
 		@Path() id: number,
 		@Body() postToUpdate: CreateWebsitePost,
 	): Promise<WebsitePost> {
-		postToUpdate.description = DOMPurify.sanitize(postToUpdate.description);
+		postToUpdate.description = sanitize(postToUpdate.description);
 		return this.service.update(id, postToUpdate);
 	}
 
