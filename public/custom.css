@@ -19,6 +19,40 @@ a:hover {
 	color: #76C945;
 }
 
+/* needed to hide button until needed */
+.hide {
+	display: none !important;
+}
+
+.go-up-btn {
+	/* position styles*/
+	position: fixed;
+	bottom: 64px;
+	right: 64px;
+	height: 56px;
+	width: 56px;
+	/* button styles */
+	border-radius: 50%;
+	background-color: #2a2e30;
+	border: none;
+	cursor: pointer;
+	transition: all 0.15s ease;
+	/* text styles */
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 32px;
+	padding-top: 10px; /* the character is centered really far up so compensate down */
+	color: white;
+}
+
+.go-up-btn:hover {
+	background-color: #4a4e51;
+}
+.go-up-btn:active {
+	background-color: #75797c;
+}
+
 /**
  * Note: Many of these styles are based on the vitepress/faithful docs styling
  */
