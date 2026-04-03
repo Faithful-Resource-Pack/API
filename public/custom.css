@@ -3,8 +3,9 @@ html > body > div#swagger-ui > section.swagger-ui.swagger-container > div.swagge
 	display: none;
 }
 
-/* white method names (looks better) */
-.opblock-summary-method {
+/* white method names/buttons (looks better) */
+.opblock-summary-method,
+.opblock .btn.execute {
 	color: #fff !important;
 }
 
