@@ -12,7 +12,7 @@ import {
 	PackRecord,
 } from "../interfaces";
 import ContributionFirestormRepository from "../repository/contribution.repository";
-import { lastDay, lastMonth, lastWeek, startOfDay } from "../tools/utils";
+import { getLastDay, getLastMonth, getLastWeek, getLastYear, startOfDay } from "../tools/utils";
 import TextureService from "./texture.service";
 
 export default class ContributionService {
@@ -51,13 +51,15 @@ export default class ContributionService {
 		const authors = new Set();
 
 		// snake case because these are being jsonified
-		let total_last_week = 0;
+		let total_last_year = 0;
 		let total_last_month = 0;
+		let total_last_week = 0;
 		let total_last_day = 0;
 
-		const last_month = startOfDay(lastMonth());
-		const last_week = startOfDay(lastWeek());
-		const last_day = startOfDay(lastDay());
+		const lastYear = startOfDay(getLastYear());
+		const lastMonth = startOfDay(getLastMonth());
+		const lastWeek = startOfDay(getLastWeek());
+		const lastDay = startOfDay(getLastDay());
 
 		const groupedActivity = Object.values(cs).reduce<PackRecord>((acc, cur) => {
 			// for some reason you can't add multiple values to a set at once (blame JS)
@@ -74,9 +76,10 @@ export default class ContributionService {
 			};
 			acc[pack][start_of_day].count++;
 
-			if (date >= last_week) total_last_week++;
-			if (date >= last_month) total_last_month++;
-			if (date >= last_day) total_last_day++;
+			if (date >= lastYear) ++total_last_year;
+			if (date >= lastMonth) ++total_last_month;
+			if (date >= lastWeek) ++total_last_week;
+			if (date >= lastDay) ++total_last_day;
 			return acc;
 		}, {});
 
@@ -95,11 +98,14 @@ export default class ContributionService {
 		);
 
 		return {
-			total_authors: authors.size,
-			total_contributions: Object.keys(cs).length,
-			total_last_day,
-			total_last_week,
-			total_last_month,
+			totals: {
+				authors: authors.size,
+				contributions: Object.keys(cs).length,
+				last_year: total_last_year,
+				last_month: total_last_month,
+				last_week: total_last_week,
+				last_day: total_last_day,
+			},
 			activity: finalActivity,
 			percentiles,
 		};

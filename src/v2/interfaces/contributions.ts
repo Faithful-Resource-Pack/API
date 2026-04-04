@@ -31,11 +31,14 @@ export type PackPercentile = Record<PackID, number>;
 export type PackData = Record<PackID, DayData[]>;
 
 export interface ContributionStats {
-	total_contributions: number; // number of total contributions
-	total_authors: number; // number of users on contributions
-	total_last_day: number;
-	total_last_week: number;
-	total_last_month: number;
+	totals: {
+		authors: number; // unique contributors mentioned in contributions
+		contributions: number;
+		last_year: number;
+		last_month: number;
+		last_week: number;
+		last_day: number;
+	};
 	activity: PackData;
 	percentiles: PackPercentile;
 }
