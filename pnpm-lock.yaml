@@ -36,8 +36,8 @@ importers:
         specifier: ^5.2.1
         version: 5.2.1
       firestorm-db:
-        specifier: ^1.14.0
-        version: 1.14.0
+        specifier: ^1.13.0
+        version: 1.13.0
       form-data:
         specifier: ^4.0.5
         version: 4.0.5
@@ -896,9 +896,8 @@ packages:
     resolution: {integrity: sha512-78/PXT1wlLLDgTzDs7sjq9hzz0vXD+zn+7wypEe4fXQxCmdmqfGsEPQxmiCSQI3ajFV91bVSsvNtrJRiW6nGng==}
     engines: {node: '>=10'}
 
-  firestorm-db@1.14.0:
-    resolution: {integrity: sha512-80gqhAWFCZWsM9HJlGBCrBcn+2p6SXkgYAjwj6DBr3Z7RdAFKgIM/AbhqIxJxq6JTMqiWw3AyM4Z+AIaFtBodg==}
-    engines: {node: '>=20.0.0'}
+  firestorm-db@1.13.0:
+    resolution: {integrity: sha512-FWwteQSBREeln9LKKQ/kis4oW3DG1ItPeMzmPkwA+wY1oyzeMhxvYHtfdIaQrIaPMdx+zo4FjjO6fWfd7S/B3w==}
 
   flat-cache@4.0.1:
     resolution: {integrity: sha512-f7ccFPK3SXFHpx15UIGyRJ/FJQctuKZ0zVuN3frBo4HnK3cay9VEW0R6yPYFHC0AgqhukPzKjq22t5DmAyqGyw==}
@@ -2730,7 +2729,7 @@ snapshots:
       locate-path: 6.0.0
       path-exists: 4.0.0
 
-  firestorm-db@1.14.0:
+  firestorm-db@1.13.0:
     dependencies:
       axios: 1.15.0
       form-data: 4.0.5
