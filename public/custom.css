@@ -25,6 +25,12 @@ a:hover {
 	display: none !important;
 }
 
+.footer-container {
+	display: flex;
+	flex-flow: column nowrap;
+	align-items: center;
+}
+
 .go-up-btn {
 	/* position styles*/
 	position: fixed;

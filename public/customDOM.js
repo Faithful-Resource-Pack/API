@@ -2,7 +2,7 @@
 
 document.addEventListener("DOMContentLoaded", () => {
 	document.body.innerHTML += `
-		<div class="swagger-ui" style="display: flex; flex-flow: column nowrap; align-items: center;">
+		<div class="swagger-ui footer-container">
 			<p style="margin-bottom: 4px">
 				This website was made using the
 				<a
