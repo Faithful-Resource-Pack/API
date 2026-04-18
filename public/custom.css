@@ -21,7 +21,7 @@ a:hover {
 }
 
 /* needed to hide button until needed */
-.hide {
+.go-up-btn.hide {
 	display: none !important;
 }
 
@@ -32,7 +32,7 @@ a:hover {
 }
 
 .go-up-btn {
-	/* position styles*/
+	/* position styles */
 	position: fixed;
 	bottom: 64px;
 	right: 64px;
@@ -45,7 +45,7 @@ a:hover {
 	cursor: pointer;
 	transition: all 0.15s ease;
 	/* text styles */
-	display: flex;
+	display: flex !important;
 	align-items: center;
 	justify-content: center;
 	font-size: 32px;
