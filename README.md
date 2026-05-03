@@ -21,7 +21,8 @@
 ---
 
 ## Requirements
-- NodeJS v20+ https://nodejs.org
+
+- Node.js v22+ (https://nodejs.org)
 - pnpm (`corepack enable` + `corepack prepare pnpm@latest --activate`)
 
 ## Running
@@ -29,10 +30,11 @@
 ```bash
 pnpm install
 ```
+
 ```bash
 pnpm run dev
 ```
 
 ## Database Reference
 
-This project is heavily developed around the self-hosted `firestorm-db` database. Check out its documentation at https://therolffr.github.io/firestorm-db/ for more information about available operations and making requests.
+The Faithful API is based on the `firestorm-db` self-hosted database. Check out its [documentation](https://therolffr.github.io/firestorm-db/) for more information about creating collections, available database operations, and working with files.
