@@ -1,4 +1,4 @@
-import { WriteConfirmation } from "firestorm-db";
+import { ID_FIELD, WriteConfirmation } from "firestorm-db";
 import {
 	CreationSubmission,
 	PackAll,
@@ -7,7 +7,7 @@ import {
 	SubmissionRepository,
 } from "../interfaces";
 import { submissions } from "../firestorm/packs/submissions";
-import { packs } from "../firestorm/packs";
+import { contributions, packs } from "../firestorm";
 
 export default class SubmissionFirestormRepository implements SubmissionRepository {
 	getRaw(): Promise<Record<string, Submission>> {
@@ -42,7 +42,16 @@ export default class SubmissionFirestormRepository implements SubmissionReposito
 		return submissions.get(packId);
 	}
 
-	remove(packId: PackID): Promise<WriteConfirmation> {
+	async remove(packId: PackID): Promise<WriteConfirmation> {
+		// remove associated contributions
+		const contribs = await contributions.search([
+			{
+				field: "pack",
+				criteria: "==",
+				value: packId,
+			},
+		]);
+		await contributions.removeBulk(contribs.map((c) => c[ID_FIELD]));
 		return submissions.remove(packId);
 	}
 }
