@@ -53,6 +53,7 @@ export interface ContributionSearch {
 export interface FirestormContribution extends Contribution {}
 
 export interface ContributionsRepository {
+	getRaw(): Promise<Record<string, Contribution>>;
 	getContributionById(id: string): Promise<Contribution>;
 	addContribution(params: ContributionCreationParams): Promise<Contribution>;
 	addContributions(params: ContributionCreationParams[]): Promise<Contribution[]>;

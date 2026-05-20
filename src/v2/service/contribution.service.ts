@@ -1,5 +1,4 @@
 import { WriteConfirmation } from "firestorm-db";
-import { contributions } from "../firestorm";
 import {
 	Contribution,
 	ContributionAuthor,
@@ -17,11 +16,10 @@ import TextureService from "./texture.service";
 
 export default class ContributionService {
 	private readonly contributionRepo = new ContributionFirestormRepository();
-
 	private readonly textureService = new TextureService();
 
 	getRaw(): Promise<Record<string, Contribution>> {
-		return contributions.readRaw();
+		return this.contributionRepo.getRaw();
 	}
 
 	async getCurrent(): Promise<Contribution[]> {

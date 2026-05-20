@@ -9,6 +9,10 @@ import {
 import { contributions, users } from "../firestorm";
 
 export default class ContributionFirestormRepository implements ContributionsRepository {
+	getRaw(): Promise<Record<string, Contribution>> {
+		return contributions.readRaw();
+	}
+
 	getContributionById(id: string): Promise<Contribution> {
 		return contributions.get(id);
 	}
@@ -25,7 +29,8 @@ export default class ContributionFirestormRepository implements ContributionsRep
 		}));
 
 		if (packs !== undefined) options.push({ field: "pack", criteria: "in", value: packs });
-		return contributions.search(options);
+
+		return options.length ? contributions.search(options) : Object.values(await this.getRaw());
 	}
 
 	searchByIdAndPacks(
