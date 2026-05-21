@@ -25,13 +25,14 @@ export interface AddonReview extends AddonReviewBody {
 }
 
 export interface CreationAddon {
-	name: string; // addon name (> 5 && < 30)
+	name: string; // add-on name (> 5 && < 30)
 	slug: string; // used in link (ex: 'www.faithfulpack.net/addons/Faithful3D')
 	description: string; // addon description (> 256 && < 4096)
 	authors: string[]; // discord users IDs
 	options: {
 		optifine: boolean; // true if the pack require optifine to work properly
-		tags: string[]; // Editions + Resolutions
+		tags: string[]; // add-on tags
+		packs: string[]; // supported packs
 	};
 	embed_description?: string;
 	last_updated?: number;

@@ -14,7 +14,7 @@ import {
 } from "tsoa";
 import { WriteConfirmation } from "firestorm-db";
 import { APIUser } from "discord-api-types/v10";
-import { BadRequestError, ForbiddenError, NotAvailableError } from "../tools/errorTypes";
+import { BadRequestError, NotAvailableError } from "../tools/errorTypes";
 import {
 	Addon,
 	Contribution,

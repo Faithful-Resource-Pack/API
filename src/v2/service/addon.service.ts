@@ -116,7 +116,7 @@ export default class AddonService {
 				(acc, val) => {
 					if (!val.approval.status) return acc;
 					acc[val.approval.status]++;
-					val.options.tags.forEach((t) => {
+					val.options.packs.forEach((t) => {
 						acc.numbers[t] = (acc.numbers[t] || 0) + 1;
 					});
 					return acc;
