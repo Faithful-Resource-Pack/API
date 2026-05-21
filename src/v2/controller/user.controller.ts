@@ -56,9 +56,10 @@ export class UserController extends Controller {
 	}
 
 	/**
-	 * Create a new blank user profile
+	 * Register or log in to a Faithful account
+	 * If registering, the Discord API user body is used as a basis for profile information
 	 */
-	@Get("newprofile")
+	@Get("account")
 	@Security("discord", ["account:create"])
 	public createProfile(@Request() request: ExRequestWithAuth<APIUser>): Promise<User> {
 		return this.service.getProfileOrCreate(request.user);
