@@ -98,6 +98,18 @@ export default class UserFirestormRepository implements UserRepository {
 
 	async getUsersFromRole(role: string, username?: string): Promise<User[]> {
 		if (role === "all" && !username) return Object.values(await users.readRaw());
+
+		// direct user search
+		if (username) {
+			try {
+				const user = await this.getUserById(username);
+				if (role === "all" || user.roles.includes(role)) return [user];
+			} catch (err: unknown) {
+				if (!(err instanceof NotFoundError)) throw err;
+				// threw NotFoundError, search normally
+			}
+		}
+
 		const options: SearchOption<User>[] = [];
 
 		if (role !== "all")
