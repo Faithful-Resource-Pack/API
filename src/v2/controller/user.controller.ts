@@ -186,14 +186,17 @@ export class UserController extends Controller {
 		return this.service.getAllAddons(id);
 	}
 
-	@Put("change/{old_id}/{new_id}")
-	@Security("discord", ["Administrator"])
+	@Put("transfer/{old_id}/{new_id}")
+	@Security("discord", ["account:transfer", "Administrator"])
 	@Security("bot")
-	public async changeUserID(
+	public async transferUserID(
 		@Path() old_id: string,
 		@Path() new_id: string,
+		@Body() body: UserCreationParams,
 	): Promise<WriteConfirmation> {
-		return this.service.changeUserID(old_id, new_id);
+		// update and transfer in one (usually how user pages are used)
+		await this.update(old_id, body);
+		return this.service.transferUserID(old_id, new_id);
 	}
 
 	/**
@@ -213,29 +216,10 @@ export class UserController extends Controller {
 	 * @param body User data
 	 */
 	@Put("{id}")
-	@Security("discord", [])
+	@Security("discord", ["account:update"])
 	@Security("bot")
-	public async set(
-		@Path() id: string,
-		@Body() body: UserCreationParams,
-		@Request() request: ExRequestWithAuth<string>,
-	): Promise<User> {
-		// the security middleware adds a key user with anything inside when validated, see security middleware Promise return type
-		if (id !== request.user) {
-			const user = await this.service.getUserById(id).catch(() => {});
-
-			// admin can modify if they want
-			if (user && !user.roles.includes("Administrator"))
-				throw new ForbiddenError("Cannot set another user");
-		}
-
-		const user = await this.service.getUserById(id).catch(() => {});
-
-		const media = user ? user.media || [] : [];
-
-		// add properties
-		const sent: User = { ...body, id, media };
-		return this.service.update(id, sent);
+	public async update(@Path() id: string, @Body() body: UserCreationParams): Promise<User> {
+		return this.service.update(id, { ...body, id });
 	}
 
 	/**
@@ -243,7 +227,7 @@ export class UserController extends Controller {
 	 * @param id User ID to be deleted
 	 */
 	@Delete("{id}")
-	@Security("discord", ["account:delete", "Administrator"])
+	@Security("discord", ["account:update", "Administrator"])
 	public remove(@Path() id: string): Promise<WriteConfirmation[]> {
 		return this.service.remove(id);
 	}

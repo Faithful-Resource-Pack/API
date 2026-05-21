@@ -94,8 +94,8 @@ export default class UserService {
 		return this.repo.getAddonsById(id);
 	}
 
-	public changeUserID(oldID: string, newID: string): Promise<WriteConfirmation> {
-		return this.repo.changeUserID(oldID, newID);
+	public transferUserID(oldID: string, newID: string): Promise<WriteConfirmation> {
+		return this.repo.transferUserID(oldID, newID);
 	}
 
 	public getProfileOrCreate(user: APIUser): Promise<User> {

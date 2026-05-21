@@ -37,11 +37,11 @@ export default async function discordAuth(request: ExRequest, scopes: string[], 
 
 	// resolve whole user object (needed for user init)
 	if (scopes.includes("account:create")) return discordUser;
-	if (scopes.includes("account:delete")) {
-		// make sure id in request and params match
-		if (discordID === request.params.id) return discordID;
-		// continue to role check (admins can delete accounts too)
-	}
+
+	// make sure the user doing the action is actually the one being affected
+	// continue to role checks otherwise (administrators can override it)
+	if (scopes.includes("account:transfer") && discordID === request.params.old_id) return discordID;
+	if (scopes.includes("account:update") && discordID === request.params.id) return discordID;
 
 	const { allowedRoles, userRoles } = await getRoles(scopes, discordID);
 

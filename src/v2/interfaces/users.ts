@@ -66,4 +66,5 @@ export interface UserRepository {
 	remove(id: string): Promise<WriteConfirmation[]>;
 	getUsersFromRole(role: string, username?: string): Promise<User[]>;
 	getRoles(): Promise<User["roles"]>;
+	transferUserID(oldID: string, newID: string): Promise<WriteConfirmation>;
 }

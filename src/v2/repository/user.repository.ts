@@ -1,4 +1,4 @@
-import { ID_FIELD, SearchOption, WriteConfirmation } from "firestorm-db";
+import { ID_FIELD, SearchOption, EditFieldOption, WriteConfirmation } from "firestorm-db";
 import { AxiosError } from "axios";
 import { APIUser } from "discord-api-types/v10";
 import { addons, contributions, users } from "../firestorm";
@@ -132,42 +132,37 @@ export default class UserFirestormRepository implements UserRepository {
 		return arr.map(mapUser);
 	}
 
-	async changeUserID(oldID: string, newID: string): Promise<WriteConfirmation> {
+	async transferUserID(oldID: string, newID: string): Promise<WriteConfirmation> {
 		const user = await users.get(oldID);
 		user[ID_FIELD] = newID;
 		users.set(newID, user);
 
-		// replace user's contributions
+		// update user's contributions
 		const rawContributions = await contributions.readRaw();
-		await contributions.editFieldBulk(
-			Object.values(rawContributions)
-				.filter((c) => c.authors.includes(oldID))
-				.map((c) => ({
-					id: c[ID_FIELD],
-					field: "authors",
-					operation: "set",
-					// replace old user with new user and remove duplicates
-					value: Array.from(
-						new Set(c.authors.map((author) => (author === oldID ? newID : author))),
-					),
-				})),
-		);
+		const contributionEdits = Object.values(rawContributions)
+			.filter((c) => c.authors.includes(oldID))
+			.map<EditFieldOption<Contribution>>((c) => ({
+				id: c[ID_FIELD],
+				field: "authors",
+				operation: "set",
+				// replace old user with new user and remove duplicates
+				value: Array.from(new Set(c.authors.map((id) => (id === oldID ? newID : id)))),
+			}));
 
-		// replace user's addons
+		if (contributionEdits.length) await contributions.editFieldBulk(contributionEdits);
+
+		// update user's addons
 		const rawAddons = await addons.readRaw();
-		await addons.editFieldBulk(
-			Object.values(rawAddons)
-				.filter((a) => a.authors.includes(oldID))
-				.map((a) => ({
-					id: a[ID_FIELD],
-					field: "authors",
-					operation: "set",
-					// replace old user with new user and remove duplicates
-					value: Array.from(
-						new Set(a.authors.map((author) => (author === oldID ? newID : author))),
-					),
-				})),
-		);
+		const addonEdits = Object.values(rawAddons)
+			.filter((a) => a.authors.includes(oldID))
+			.map<EditFieldOption<Addon>>((a) => ({
+				id: a[ID_FIELD],
+				field: "authors",
+				operation: "set",
+				value: Array.from(new Set(a.authors.map((id) => (id === oldID ? newID : id)))),
+			}));
+
+		if (addonEdits.length) await addons.editFieldBulk(addonEdits);
 
 		// remove user after set succeeds (prevent accidentally deleting user)
 		return users.remove(oldID);
