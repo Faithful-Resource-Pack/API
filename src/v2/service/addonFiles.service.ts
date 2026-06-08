@@ -40,7 +40,7 @@ export default class AddonFileService {
 		addon.approval = {
 			status: "pending",
 			author: null,
-			reason: null,
+			reason: "Added or updated header image",
 		};
 
 		await this.addonService.saveUpdate(addonID, addon, before);
@@ -87,7 +87,7 @@ export default class AddonFileService {
 		addon.approval = {
 			status: "pending",
 			author: null,
-			reason: null,
+			reason: "Added screenshot",
 		};
 
 		await this.addonService.saveUpdate(addonID, addon, before);
@@ -154,7 +154,7 @@ export default class AddonFileService {
 		const before = addon.approval.status || null;
 
 		addon.approval = {
-			reason: null,
+			reason: "Deleted header image",
 			author: null,
 			status: "pending",
 		};

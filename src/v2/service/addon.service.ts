@@ -218,7 +218,7 @@ export default class AddonService {
 			approval: {
 				status: "pending",
 				author: null,
-				reason: null,
+				reason: "Created add-on",
 			},
 		};
 

@@ -17,11 +17,11 @@ export type AddonProperty = "files" | "all";
 
 export interface AddonReviewBody {
 	status: null | AddonStatus;
-	reason: null | string; // reason of deny
+	reason: null | string; // either update reason or denial/archival reason
 }
 
 export interface AddonReview extends AddonReviewBody {
-	author: null | string; // approval/deny author -> Discord ID
+	author: null | string; // approval/deny/archive author -> Discord ID
 }
 
 export interface CreationAddon {
