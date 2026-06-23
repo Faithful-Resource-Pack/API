@@ -26,7 +26,7 @@ export class SettingsController extends Controller {
 	@SuccessResponse(200)
 	@Get("raw")
 	public getRaw(): Promise<Record<string, unknown>> {
-		return cache.handle("settings-raw", () => this.settingsService.raw());
+		return this.settingsService.raw();
 	}
 
 	/**
