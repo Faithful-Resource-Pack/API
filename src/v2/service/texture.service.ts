@@ -55,7 +55,7 @@ export default class TextureService {
 		return this.textureRepo.searchProperty(id, property);
 	}
 
-	// used on webapp texture page + gallery
+	// used on studio texture page + gallery
 	async search(
 		search: string | undefined,
 		tag: string | undefined,

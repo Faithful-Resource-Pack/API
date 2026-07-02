@@ -69,7 +69,7 @@ export default class UserFirestormRepository implements UserRepository {
 
 			const empty: User = {
 				id,
-				// use discord username as default username (can be changed later in webapp)
+				// use discord username as default username (can be changed later in studio)
 				username: global_name || "",
 				bio: "",
 				uuid: "",

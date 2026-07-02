@@ -370,7 +370,7 @@ export default class AddonService {
 
 		const embed: APIEmbed = {
 			title,
-			url: `https://webapp.faithfulpack.net/addons/review?status=${status}&id=${addon.id}`,
+			url: `https://studio.faithfulpack.net/addons/review?status=${status}&id=${addon.id}`,
 			author: {
 				name,
 				icon_url:
