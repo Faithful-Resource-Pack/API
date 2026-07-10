@@ -40,13 +40,7 @@ export interface TextureStats {
 export type Edition = "java" | "bedrock";
 export type TextureProperty = null | "uses" | "paths" | "contributions" | "mcmeta" | "all";
 export type AnyTextureProperty =
-	| Texture[]
-	| Texture
-	| Path[]
-	| Use[]
-	| Contribution[]
-	| MCMETA
-	| TextureAll;
+	Texture[] | Texture | Path[] | Use[] | Contribution[] | MCMETA | TextureAll;
 
 // average typescript experience
 export type PropertyToOutput<T extends TextureProperty> = T extends null

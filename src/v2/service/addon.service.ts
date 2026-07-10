@@ -188,22 +188,27 @@ export default class AddonService {
 		body.name = body.name.trim();
 
 		// verify existing authors
-		// return value not interesting
 		const authors = await Promise.all(
 			body.authors.map((authorID) => this.userService.getUserById(authorID)),
 		).catch(() => {
-			throw new BadRequestError("One author ID or more doesn't exist");
+			throw new BadRequestError("All add-on authors must be registered users");
 		});
 
-		if (authors.some((author) => !author.username))
-			throw new BadRequestError("All authors must have a username");
+		const withoutUsername = authors.filter((a) => !a.username);
+		if (withoutUsername.length)
+			throw new BadRequestError(
+				`Add-on author(s) are missing usernames: ${withoutUsername.map((a) => a.id).join(", ")}`,
+			);
 
 		// get the slug
 		const slugValue = toSlug(body.name);
 
 		// throw if already existing
 		const existingAddon = await this.getAddonBySlug(slugValue);
-		if (existingAddon) throw new BadRequestError(`Add-on slug /${slugValue} already exists`);
+		if (existingAddon)
+			throw new BadRequestError(
+				`Cannot overwrite existing add-on /${slugValue}. Please choose a unique add-on name!`,
+			);
 
 		const { downloads } = body;
 
@@ -253,15 +258,17 @@ export default class AddonService {
 		body.name = body.name.trim();
 
 		// verify existing authors
-		// return value not interesting
 		const authors = await Promise.all(
 			body.authors.map((authorID) => this.userService.getUserById(authorID)),
 		).catch(() => {
-			throw new BadRequestError("One author ID or more doesn't exist");
+			throw new BadRequestError("All add-on authors must be registered users");
 		});
 
-		if (authors.some((author) => !author.username))
-			throw new BadRequestError("All authors must have a username");
+		const withoutUsername = authors.filter((a) => !a.username);
+		if (withoutUsername.length)
+			throw new BadRequestError(
+				`Add-on author(s) are missing usernames: ${withoutUsername.map((a) => a.id).join(", ")}`,
+			);
 
 		const { downloads } = body;
 

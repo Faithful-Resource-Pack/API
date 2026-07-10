@@ -91,8 +91,8 @@ export default class TextureFirestormRepository implements TextureRepository {
 		// all the horrible type shenanigans are now more or less isolated to this function only
 		const results = await this.search(nameOrID, tag);
 		if (property === null) return results as any;
-		if (Array.isArray(results)) return Promise.all(results.map((res) => res[property as string]()));
-		return results[property as string]();
+		if (Array.isArray(results)) return Promise.all(results.map((res) => res[property]())) as any;
+		return results[property]() as any;
 	}
 
 	public async getURLById(id: number, pack: PackID, version: string): Promise<string> {
