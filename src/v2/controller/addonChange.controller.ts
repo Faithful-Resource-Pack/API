@@ -48,7 +48,7 @@ export class AddonChangeController extends Controller {
 		@Request() request: ExRequestWithAuth<string>,
 	): Promise<Addon> {
 		if (!body.authors.includes(request.user))
-			throw new BadRequestError("Addon author must include the authed user");
+			throw new BadRequestError("Add-on authors must include the user submitting the add-on");
 		return this.service.create(body);
 	}
 
@@ -73,7 +73,7 @@ export class AddonChangeController extends Controller {
 			// check if admin
 			const user = await new UserService().getUserById(request.user);
 			if (!["Administrator", "Art Director Council"].some((role) => user.roles.includes(role)))
-				throw new BadRequestError("Addon author must include the authed user");
+				throw new BadRequestError("Add-on authors must include the user submitting the add-on");
 		}
 
 		return this.service.update(id, body, body.reason);

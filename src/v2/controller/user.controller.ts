@@ -180,7 +180,7 @@ export class UserController extends Controller {
 			// check if admin
 			const user = await new UserService().getUserById(request.user);
 			if (!user.roles.includes("Administrator"))
-				throw new BadRequestError("Addon author must include the authored user");
+				throw new BadRequestError("Add-on authors must include the user requesting them");
 		}
 
 		return this.service.getAllAddons(id);

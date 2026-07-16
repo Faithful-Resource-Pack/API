@@ -54,7 +54,9 @@ export default class VersionService {
 
 		// check existing version to the paths provided
 		if (!versions.includes(body.template))
-			throw new BadRequestError("Incorrect input path version provided");
+			throw new BadRequestError(
+				`Unknown path template version provided: got ${body.template}, expected ${versions.join(" | ")}`,
+			);
 
 		return Promise.all([
 			settings.editField({

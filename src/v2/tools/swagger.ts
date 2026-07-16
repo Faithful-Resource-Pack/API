@@ -185,7 +185,7 @@ export default function formatSwaggerDoc(app: Application, path: string) {
 		security: {
 			discord: ["addon:own", "Administrator"],
 		},
-		description: "Post header file for addon",
+		description: "Add or update a header file for the given add-on",
 	});
 	swaggerDoc.paths["/addons/{id_or_slug}/header"].delete = headerDelete;
 
@@ -201,7 +201,7 @@ export default function formatSwaggerDoc(app: Application, path: string) {
 			security: {
 				discord: ["addon:own", "Administrator"],
 			},
-			description: "Post screenshot file for addon",
+			description: "Add or update a screenshot for the given add-on",
 		},
 	);
 	swaggerDoc.paths["/addons/{id_or_slug}/screenshots/{index}"] = screenDelete;

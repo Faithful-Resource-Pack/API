@@ -27,7 +27,10 @@ export default class SubmissionService {
 	}
 
 	public async update(id: PackID, pack: Submission): Promise<Submission> {
-		if (id !== pack.id) throw new BadRequestError("Updated ID is different from ID");
+		if (id !== pack.id)
+			throw new BadRequestError(
+				`Updated submission ID is different from the existing pack ID: got ${pack.id}, expected ${id}`,
+			);
 
 		await this.packService.getById(id); // verify parent pack exists already
 		return this.repo.update(id, pack);

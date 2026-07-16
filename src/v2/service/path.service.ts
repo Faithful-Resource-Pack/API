@@ -51,7 +51,10 @@ export default class PathService {
 	}
 
 	async updatePathById(id: string, path: Path): Promise<Path> {
-		if (id !== path.id) throw new BadRequestError("Updated ID is different from existing ID");
+		if (id !== path.id)
+			throw new BadRequestError(
+				`Updated path ID is different from the existing ID: got ${path.id}, expected ${id}`,
+			);
 
 		await this.useService.getUseByIdOrName(path.use); // verify use existence
 		return this.repo.updatePath(id, path);
