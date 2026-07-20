@@ -27,7 +27,8 @@ document.addEventListener("DOMContentLoaded", () => {
 	document.body.innerHTML += `
 		<button
 			type="button"
-			class="go-up-btn hide"
+			id="go-up-btn"
+			class="hide"
 			onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
 			title="Return to page start"
 		>
@@ -37,8 +38,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	// there is almost certainly a more efficient way to do this
 	window.addEventListener("scroll", () => {
-		const btn = document.querySelector(".go-up-btn");
-		if (window.scrollY > 500) btn.classList.remove("hide");
-		else btn.classList.add("hide");
+		const btn = document.getElementById("go-up-btn");
+		if (window.scrollY > 500) {
+			console.log("showing top button");
+			btn.classList.remove("hide");
+		} else {
+			console.log("hiding top button");
+			btn.classList.add("hide");
+		}
 	});
 });

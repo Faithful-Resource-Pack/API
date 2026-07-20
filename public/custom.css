@@ -21,7 +21,7 @@ a:hover {
 }
 
 /* needed to hide button until needed */
-.go-up-btn.hide {
+#go-up-btn.hide {
 	display: none !important;
 }
 
@@ -31,7 +31,7 @@ a:hover {
 	align-items: center;
 }
 
-.go-up-btn {
+#go-up-btn {
 	/* position styles */
 	position: fixed;
 	bottom: 64px;
@@ -53,10 +53,10 @@ a:hover {
 	color: white;
 }
 
-.go-up-btn:hover {
+#go-up-btn:hover {
 	background-color: #4a4e51;
 }
-.go-up-btn:active {
+#go-up-btn:active {
 	background-color: #75797c;
 }
 
