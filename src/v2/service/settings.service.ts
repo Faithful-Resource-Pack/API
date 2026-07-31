@@ -4,12 +4,12 @@ import SettingsFirestormRepository from "../repository/settings.repository";
 export default class SettingsService {
 	private readonly settingsRepository = new SettingsFirestormRepository();
 
-	raw(): Promise<Record<string, unknown>> {
+	getRaw(): Promise<Record<string, unknown>> {
 		return this.settingsRepository.getRaw();
 	}
 
 	async get(keys: string[]): Promise<unknown> {
-		const raw = await this.raw();
+		const raw = await this.getRaw();
 		return keys.reduce((acc, cur) => acc[cur], raw);
 	}
 
