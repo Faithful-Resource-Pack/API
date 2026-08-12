@@ -160,7 +160,6 @@ export default class GalleryService {
 
 	public async searchModal(id: number, version: string): Promise<GalleryModalResult> {
 		const packs = await this.packService.getRaw();
-
 		const all = await this.textureService.searchProperty(id, "all");
 
 		// if the id doesn't exist it returns an empty array

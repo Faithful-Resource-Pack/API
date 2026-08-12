@@ -43,4 +43,4 @@ export const hasIdOrSlug = (params: ExRequest["params"]): params is ParamsWithSl
 	"id_or_slug" in params && !Array.isArray(params.id_or_slug);
 
 export const isAddonSlug = (idOrSlug: string): boolean =>
-	!AddonStatusValues.includes(idOrSlug as any);
+	!(AddonStatusValues as readonly string[]).includes(idOrSlug);

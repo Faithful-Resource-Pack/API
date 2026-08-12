@@ -9,7 +9,6 @@ export default defineConfig(
 	{
 		rules: {
 			"@typescript-eslint/no-require-imports": "off",
-			// todo: reduce reliance on this
 			"@typescript-eslint/no-explicit-any": "off",
 			// used for some aliased firestorm types
 			"@typescript-eslint/no-empty-object-type": "off",

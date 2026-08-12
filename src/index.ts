@@ -1,7 +1,7 @@
 import "dotenv/config";
 import "./v2/environment";
 
-import express, { NextFunction, Request, Response } from "express";
+import express, { type NextFunction, type Request, type Response } from "express";
 import bodyParser from "body-parser";
 import swaggerUi from "swagger-ui-express";
 import { ValidateError } from "tsoa";
@@ -43,13 +43,13 @@ const app = express()
 app.listen(PORT, () => {
 	console.log(`Using database at ${process.env.FIRESTORM_URL}`);
 	console.log(`API started at http://localhost:${PORT}`);
-	if (NO_CACHE) console.log("Cache is disabled!");
+	if (NO_CACHE) console.log("Caching disabled!");
 });
 
 // show deprecation for v1 API
 app.all("/v1/*route", (_req, res) => {
 	res.status(410).json({
-		message: "API v1 has been discontinued. Please switch to API v2 for all new endpoints.",
+		message: "Faithful API v1 has been discontinued. Please use v2 for all new endpoints.",
 	});
 });
 
