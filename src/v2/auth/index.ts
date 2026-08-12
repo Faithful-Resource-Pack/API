@@ -13,7 +13,7 @@ export async function expressAuthentication(
 	request: ExRequest,
 	securityName: SecurityType,
 	scopes: string[] = [],
-): Promise<unknown> {
+): Promise<any> {
 	// handle public add-ons/posts without a token (for website etc)
 	if (await isPublicSlug(request, scopes)) return true;
 
