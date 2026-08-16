@@ -22,11 +22,11 @@ import {
 	PackID,
 	Texture,
 	TextureCreationParam,
-	TextureProperty,
+	TextureProperties,
 	TextureStats,
 } from "../interfaces";
 import TextureService from "../service/texture.service";
-import { NotAvailableError, NotFoundError } from "../tools/errorTypes";
+import { BadRequestError, NotAvailableError, NotFoundError } from "../tools/errorTypes";
 import * as cache from "../tools/cache";
 
 @Route("textures")
@@ -116,15 +116,16 @@ export class TextureController extends Controller {
 	 * @param property Property from the texture
 	 */
 	@Get("{id_or_name}/{property}")
-	public getTextureProperty(
+	public async getTextureProperty(
 		@Path() id_or_name: string | number,
-		@Path() property: TextureProperty,
+		@Path() property: keyof TextureProperties,
 	): Promise<AnyTextureProperty | AnyTextureProperty[]> {
 		if (typeof id_or_name === "string" && id_or_name.includes(",")) {
 			const idArray = id_or_name.split(",");
-			return Promise.allSettled(
-				idArray.map((id) => this.service.searchProperty(id, property)),
-			).then((res) => res.filter((p) => p.status === "fulfilled").map((p) => p.value));
+			const res = await Promise.allSettled(
+				idArray.map((id) => this.service.searchProperty(id, property) as AnyTextureProperty),
+			);
+			return res.filter((p) => p.status === "fulfilled").map((p) => p.value);
 		}
 
 		return this.service.searchProperty(id_or_name, property);
@@ -158,6 +159,12 @@ export class TextureController extends Controller {
 	@Security("bot")
 	@Security("discord", ["Administrator"])
 	public mergeTextures(@Path() source: string, @Path() destination: string): Promise<void> {
+		if (Number.isNaN(Number(source)))
+			throw new BadRequestError(`Source texture must be a texture ID, received ${source}`);
+		if (Number.isNaN(Number(destination)))
+			throw new BadRequestError(
+				`Destination texture must be a texture ID, received ${destination}`,
+			);
 		return this.service.mergeTextures(source, destination);
 	}
 

@@ -23,8 +23,8 @@ export interface MCMETA {
 export interface TextureAll extends Texture {
 	uses: Use[];
 	paths: Path[];
-	mcmeta: MCMETA;
 	contributions: Contribution[];
+	mcmeta: MCMETA;
 }
 
 export interface EntireTextureToCreate extends TextureCreationParam {
@@ -33,29 +33,24 @@ export interface EntireTextureToCreate extends TextureCreationParam {
 
 export interface TextureStats {
 	total_textures: number;
-	textures_by_edition: Partial<Record<Edition, number>>;
+	textures_by_edition: Partial<Record<MinecraftEdition, number>>;
 	textures_by_tags: Record<string, number>;
 }
 
-export type Edition = "java" | "bedrock";
-export type TextureProperty = null | "uses" | "paths" | "contributions" | "mcmeta" | "all";
-export type AnyTextureProperty =
-	Texture[] | Texture | Path[] | Use[] | Contribution[] | MCMETA | TextureAll;
+// this doesn't really fit anywhere else
+export type MinecraftEdition = "java" | "bedrock";
 
-// average typescript experience
-export type PropertyToOutput<T extends TextureProperty> = T extends null
-	? Texture | Texture[]
-	: T extends "uses"
-		? Use[]
-		: T extends "paths"
-			? Path[]
-			: T extends "contributions"
-				? Contribution[]
-				: T extends "mcmeta"
-					? MCMETA
-					: T extends "all"
-						? TextureAll
-						: never;
+// the property in /v2/textures/name_or_id/property and similar endpoints map to these types
+export type TextureProperties = {
+	uses: Use[];
+	paths: Path[];
+	contributions: Contribution[];
+	mcmeta: MCMETA;
+	all: TextureAll;
+};
+
+// swagger doesn't support generics so we widen out to a regular union in the controller
+export type AnyTextureProperty = TextureProperties[keyof TextureProperties];
 
 export interface FirestormTexture extends Texture {
 	uses(): Promise<FirestormUse[]>;
@@ -74,11 +69,11 @@ export interface TextureRepository {
 		tag?: string,
 		forcePartial?: boolean,
 	): Promise<Texture | Texture[]>;
-	searchProperty<Property extends TextureProperty>(
+	searchProperty<Property extends keyof TextureProperties>(
 		nameOrID: string | number,
 		property: Property,
 		tag?: string,
-	): Promise<PropertyToOutput<Property>>;
+	): Promise<TextureProperties[Property] | TextureProperties[Property][]>;
 	getURLById(id: number, pack: PackID, version: string): Promise<string>;
 	getEditions(): Promise<string[]>;
 	getResolutions(): Promise<number[]>;

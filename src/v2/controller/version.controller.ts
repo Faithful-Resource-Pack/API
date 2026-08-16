@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Path, Post, Put, Route, Security, Tags } from "tsoa";
 import VersionService from "../service/version.service";
-import { Edition, NewVersionParam } from "../interfaces";
+import { MinecraftEdition, NewVersionParam } from "../interfaces";
 import { WriteConfirmation } from "firestorm-db";
 import * as cache from "../tools/cache";
 
@@ -13,7 +13,7 @@ export class VersionsController extends Controller {
 	 * Get a record of editions and their respective versions
 	 */
 	@Get("raw")
-	public getRaw(): Promise<Record<Edition, string[]>> {
+	public getRaw(): Promise<Record<MinecraftEdition, string[]>> {
 		return this.service.getRaw();
 	}
 
@@ -29,7 +29,7 @@ export class VersionsController extends Controller {
 	 * Get a record of editions and their latest version
 	 */
 	@Get("latest")
-	public getLatest(): Promise<Record<Edition, string>> {
+	public getLatest(): Promise<Record<MinecraftEdition, string>> {
 		return this.service.getLatest();
 	}
 
@@ -38,7 +38,7 @@ export class VersionsController extends Controller {
 	 * @param edition Existing edition inside the settings collection
 	 */
 	@Get("edition/{edition}")
-	public getVersionByEdition(@Path() edition: Edition): Promise<string[]> {
+	public getVersionByEdition(@Path() edition: MinecraftEdition): Promise<string[]> {
 		return this.service.getVersionByEdition(edition);
 	}
 

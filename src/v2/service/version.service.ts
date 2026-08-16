@@ -3,24 +3,24 @@ import { BadRequestError, NotFoundError } from "../tools/errorTypes";
 import { settings } from "../firestorm";
 import PathFirestormRepository from "../repository/path.repository";
 import versionSorter from "../tools/versionSorter";
-import { Edition, NewVersionParam } from "../interfaces";
+import { MinecraftEdition, NewVersionParam } from "../interfaces";
 
 export default class VersionService {
 	private readonly pathRepo = new PathFirestormRepository();
 
-	async getRaw(): Promise<Record<Edition, string[]>> {
+	async getRaw(): Promise<Record<MinecraftEdition, string[]>> {
 		const s = await settings.readRaw(true);
-		return s.versions as Record<Edition, string[]>;
+		return s.versions as Record<MinecraftEdition, string[]>;
 	}
 
-	async getLatest(): Promise<Record<Edition, string>> {
+	async getLatest(): Promise<Record<MinecraftEdition, string>> {
 		const versions = await this.getRaw();
 		return Object.entries(versions).reduce(
 			(acc, [edition, versions]) => {
 				acc[edition] = versions[0];
 				return acc;
 			},
-			{} as Record<Edition, string>,
+			{} as Record<MinecraftEdition, string>,
 		);
 	}
 
@@ -29,8 +29,8 @@ export default class VersionService {
 		return Object.values(versions).flat().sort(versionSorter).reverse();
 	}
 
-	async getVersionByEdition(edition: Edition): Promise<string[]> {
-		const versions: Record<Edition, string[]> = await settings.get("versions");
+	async getVersionByEdition(edition: MinecraftEdition): Promise<string[]> {
+		const versions: Record<MinecraftEdition, string[]> = await settings.get("versions");
 		if (!versions[edition])
 			throw new NotFoundError(
 				`Edition ${edition} not found. Available editions: ${Object.keys(versions).join(", ")}`,

@@ -1,6 +1,6 @@
 import { WriteConfirmation } from "firestorm-db";
 import { FirstCreationSubmission, Submission } from "./submissions";
-import { Edition } from "./textures";
+import { MinecraftEdition } from "./textures";
 
 // this way you don't have to add a new pack every time a new one gets created
 export type PackID = string;
@@ -28,7 +28,7 @@ export interface CreationPack {
 	logo: string;
 	resolution: number;
 	// not all editions are required
-	github: Partial<Record<Edition, PackGitHub>>;
+	github: Partial<Record<MinecraftEdition, PackGitHub>>;
 }
 
 export interface Pack extends CreationPack {

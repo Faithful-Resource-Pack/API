@@ -1,5 +1,5 @@
 import { Use } from "./uses";
-import { Edition, MCMETA, Texture } from "./textures";
+import { MinecraftEdition, MCMETA, Texture } from "./textures";
 import { Contribution } from "./contributions";
 import { PackID } from "./packs";
 import { Path } from "./paths";
@@ -14,7 +14,7 @@ export interface GalleryResult {
 	url: string;
 }
 
-export type GalleryEdition = Edition | "all";
+export type GalleryEdition = MinecraftEdition | "all";
 
 export interface GalleryModalResult {
 	contributions: Contribution[];

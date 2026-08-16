@@ -2,10 +2,9 @@ import { ID_FIELD, SearchOption, WriteConfirmation } from "firestorm-db";
 import {
 	FirestormTexture,
 	PackID,
-	PropertyToOutput,
 	Texture,
 	TextureCreationParam,
-	TextureProperty,
+	TextureProperties,
 	TextureRepository,
 } from "../interfaces";
 import { contributions, packs, paths, textures, uses } from "../firestorm";
@@ -48,7 +47,7 @@ export default class TextureFirestormRepository implements TextureRepository {
 
 		/**
 		 * TEXTURE NAME SEARCH ALGORITHM
-		 * - if starts/ends with "_", partial search => include mode
+		 * - if starts/ends with "_", considered partial search => include mode
 		 * - if not, the name is considered as full  => exact match mode
 		 * - if no results for exact (and search is long enough), switch to include
 		 */
@@ -83,16 +82,18 @@ export default class TextureFirestormRepository implements TextureRepository {
 		]);
 	}
 
-	public async searchProperty<Property extends TextureProperty>(
+	public async searchProperty<Property extends keyof TextureProperties>(
 		nameOrID: string | number,
 		property: Property,
 		tag?: string,
-	): Promise<PropertyToOutput<Property>> {
-		// all the horrible type shenanigans are now more or less isolated to this function only
+	): Promise<TextureProperties[Property] | TextureProperties[Property][]> {
 		const results = await this.search(nameOrID, tag);
-		if (property === null) return results as any;
-		if (Array.isArray(results)) return Promise.all(results.map((res) => res[property]())) as any;
-		return results[property]() as any;
+		// todo: look into ways to avoid the assertion (bit janky)
+		if (Array.isArray(results)) {
+			const proms = results.map((res) => res[property]() as Promise<TextureProperties[Property]>);
+			return Promise.all(proms);
+		}
+		return results[property]() as Promise<TextureProperties[Property]>;
 	}
 
 	public async getURLById(id: number, pack: PackID, version: string): Promise<string> {

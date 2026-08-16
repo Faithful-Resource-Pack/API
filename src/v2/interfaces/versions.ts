@@ -1,7 +1,7 @@
-import { Edition } from "./textures";
+import { MinecraftEdition } from "./textures";
 
 export interface NewVersionParam {
-	edition: Edition;
+	edition: MinecraftEdition;
 	template?: string;
 	version: string;
 }

@@ -6,11 +6,11 @@ import {
 	FirestormTexture,
 	PackID,
 	Path,
-	PropertyToOutput,
 	Texture,
 	TextureCreationParam,
-	TextureProperty,
+	TextureProperties,
 	TextureStats,
+	Use,
 } from "../interfaces";
 import TextureFirestormRepository from "../repository/texture.repository";
 import PathService from "./path.service";
@@ -46,10 +46,10 @@ export default class TextureService {
 		return this.textureRepo.search(nameOrID);
 	}
 
-	async getPropertyById<Property extends TextureProperty>(
+	async getPropertyById<Property extends keyof TextureProperties>(
 		id: number,
 		property: Property,
-	): Promise<PropertyToOutput<Property>> {
+	): Promise<TextureProperties[Property] | TextureProperties[Property][]> {
 		// even though it uses the name endpoint it's still pretty fast
 		// since it returns early if it finds an numeric id
 		return this.textureRepo.searchProperty(id, property);
@@ -65,10 +65,10 @@ export default class TextureService {
 		return Array.isArray(results) ? results : [results];
 	}
 
-	async searchProperty<Property extends TextureProperty>(
+	async searchProperty<Property extends keyof TextureProperties>(
 		nameOrID: string | number,
 		property: Property,
-	): Promise<PropertyToOutput<Property>> {
+	): Promise<TextureProperties[Property] | TextureProperties[Property][]> {
 		try {
 			return await this.textureRepo.searchProperty<Property>(nameOrID, property);
 		} catch {
@@ -121,9 +121,14 @@ export default class TextureService {
 		return this.textureRepo.getTags();
 	}
 
+	// append the uses of the source texture to the uses of the destination texture then delete the texture
 	async mergeTextures(source: string, destination: string) {
-		// append the uses of the source texture to the uses of the destination texture
-		const { uses: usesToRemove, paths: pathsToRemove } = await this.searchProperty(source, "all");
+		// we only accept texture ids so there's no way there can be multiple results
+		// todo: try to enforce this better
+		const [usesToRemove, pathsToRemove] = await Promise.all([
+			this.searchProperty(source, "uses") as Promise<Use[]>,
+			this.searchProperty(source, "paths") as Promise<Path[]>,
+		]);
 
 		// no need to delete use properties because it gets overwritten later anyways
 		const usesToCreate: EntireUseToCreate[] = usesToRemove.map((use) => ({
