@@ -91,7 +91,11 @@ export class TextureController extends Controller {
 	 * @param name Name to search by
 	 */
 	@Get("search")
-	public searchTexture(@Query() name?: string, @Query() tag?: string): Promise<Texture[]> {
+	public async searchTexture(@Query() name?: string, @Query() tag?: string): Promise<Texture[]> {
+		if (typeof name === "string" && name.includes(",")) {
+			const res = await Promise.all(name.split(",").map((n) => this.service.search(n, tag, true)));
+			return res.flat();
+		}
 		return this.service.search(name, tag, true);
 	}
 
@@ -100,12 +104,12 @@ export class TextureController extends Controller {
 	 * @param id_or_name Texture ID or texture name (join by "," if multiple)
 	 */
 	@Get("{id_or_name}")
-	public getTexture(@Path() id_or_name: string | number): Promise<Texture | Texture[]> {
+	public async getTexture(@Path() id_or_name: string | number): Promise<Texture | Texture[]> {
 		if (typeof id_or_name === "string" && id_or_name.includes(",")) {
-			const idArray = id_or_name.split(",");
-			return Promise.allSettled(idArray.map((id) => this.service.getByNameOrId(id))).then((res) =>
-				res.filter((p) => p.status === "fulfilled").flatMap((p) => p.value),
+			const res = await Promise.all(
+				id_or_name.split(",").map((n) => this.service.getByNameOrId(n)),
 			);
+			return res.flat();
 		}
 		return this.service.getByNameOrId(id_or_name);
 	}
@@ -121,11 +125,10 @@ export class TextureController extends Controller {
 		@Path() property: keyof TextureProperties,
 	): Promise<AnyTextureProperty | AnyTextureProperty[]> {
 		if (typeof id_or_name === "string" && id_or_name.includes(",")) {
-			const idArray = id_or_name.split(",");
-			const res = await Promise.allSettled(
-				idArray.map((id) => this.service.searchProperty(id, property) as AnyTextureProperty),
+			const res = await Promise.all(
+				id_or_name.split(",").map((n) => this.service.searchProperty(n, property)),
 			);
-			return res.filter((p) => p.status === "fulfilled").map((p) => p.value);
+			return res.flat() as AnyTextureProperty[];
 		}
 
 		return this.service.searchProperty(id_or_name, property);
