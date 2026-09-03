@@ -122,11 +122,10 @@ export default class ContributionService {
 	}
 
 	async search(params: ContributionSearch): Promise<Contribution[]> {
-		if (params.search) {
-			const res = await this.textureService.getByNameOrId(params.search);
-			const textureIDs = (Array.isArray(res) ? res : [res]).map((t) => t.id);
-			return this.contributionRepo.searchByIdAndPacks(textureIDs, params.packs, params.users);
-		} else return this.searchContributionsFrom(params.users || [], params.packs);
+		if (!params.search) return this.searchContributionsFrom(params.users || [], params.packs);
+		const res = await this.textureService.getByNameOrId(params.search);
+		const textureIDs = (Array.isArray(res) ? res : [res]).map((t) => t.id);
+		return this.contributionRepo.searchByIdAndPacks(textureIDs, params.packs, params.users);
 	}
 
 	getById(id: string): Promise<Contribution> {

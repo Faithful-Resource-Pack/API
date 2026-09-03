@@ -21,7 +21,7 @@ import { BadRequestError, NotFoundError } from "../tools/errorTypes";
 import UserService from "./user.service";
 import FileService from "./file.service";
 import AddonFirestormRepository from "../repository/addon.repository";
-import { discordEmbed } from "../tools/discordEmbed";
+import sendDiscordNotification from "../tools/sendDiscordNotification";
 
 // filter & keep only values that are in a-z & 0-9 & _ or -
 const toSlug = (value: string) =>
@@ -31,6 +31,14 @@ const toSlug = (value: string) =>
 		.split("")
 		.filter((c) => /[a-z0-9_-]/.test(c))
 		.join("");
+
+const STATUS_TO_EMBED_COLOR = {
+	generic: 0x76c945,
+	pending: 0x5865f2,
+	approved: 0x4caf50,
+	denied: 0xf44336,
+	archived: 0x9e9e9e,
+};
 
 export default class AddonService {
 	private readonly userService = new UserService();
@@ -354,7 +362,7 @@ export default class AddonService {
 		return a;
 	}
 
-	private async notifyAddonChange(addon: Addon, before: AddonStatus | null): Promise<void> {
+	private async notifyAddonChange(addon: Addon, before: AddonStatus | null) {
 		const { status, author } = addon.approval;
 		// webhook not set up or status hasn't changed
 		if (!process.env.WEBHOOK_URL || before === status) return;
@@ -362,7 +370,7 @@ export default class AddonService {
 		let title: string;
 		let name: string;
 		if (status === "pending") {
-			title = `${addon.name} is pending approval!`;
+			title = `[#${addon.id}] "${addon.name}" is pending approval!`;
 			name = "Add-on Update";
 		} else {
 			let username = "an unknown user";
@@ -371,7 +379,7 @@ export default class AddonService {
 				if (user) username = user.username;
 			}
 
-			title = `${addon.name} was ${status} by ${username}!`;
+			title = `[#${addon.id}] "${addon.name}" was ${status} by ${username}!`;
 			name = "Add-on Review";
 		}
 
@@ -383,6 +391,7 @@ export default class AddonService {
 				icon_url:
 					"https://raw.githubusercontent.com/Faithful-Resource-Pack/Branding/main/role_icons/contributor/add_on_maker.png",
 			},
+			color: status ? STATUS_TO_EMBED_COLOR[status] : STATUS_TO_EMBED_COLOR.generic,
 		};
 
 		if (status !== "approved")
@@ -393,7 +402,7 @@ export default class AddonService {
 				},
 			];
 
-		discordEmbed(embed);
+		return sendDiscordNotification({ embeds: [embed] });
 	}
 
 	public async getAddonProperty(id: number, property: AddonProperty): Promise<Addon | File[]> {
