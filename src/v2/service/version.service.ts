@@ -41,24 +41,8 @@ export default class VersionService {
 	async add(body: NewVersionParam): Promise<WriteConfirmation[]> {
 		const versions = await this.getVersionByEdition(body.edition);
 
-		if (body.template === undefined)
-			return Promise.all([
-				settings.editField({
-					id: "versions",
-					field: body.edition,
-					operation: "array-splice",
-					// equivalent of array_unshift (new versions go at start of list)
-					value: [0, 0, body.version],
-				}),
-			]);
-
-		// check existing version to the paths provided
-		if (!versions.includes(body.template))
-			throw new BadRequestError(
-				`Unknown path template version provided: got ${body.template}, expected ${versions.join(" | ")}`,
-			);
-
-		return Promise.all([
+		const proms: Promise<WriteConfirmation>[] = [
+			// always happens whether template exists or not
 			settings.editField({
 				id: "versions",
 				field: body.edition,
@@ -66,8 +50,18 @@ export default class VersionService {
 				// equivalent of array_unshift (new versions go at start of list)
 				value: [0, 0, body.version],
 			}),
-			this.pathRepo.addNewVersionToVersion(body.template, body.version),
-		]);
+		];
+
+		if (body.template !== undefined) {
+			// template version has to actually exist to be cloned
+			if (!versions.includes(body.template))
+				throw new BadRequestError(
+					`Unknown path template version provided: got ${body.template}, expected ${versions.join(" | ")}`,
+				);
+			proms.push(this.pathRepo.addNewVersionToVersion(body.template, body.version));
+		}
+
+		return Promise.all(proms);
 	}
 
 	async rename(oldVersion: string, newVersion: string): Promise<WriteConfirmation[]> {
