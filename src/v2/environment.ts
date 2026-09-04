@@ -6,7 +6,7 @@ declare global {
 			readonly PORT: string;
 			readonly DEV: string;
 			readonly VERBOSE: string;
-			readonly NO_CACHE: string;
+			readonly USE_CACHE: string;
 
 			readonly FIRESTORM_URL: string;
 			readonly FIRESTORM_TOKEN: string;

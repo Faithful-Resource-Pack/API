@@ -12,8 +12,9 @@ import { RegisterRoutes } from "../build/routes";
 import formatSwaggerDoc from "./v2/tools/swagger";
 import handleError from "./v2/tools/handleError";
 import { GalleryController } from "./v2/controller/gallery.controller";
+import { cacheDir } from "./v2/tools/cache";
 
-const NO_CACHE = process.env.NO_CACHE === "true";
+const USE_CACHE = process.env.USE_CACHE === "true";
 const PORT = process.env.PORT || 8000;
 
 // TODO: find out what the fuck we are doing
@@ -43,7 +44,7 @@ const app = express()
 app.listen(PORT, () => {
 	console.log(`Using database at ${process.env.FIRESTORM_URL}`);
 	console.log(`API started at http://localhost:${PORT}`);
-	if (NO_CACHE) console.log("Caching disabled!");
+	if (USE_CACHE) console.log(`Using cache at ${cacheDir()}`);
 });
 
 // show deprecation for v1 API
@@ -54,7 +55,7 @@ app.all("/v1/*route", (_req, res) => {
 });
 
 // purge gallery cache on start (good to prevent huge numbers of cache files sitting there)
-if (!NO_CACHE) new GalleryController().purgeCache();
+if (USE_CACHE) new GalleryController().purgeCache();
 
 // start v2 api
 RegisterRoutes(app);

@@ -3,11 +3,11 @@ import { join } from "path";
 import { tmpdir } from "os";
 import { existsSync, mkdirSync } from "fs";
 
-const NO_CACHE = process.env.NO_CACHE === "true";
+const USE_CACHE = process.env.USE_CACHE === "true";
 
 const CACHE_FOLDER = "faithful_api";
 
-const folder = () => {
+export const cacheDir = () => {
 	const path = join(tmpdir(), CACHE_FOLDER);
 	if (!existsSync(path)) mkdirSync(path, { recursive: true });
 	return path;
@@ -15,7 +15,7 @@ const folder = () => {
 
 const keyToPath = (key: string): string => {
 	const escapedKey = key.replace(/(\/|\\)/g, "-");
-	return join(folder(), `cache-${escapedKey}.json`);
+	return join(cacheDir(), `cache-${escapedKey}.json`);
 };
 
 export interface CacheData<T> {
@@ -32,7 +32,7 @@ export interface CacheData<T> {
  * @returns Found data and whether that data has expired
  */
 export async function read<T>(key: string, duration = 86400000): Promise<CacheData<T>> {
-	if (NO_CACHE) throw new Error("Cache disabled");
+	if (!USE_CACHE) throw new Error("Cache disabled");
 
 	const content = await readFile(keyToPath(key), { encoding: "utf8" });
 	const json: Record<string | number, T> = JSON.parse(content);
@@ -54,11 +54,11 @@ export async function purge(pattern?: string | RegExp): Promise<void[]> {
 		const p = typeof pattern === "string" ? pattern : pattern.toString().split("/")[1];
 		regex = new RegExp(`cache-${p}.json$`);
 	}
-	const entries = await readdir(folder());
+	const entries = await readdir(cacheDir());
 
 	// why is void[] a type
 	return Promise.all(
-		entries.filter((item) => regex.test(item)).map((item) => unlink(join(folder(), item))),
+		entries.filter((item) => regex.test(item)).map((item) => unlink(join(cacheDir(), item))),
 	);
 }
 
@@ -95,7 +95,7 @@ export async function handle<T>(
 	if (cacheData.expired || !cacheData.data) {
 		cacheData.data = await callback();
 		// write if cache enabled
-		if (!NO_CACHE) {
+		if (USE_CACHE) {
 			if (process.env.VERBOSE === "true") console.log(`Creating cache ${key} at ${keyToPath(key)}`);
 			write(key, cacheData.data).catch((...args) => console.error(...args));
 		}
