@@ -42,9 +42,9 @@ const app = express()
 
 // start process
 app.listen(PORT, () => {
-	console.log(`Using database at ${process.env.FIRESTORM_URL}`);
-	console.log(`API started at http://localhost:${PORT}`);
+	console.log(`Using Firestorm database at ${process.env.FIRESTORM_URL}`);
 	if (USE_CACHE) console.log(`Using cache at ${cacheDir()}`);
+	console.log(`API started at http://localhost:${PORT}`);
 });
 
 // show deprecation for v1 API
@@ -70,11 +70,9 @@ app.use(
 	swaggerUi.setup(formatSwaggerDoc(app, "./public/swagger.json"), {
 		customCssUrl: "/custom.css",
 		customJs: ["/custom.js", "/customDOM.js"],
-		swaggerOptions: {
-			tryItOutEnabled: true,
-		},
-		customfavIcon: "https://database.faithfulpack.net/images/branding/logos/favicon.ico",
+		swaggerOptions: { tryItOutEnabled: true },
 		customSiteTitle: "Faithful API",
+		customfavIcon: "https://database.faithfulpack.net/images/branding/logos/favicon.ico",
 	}),
 );
 

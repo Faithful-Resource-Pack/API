@@ -251,7 +251,7 @@ export default class AddonService {
 		await this.fileService.addFiles(files);
 		// wait for all files to be added
 
-		await this.notifyAddonChange(addonCreated, null).catch(console.error);
+		await this.notifyAddonChange(addonCreated).catch(console.error);
 		return addonCreated;
 	}
 
@@ -301,7 +301,6 @@ export default class AddonService {
 			});
 
 		const savedAddon = await this.getAddon(id);
-		const before = savedAddon.approval.status;
 		const addon: Addon = {
 			...savedAddon,
 			...addonDataParams,
@@ -315,7 +314,7 @@ export default class AddonService {
 
 		// update addon, reupload download links
 		const [results] = await Promise.all([
-			this.saveUpdate(id, addon, before),
+			this.saveUpdate(id, addon),
 			this.fileService.addFiles(files),
 		]);
 		return results;
@@ -346,31 +345,26 @@ export default class AddonService {
 
 	async review(id: number, review: AddonReview): Promise<void> {
 		const addon = await this.getAddon(id);
-		const before = addon.approval?.status || null;
 		addon.approval = review;
-		this.saveUpdate(id, addon, before);
+		this.saveUpdate(id, addon);
 	}
 
-	public async saveUpdate(
-		id: string | number,
-		addon: Addon,
-		before: AddonStatus | null,
-		notify = true,
-	): Promise<Addon> {
+	public async saveUpdate(id: string | number, addon: Addon, notify = true): Promise<Addon> {
 		const a = await this.addonRepo.update(id, addon);
-		if (notify) await this.notifyAddonChange(a, before).catch(console.error);
+		if (notify) await this.notifyAddonChange(a).catch(console.error);
 		return a;
 	}
 
-	private async notifyAddonChange(addon: Addon, before: AddonStatus | null) {
+	private async notifyAddonChange(addon: Addon) {
 		const { status, author } = addon.approval;
+
 		// webhook not set up or status hasn't changed
-		if (!process.env.WEBHOOK_URL || before === status) return;
+		if (!process.env.WEBHOOK_URL) return;
 
 		let title: string;
 		let name: string;
 		if (status === "pending") {
-			title = `[#${addon.id}] "${addon.name}" is pending approval!`;
+			title = `${addon.name} is pending approval!`;
 			name = "Add-on Update";
 		} else {
 			let username = "an unknown user";
@@ -379,7 +373,7 @@ export default class AddonService {
 				if (user) username = user.username;
 			}
 
-			title = `[#${addon.id}] "${addon.name}" was ${status} by ${username}!`;
+			title = `${addon.name} was ${status} by ${username}!`;
 			name = "Add-on Review";
 		}
 
@@ -392,6 +386,7 @@ export default class AddonService {
 					"https://raw.githubusercontent.com/Faithful-Resource-Pack/Branding/main/role_icons/contributor/add_on_maker.png",
 			},
 			color: status ? STATUS_TO_EMBED_COLOR[status] : STATUS_TO_EMBED_COLOR.generic,
+			footer: { text: `Add-on ID: ${addon.id}` },
 		};
 
 		if (status !== "approved")

@@ -29,7 +29,6 @@ export default class AddonFileService {
 		const [addonID, addon] = await this.addonService.getAddonFromSlugOrId(idOrSlug);
 		const { slug } = addon;
 
-		const before = addon.approval?.status || null;
 		// try to remove current header
 		await this.deleteHeader(String(addonID)).catch(() => {});
 
@@ -43,7 +42,7 @@ export default class AddonFileService {
 			reason: "Added or updated header image",
 		};
 
-		await this.addonService.saveUpdate(addonID, addon, before);
+		await this.addonService.saveUpdate(addonID, addon);
 
 		// upload file
 		await this.fileService.upload(uploadLocation, filename, buffer, true);
@@ -75,8 +74,6 @@ export default class AddonFileService {
 
 		const [addonID, addon] = await this.addonService.getAddonFromSlugOrId(idOrSlug);
 
-		const before = addon.approval?.status || null;
-
 		// new random name based on time and random part
 		const newName = Date.now().toString(36) + Math.random().toString(36).slice(2);
 
@@ -90,7 +87,7 @@ export default class AddonFileService {
 			reason: "Added screenshot",
 		};
 
-		await this.addonService.saveUpdate(addonID, addon, before);
+		await this.addonService.saveUpdate(addonID, addon);
 
 		// upload file
 		await this.fileService.upload(uploadLocation, filename, buffer, true);
@@ -146,12 +143,13 @@ export default class AddonFileService {
 		const foundScreen = screens.find((s) => s.id && s.id === String(indexOrSlug));
 		const screen = foundScreen || screens[Number(indexOrSlug)];
 		if (screen === undefined) throw new NotFoundError("Screenshot not found");
+
+		// can be done live, no need to mark as pending again
 		return this.deleteFile(screen);
 	}
 
 	public async deleteHeader(idOrSlug: string): Promise<[WriteConfirmation, WriteConfirmation]> {
 		const [addonID, addon] = await this.addonService.getAddonFromSlugOrId(idOrSlug);
-		const before = addon.approval.status || null;
 
 		addon.approval = {
 			reason: "Deleted header image",
@@ -174,7 +172,8 @@ export default class AddonFileService {
 			reason: "Add-on must have a header image",
 		};
 
-		await this.addonService.saveUpdate(addonID, addon, before, false);
+		// addon is invalid so it makes no sense to notify at this point
+		await this.addonService.saveUpdate(addonID, addon, false);
 		return this.deleteFile(header);
 	}
 }
