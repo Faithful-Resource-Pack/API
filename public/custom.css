@@ -1,6 +1,10 @@
+/**
+ * for some ungodly reason you can only have one custom CSS url so there's a few different sections here
+ */
+
 /* hide really ugly schemas section */
-html > body > div#swagger-ui > section.swagger-ui.swagger-container > div.swagger-ui > div > div.wrapper:last-child {
-	display: none;
+.models {
+	display: none !important;
 }
 
 /* white method names/buttons (looks better) */
@@ -20,15 +24,15 @@ a:hover {
 	color: #76C945;
 }
 
-/* needed to hide button until needed */
-#go-up-btn.hide {
-	display: none !important;
-}
-
 .footer-container {
 	display: flex;
 	flex-flow: column nowrap;
 	align-items: center;
+}
+
+/* button hiding with css is a bit easier */
+#go-up-btn.hide {
+	display: none !important;
 }
 
 #go-up-btn {
@@ -38,12 +42,14 @@ a:hover {
 	right: 64px;
 	height: 56px;
 	width: 56px;
+
 	/* button styles */
 	border-radius: 50%;
 	background-color: #2a2e30;
 	border: none;
 	cursor: pointer;
 	transition: all 0.15s ease;
+
 	/* text styles */
 	display: flex !important;
 	align-items: center;
@@ -61,7 +67,8 @@ a:hover {
 }
 
 /**
- * Note: Many of these styles are based on the vitepress/faithful docs styling
+ * HERO SECTION
+ * - many of these styles are based on the vitepress default theme
  */
 
 /* sticky header */
@@ -118,6 +125,8 @@ a:hover {
 .info .title {
 	font-size: 56px !important;
 }
+
+/* lighter subtitle for some half-decent type hierarchy */
 .info .description p {
 	font-size: 24px !important;
 	opacity: 0.6;

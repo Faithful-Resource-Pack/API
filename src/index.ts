@@ -69,7 +69,7 @@ app.use(
 	swaggerUi.serve,
 	swaggerUi.setup(formatSwaggerDoc(app, "./public/swagger.json"), {
 		customCssUrl: "/custom.css",
-		customJs: ["/custom.js", "/customDOM.js"],
+		customJs: ["/auth.js", "/elements.js"],
 		swaggerOptions: { tryItOutEnabled: true },
 		customSiteTitle: "Faithful API",
 		customfavIcon: "https://database.faithfulpack.net/images/branding/logos/favicon.ico",
