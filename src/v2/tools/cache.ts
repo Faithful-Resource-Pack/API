@@ -1,7 +1,7 @@
+import { existsSync, mkdirSync } from "fs";
 import { readFile, readdir, unlink, writeFile } from "fs/promises";
 import { join } from "path";
 import { tmpdir } from "os";
-import { existsSync, mkdirSync } from "fs";
 
 const USE_CACHE = process.env.USE_CACHE === "true";
 
@@ -19,10 +19,10 @@ const keyToPath = (key: string): string => {
 };
 
 export interface CacheData<T> {
-	/** Whether the data has expired */
-	expired: boolean;
 	/** Found data */
 	data?: T;
+	/** Whether the data has expired */
+	expired: boolean;
 }
 
 /**
@@ -38,10 +38,8 @@ export async function read<T>(key: string, duration = 86400000): Promise<CacheDa
 	const json: Record<string | number, T> = JSON.parse(content);
 	const timestampStr = Object.keys(json)[0];
 	const timestamp = Number(timestampStr);
-	return {
-		expired: Date.now() - timestamp > duration,
-		data: json[timestampStr],
-	};
+
+	return { data: json[timestampStr], expired: Date.now() - timestamp > duration };
 }
 
 /**
@@ -86,12 +84,9 @@ export async function handle<T>(
 	callback: () => T | Promise<T>,
 	duration?: number, // one day
 ): Promise<T> {
-	const cacheData = await read<T>(key, duration).catch<CacheData<T>>(() => ({
-		// no cache file exists or cache is disabled, use callback to regenerate
-		expired: true,
-	}));
+	const cacheData = await read<T>(key, duration).catch<CacheData<T>>(() => ({ expired: true }));
 
-	// generate new data and write it if expired
+	// generate new data and write it if expired or doesn't exist
 	if (cacheData.expired || !cacheData.data) {
 		cacheData.data = await callback();
 		// write if cache enabled
