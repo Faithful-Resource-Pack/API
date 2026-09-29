@@ -84,7 +84,7 @@ export default class AddonFileService {
 		addon.approval = {
 			status: "pending",
 			author: null,
-			reason: `Added screenshot \`${filename}\``,
+			reason: `Added screenshot "${filename}"`,
 		};
 
 		await this.addonService.saveUpdate(addonID, addon);
