@@ -227,6 +227,7 @@ export default class AddonService {
 
 		const addon: CreationAddon = {
 			...addonDataParams,
+			created: Date.now(),
 			last_updated: Date.now(),
 			slug: slugValue,
 			approval: {

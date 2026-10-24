@@ -38,6 +38,7 @@ export interface CreationAddon {
 		packs: string[]; // supported packs
 	};
 	embed_description?: string;
+	created?: number;
 	last_updated?: number;
 	approval: AddonReview;
 }
