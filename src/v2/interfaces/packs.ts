@@ -10,6 +10,9 @@ export interface PackGitHub {
 	org: string;
 }
 
+// mods only exist on java, but their repositories live in a separate organization
+type PackEdition = MinecraftEdition | "modded";
+
 export type PackType = "submission" | "default" | "all";
 
 export type PackSearch = Partial<{
@@ -28,7 +31,7 @@ export interface CreationPack {
 	logo: string;
 	resolution: number;
 	// not all editions are required
-	github: Partial<Record<MinecraftEdition, PackGitHub>>;
+	github: Partial<Record<PackEdition, PackGitHub>>;
 }
 
 export interface Pack extends CreationPack {
