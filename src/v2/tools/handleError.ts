@@ -16,8 +16,9 @@ function getCode(err: Record<string, any>) {
 }
 
 function getMessage(err: Record<string, any>) {
+	// responses that aren't json (ex: html from a failed upstream request) have no error key
 	if (err.response && err.response.data)
-		return err.response.data.error || err.response.data.message;
+		return err.response.data.error || err.response.data.message || err.message || String(err);
 	return err.message || err;
 }
 

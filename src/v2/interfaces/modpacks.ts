@@ -1,21 +1,36 @@
-import { Mod } from "./mods";
+import { ModProviders } from "./mods";
 
 export interface Modpack {
-	id: string; // modpack id (curseforge project id)
-	name: string; // modpack name
-	authors: string[]; // modpacks authors
-	versions: ModpackVersion[];
+	id: string;
+	name: string;
+	// empty when an admin created the modpack by hand
+	providers?: ModProviders; // platform project ids
+	icon?: string;
+}
+
+interface ModpackUnresolvedMod {
+	platform: keyof ModProviders;
+	project_id: string;
+	file_id: string;
 }
 
 export interface ModpackVersion {
 	id: string;
-	minecraft: string; // modpack version
-	mods: Mod[]; // minecraft version (ex: "1.18")
+	modpack_id: string;
+	version: string;
+	minecraft: string[];
+	providers?: ModProviders; // platform file ids
+	mod_versions: string[];
+	unresolved: ModpackUnresolvedMod[]; // mods not imported yet
 }
 
 export interface FirestormModpack extends Modpack {}
+export interface FirestormModpackVersion extends ModpackVersion {}
 
 export interface ModpacksRepository {
 	getRaw(): Promise<Record<string, Modpack>>;
-	getThumbnail(id: number): Promise<string>;
+	getById(id: string): Promise<Modpack>;
+	getVersions(modpackId: string): Promise<ModpackVersion[]>;
+	getVersionById(id: string): Promise<ModpackVersion>;
+	getVersionsUsing(modVersionIds: string[]): Promise<ModpackVersion[]>;
 }

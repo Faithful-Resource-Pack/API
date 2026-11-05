@@ -1,8 +1,6 @@
-import { Controller, Get, Path, Request, Route, SuccessResponse, Tags } from "tsoa";
-import { Request as ExRequest } from "express";
-import { Modpack } from "../interfaces";
+import { Controller, Get, Path, Route, Tags } from "tsoa";
+import { Modpack, ModpackVersion } from "../interfaces";
 import ModpacksService from "../service/modpacks.service";
-import * as cache from "../tools/cache";
 
 @Route("modpacks")
 @Tags("Modpacks")
@@ -10,7 +8,7 @@ export class ModpacksController extends Controller {
 	private readonly service = new ModpacksService();
 
 	/**
-	 * Get all mods in the collection
+	 * Get all modpacks in the collection
 	 */
 	@Get("raw")
 	public getRaw(): Promise<Record<string, Modpack>> {
@@ -18,16 +16,35 @@ export class ModpacksController extends Controller {
 	}
 
 	/**
-	 * Get a modpack thumbnail by ID
-	 * @param id Mod ID
+	 * Get a modpack by ID
+	 * @param id Modpack ID
 	 */
-	@Get("{id}/thumbnail")
-	@SuccessResponse(302, "Redirect")
-	public async getThumbnail(@Path() id: string, @Request() request: ExRequest): Promise<void> {
-		const url = await cache.handle(`modpacks-thumbnail-${id}`, () =>
-			this.service.getThumbnail(parseInt(id, 10)),
-		);
+	@Get("{id}")
+	public getById(@Path() id: string): Promise<Modpack> {
+		return this.service.getById(id);
+	}
 
-		request.res?.redirect(url);
+	/**
+	 * Get all the versions of a modpack
+	 * @param id Modpack ID
+	 */
+	@Get("{id}/versions")
+	public getVersions(@Path() id: string): Promise<ModpackVersion[]> {
+		return this.service.getVersions(id);
+	}
+}
+
+@Route("modpack-versions")
+@Tags("Modpacks")
+export class ModpackVersionsController extends Controller {
+	private readonly service = new ModpacksService();
+
+	/**
+	 * Get a modpack version by ID
+	 * @param id Modpack version ID
+	 */
+	@Get("{id}")
+	public getById(@Path() id: string): Promise<ModpackVersion> {
+		return this.service.getVersionById(id);
 	}
 }

@@ -32,6 +32,11 @@ declare global {
 			readonly CLOUDFLARE_KEY: string;
 			readonly CURSEFORGE_API_KEY: string;
 			readonly WEBHOOK_URL?: string;
+
+			// contents and pull requests access on the modded pack repositories
+			readonly GITHUB_TOKEN?: string;
+			// only to point at another server than github.com (tests, enterprise)
+			readonly GITHUB_API_URL?: string;
 		}
 	}
 }
