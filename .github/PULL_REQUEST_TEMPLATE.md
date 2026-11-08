@@ -1,15 +1,13 @@
 <!--
-	Thank you for contributing to Faithful's codebase! However, before you open
-	your pull request, we have a few ground rules to make sure every
-	contribution upholds our standards:
+Thank you for contributing to Faithful's codebase! However, before you open
+your pull request, we have a few ground rules to make sure every
+contribution upholds our standards.
+You can fill a checkbox by replacing the empty space with an "x" character.
 -->
 
-- [ ] I agree that my contributions are licensed under the [LICENSE](/LICENSE)
-	  as stated in the repository.
-- [ ] I declare that my contributions are not co-authored using a generative
-      AI technology.
-- [ ] I have linted and formatted my code using the `pnpm lint` and
-      `pnpm prettier` commands.
+- [ ] I agree that my contributions are licensed under the [LICENSE](./LICENSE) as stated in the repository.
+- [ ] I declare that my contributions are not co-authored using a generative AI technology.
+- [ ] I have linted and formatted my code using the `pnpm lint` and `pnpm prettier` commands (if applicable).
 
 ---
 
