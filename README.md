@@ -27,13 +27,31 @@
 
 ## Running
 
+1. Rename the [`.env.example`](.env.example) file to `.env` and open it using any text editor.
+2. Paste a live Firestorm database URL after `FIRESTORM_URL=` in the newly-created `.env` file:
+  - There is a readonly test database available at https://database.faithfulpack.net/firestorm-test for public usage, which is updated every few months. You can ignore `FIRESTORM_TOKEN` if you only need read access, since it is only checked against privileged operations.
+  - You can also host your own local Firestorm instance by following the instructions on its [GitHub](https://github.com/TheRolfFR/firestorm-db) repository, if you do need to test write access.
+3. If you're authenticating with the Faithful Studio, follow its project README for further instructions.
+
+From there, install the project dependencies by running:
+
 ```bash
 pnpm install
 ```
 
+To start the API, run:
+
 ```bash
-pnpm run dev
+pnpm dev
 ```
+
+## Building
+
+```bash
+pnpm build
+```
+
+You can preview the production build with `pnpm start`.
 
 ## Database Reference
 
